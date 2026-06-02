@@ -17,8 +17,10 @@
                 </p>
             </div>
             <div class="flex gap-2 shrink-0">
-                <a href="{{ route('events.edit', $e) }}" class="link">Изменить</a>
-                @include('partials.delete-form', ['action' => route('events.destroy', $e)])
+                @include('partials.item-actions', [
+                    'edit' => route('events.edit', $e),
+                    'destroy' => route('events.destroy', $e),
+                ])
             </div>
         </div>
     @empty

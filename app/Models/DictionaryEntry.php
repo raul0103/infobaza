@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class DictionaryEntry extends Model
 {
     protected $fillable = [
-        'dictionary_id', 'term', 'definition', 'example',
+        'user_id', 'dictionary_id', 'term', 'definition', 'example', 'visibility',
         'next_review_at', 'interval_days', 'review_count',
     ];
 
@@ -22,6 +22,11 @@ class DictionaryEntry extends Model
     public function dictionary(): BelongsTo
     {
         return $this->belongsTo(Dictionary::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function scopeDue(Builder $query): Builder

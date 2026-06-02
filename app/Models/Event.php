@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Event extends Model
 {
     protected $fillable = [
-        'title', 'body', 'starts_at', 'ends_at', 'all_day', 'location',
+        'user_id', 'title', 'body', 'starts_at', 'ends_at', 'all_day', 'location', 'visibility',
     ];
 
     protected function casts(): array
@@ -17,5 +18,10 @@ class Event extends Model
             'ends_at' => 'datetime',
             'all_day' => 'boolean',
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

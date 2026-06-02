@@ -23,8 +23,9 @@
         </x-form.select>
     </div>
 
-    <x-form.select name="topic_id" label="Тема">
-        @include('partials.topic-select-options', ['groups' => $topicGroups, 'selected' => $quote->topic_id])
+    <x-form.select name="visibility" label="Видимость" :placeholder="false">
+        <option value="private" @selected(old('visibility', $quote->visibility ?? 'private') === 'private')>Закрытая</option>
+        <option value="public" @selected(old('visibility', $quote->visibility ?? 'private') === 'public')>Открытая</option>
     </x-form.select>
 
     <x-form.textarea name="text" label="Текст цитаты" :value="$quote->text" :rows="5" required />

@@ -18,15 +18,6 @@
                 @include('partials.topic-select-options', ['groups' => $topicGroups, 'selected' => $filters['topic_id'] ?? null])
             </select>
         </div>
-        <div class="w-48">
-            <label class="label">Усвоение</label>
-            <select name="mastery" class="select" onchange="this.form.submit()">
-                <option value="">Все</option>
-                @foreach(\App\Models\Note::masteryLabels() as $v => $l)
-                    <option value="{{ $v }}" @selected(($filters['mastery'] ?? '') == (string)$v)>{{ $l }}</option>
-                @endforeach
-            </select>
-        </div>
         <button type="submit" class="btn btn-secondary">Найти</button>
     </div>
 </form>
@@ -38,7 +29,6 @@
                 <div class="flex justify-between items-start gap-4">
                     <h3 class="font-semibold text-gray-900">{{ $note->title }}</h3>
                     <div class="flex flex-wrap gap-2 shrink-0">
-                        <span class="badge-gray">{{ \App\Models\Note::masteryLabels()[$note->mastery_level ?? 0] }}</span>
                         @if($note->topic)@include('partials.topic-badge', ['topic' => $note->topic])@endif
                     </div>
                 </div>

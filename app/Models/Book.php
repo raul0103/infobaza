@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Book extends Model
 {
     protected $fillable = [
-        'title', 'author', 'year', 'description', 'status',
+        'user_id', 'title', 'author', 'year', 'description', 'status', 'visibility',
         'current_page', 'total_pages', 'started_at', 'finished_at', 'review_takeaway',
     ];
 
@@ -32,6 +33,11 @@ class Book extends Model
     public function quotes(): HasMany
     {
         return $this->hasMany(Quote::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function readingPercent(): ?int

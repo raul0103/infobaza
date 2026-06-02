@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Reminder extends Model
 {
-    protected $fillable = ['title', 'body', 'remind_at', 'completed_at'];
+    protected $fillable = ['user_id', 'title', 'body', 'remind_at', 'completed_at', 'visibility'];
 
     protected function casts(): array
     {
@@ -30,5 +31,10 @@ class Reminder extends Model
     public function isCompleted(): bool
     {
         return $this->completed_at !== null;
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -4,9 +4,10 @@
 <x-page-header :title="$note->title">
     <x-slot:actions>
         @if($note->topic)@include('partials.topic-badge', ['topic' => $note->topic])@endif
-        <span class="badge-gray">{{ \App\Models\Note::masteryLabels()[$note->mastery_level] ?? '' }}</span>
-        <a href="{{ route('notes.edit', $note) }}" class="btn btn-secondary">Изменить</a>
-        @include('partials.delete-form', ['action' => route('notes.destroy', $note)])
+        @include('partials.item-actions', [
+            'edit' => route('notes.edit', $note),
+            'destroy' => route('notes.destroy', $note),
+        ])
     </x-slot:actions>
 </x-page-header>
 <div class="card prose prose-gray max-w-none mb-6">
@@ -30,7 +31,11 @@
             <p class="font-medium">{{ $q->question }}</p>
             <p class="text-sm text-gray-500 mt-1">{{ Str::limit($q->answer, 100) }}</p>
             <form method="POST" action="{{ route('notes.questions.destroy', [$note, $q]) }}" class="mt-2">@csrf @method('DELETE')
-                <button class="text-sm text-red-600">Удалить</button>
+                <button class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-red-50 hover:text-red-700" title="Удалить вопрос" aria-label="Удалить вопрос">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 7.5h12m-10.5 0v10.125A2.625 2.625 0 0010.125 20.25h3.75A2.625 2.625 0 0016.5 17.625V7.5m-6 0V6a1.5 1.5 0 011.5-1.5h0A1.5 1.5 0 0113.5 6v1.5"/>
+                    </svg>
+                </button>
             </form>
         </div>
     @empty

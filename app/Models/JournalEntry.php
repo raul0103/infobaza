@@ -3,15 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class JournalEntry extends Model
 {
-    protected $fillable = ['entry_date', 'title', 'content', 'mood'];
+    protected $fillable = ['user_id', 'entry_date', 'title', 'content', 'mood', 'visibility'];
 
     protected function casts(): array
     {
         return [
             'entry_date' => 'date',
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

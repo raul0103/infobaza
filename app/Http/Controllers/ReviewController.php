@@ -8,6 +8,7 @@ use App\Models\NoteQuestion;
 use App\Services\ActivityTracker;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class ReviewController extends Controller
@@ -17,17 +18,18 @@ class ReviewController extends Controller
         $dictionaries = Dictionary::withCount([
             'entries',
             'entries as due_entries_count' => fn ($q) => $q->due(),
-        ])->whereHas('entries')->orderBy('name')->get();
+        ])->where('user_id', Auth::id())->whereHas('entries')->orderBy('name')->get();
 
         return view('review.index', [
             'dictionaries' => $dictionaries,
-            'dueQuestions' => NoteQuestion::due()->count(),
-            'totalDueCards' => DictionaryEntry::due()->count(),
+            'dueQuestions' => NoteQuestion::whereHas('note', fn ($q) => $q->where('user_id', Auth::id()))->due()->count(),
+            'totalDueCards' => DictionaryEntry::where('user_id', Auth::id())->due()->count(),
         ]);
     }
 
     public function session(Request $request, Dictionary $dictionary): View
     {
+        $this->ensureOwnedByCurrentUser($dictionary);
         $query = $dictionary->entries()->due()->orderBy('next_review_at');
 
         if ($request->filled('exclude')) {
@@ -47,6 +49,8 @@ class ReviewController extends Controller
 
     public function answer(Request $request, Dictionary $dictionary, DictionaryEntry $entry): RedirectResponse
     {
+        $this->ensureOwnedByCurrentUser($dictionary);
+        $this->ensureOwnedByCurrentUser($entry);
         $request->validate(['known' => 'required|boolean']);
         $entry->recordReview($request->boolean('known'));
         ActivityTracker::log('card');

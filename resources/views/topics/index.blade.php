@@ -24,14 +24,15 @@
                     <div class="card p-0 overflow-hidden">
                         <div class="px-4 sm:px-6 py-4 bg-gray-50 border-b border-gray-100 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div class="flex items-center gap-3 min-w-0">
-                                @if($color)<span class="w-4 h-4 rounded-full shrink-0" style="background:{{ $color }}"></span>@endif
+                                @if($color)
+                                    <span class="w-4 h-4 rounded-full shrink-0 bg-blue-500"></span>
+                                @endif
                                 <div>
                                     <a href="{{ route('topics.show', $parent) }}" class="font-semibold text-lg text-gray-900 hover:text-blue-600">
                                         {{ $parent->name }}
                                     </a>
                                     <p class="text-xs text-gray-500 mt-0.5">
-                                        {{ $parent->notes_count }} записей · {{ $parent->quotes_count }} цитат
-                                        · {{ $parent->children->count() }} подтем
+                                        {{ $parent->notes_count }} записей · {{ $parent->children->count() }} подтем
                                     </p>
                                 </div>
                             </div>

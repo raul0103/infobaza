@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DictionaryController;
 use App\Http\Controllers\DictionaryEntryController;
@@ -16,8 +17,19 @@ use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TodayController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+Route::middleware('guest')->group(function () {
+    Route::get('login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('login', [AuthController::class, 'login'])->name('login.store');
+    Route::get('register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('register', [AuthController::class, 'register'])->name('register.store');
+});
+
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+Route::middleware('auth')->group(function () {
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('guide', [GuideController::class, 'index'])->name('guide.index');
 
@@ -50,3 +62,6 @@ Route::resource('reminders', ReminderController::class)->except(['show']);
 Route::post('reminders/{reminder}/complete', [ReminderController::class, 'complete'])->name('reminders.complete');
 Route::resource('events', EventController::class)->except(['show']);
 Route::resource('journal', JournalController::class)->parameters(['journal' => 'entry']);
+Route::get('users', [UserController::class, 'index'])->name('users.index');
+Route::get('users/{user:username}', [UserController::class, 'show'])->name('users.show');
+});

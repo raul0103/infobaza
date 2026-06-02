@@ -6,8 +6,10 @@
     <x-slot:actions>
         <a href="{{ route('review.session', $dictionary) }}" class="btn btn-success">Повторение</a>
         <a href="{{ route('dictionaries.entries.create', $dictionary) }}" class="btn btn-primary">+ Слово</a>
-        <a href="{{ route('dictionaries.edit', $dictionary) }}" class="btn btn-secondary">Изменить</a>
-        @include('partials.delete-form', ['action' => route('dictionaries.destroy', $dictionary)])
+        @include('partials.item-actions', [
+            'edit' => route('dictionaries.edit', $dictionary),
+            'destroy' => route('dictionaries.destroy', $dictionary),
+        ])
     </x-slot:actions>
 </x-page-header>
 
@@ -83,7 +85,10 @@
                             <span>{{ Str::limit($entry->definition, 80) }}</span>
                             <button type="button"
                                 class="link ml-1 text-xs"
-                                onclick="openEntryModal({{ Js::from($entry->term) }}, {{ Js::from($entry->definition) }}, {{ Js::from($entry->example) }})">
+                                data-term="{{ rawurlencode($entry->term) }}"
+                                data-definition="{{ rawurlencode($entry->definition) }}"
+                                data-example="{{ rawurlencode((string) $entry->example) }}"
+                                onclick="openEntryModal(decodeURIComponent(this.dataset.term), decodeURIComponent(this.dataset.definition), decodeURIComponent(this.dataset.example))">
                                 ещё
                             </button>
                         @else
@@ -91,8 +96,10 @@
                         @endif
                     </td>
                     <td class="px-4 sm:px-6 py-4 text-left sm:text-right align-top whitespace-nowrap">
-                        <a href="{{ route('dictionaries.entries.edit', [$dictionary, $entry]) }}" class="link">Изменить</a>
-                        @include('partials.delete-form', ['action' => route('dictionaries.entries.destroy', [$dictionary, $entry]), 'compact' => true])
+                        @include('partials.item-actions', [
+                            'edit' => route('dictionaries.entries.edit', [$dictionary, $entry]),
+                            'destroy' => route('dictionaries.entries.destroy', [$dictionary, $entry]),
+                        ])
                     </td>
                 </tr>
             @empty

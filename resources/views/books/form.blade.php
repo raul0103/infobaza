@@ -19,6 +19,10 @@
             <option value="{{ $v }}" @selected(old('status', $book->status ?? 'reading') == $v)>{{ $l }}</option>
         @endforeach
     </x-form.select>
+    <x-form.select name="visibility" label="Видимость" :placeholder="false">
+        <option value="private" @selected(old('visibility', $book->visibility ?? 'private') === 'private')>Закрытая</option>
+        <option value="public" @selected(old('visibility', $book->visibility ?? 'private') === 'public')>Открытая</option>
+    </x-form.select>
     <div class="grid sm:grid-cols-2 gap-5">
         <x-form.input name="current_page" type="number" label="Текущая страница" :value="$book->current_page" />
         <x-form.input name="total_pages" type="number" label="Всего страниц" :value="$book->total_pages" />

@@ -9,8 +9,10 @@
             </a>
         @endif
         <a href="{{ route('notes.create', ['topic_id' => $topic->id]) }}" class="btn btn-primary">+ Запись</a>
-        <a href="{{ route('topics.edit', $topic) }}" class="btn btn-secondary">Изменить</a>
-        @include('partials.delete-form', ['action' => route('topics.destroy', $topic)])
+        @include('partials.item-actions', [
+            'edit' => route('topics.edit', $topic),
+            'destroy' => route('topics.destroy', $topic),
+        ])
     </x-slot:actions>
 </x-page-header>
 
@@ -36,30 +38,16 @@
     </div>
 @endif
 
-<div class="grid md:grid-cols-2 gap-6">
-    <div class="card">
-        <h2 class="section-title mb-4">Записи</h2>
-        @forelse($topic->notes as $n)
-            <div class="list-item list-row sm:items-center">
-                <a href="{{ route('notes.show', $n) }}" class="font-medium text-gray-900 hover:text-blue-600 flex-1">{{ $n->title }}</a>
-                @include('partials.item-actions', [
-                    'edit' => route('notes.edit', $n),
-                    'destroy' => route('notes.destroy', $n),
-                ])
-            </div>
-        @empty<p class="empty-state">Нет записей</p>@endforelse
-    </div>
-    <div class="card">
-        <h2 class="section-title mb-4">Цитаты</h2>
-        @forelse($topic->quotes as $q)
-            <div class="list-item">
-                <blockquote class="text-gray-600 italic border-l-4 border-gray-200 pl-4 mb-2">«{{ Str::limit($q->text, 120) }}»</blockquote>
-                @include('partials.item-actions', [
-                    'edit' => route('quotes.edit', $q),
-                    'destroy' => route('quotes.destroy', $q),
-                ])
-            </div>
-        @empty<p class="empty-state">Нет цитат</p>@endforelse
-    </div>
+<div class="card">
+    <h2 class="section-title mb-4">Записи</h2>
+    @forelse($topic->notes as $n)
+        <div class="list-item list-row sm:items-center">
+            <a href="{{ route('notes.show', $n) }}" class="font-medium text-gray-900 hover:text-blue-600 flex-1">{{ $n->title }}</a>
+            @include('partials.item-actions', [
+                'edit' => route('notes.edit', $n),
+                'destroy' => route('notes.destroy', $n),
+            ])
+        </div>
+    @empty<p class="empty-state">Нет записей</p>@endforelse
 </div>
 @endsection

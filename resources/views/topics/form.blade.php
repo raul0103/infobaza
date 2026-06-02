@@ -13,6 +13,10 @@
     :back="route('topics.index')"
 >
     <x-form.input name="name" label="Название" :value="$topic->name" required placeholder="Физика, Электрика…" />
+    <x-form.select name="visibility" label="Видимость" :placeholder="false">
+        <option value="private" @selected(old('visibility', $topic->visibility ?? 'private') === 'private')>Закрытая</option>
+        <option value="public" @selected(old('visibility', $topic->visibility ?? 'private') === 'public')>Открытая</option>
+    </x-form.select>
 
     <x-form.select name="parent_id" label="Основная тема" hint="Оставьте пустым, если это самостоятельный раздел. У подтемы своего цвета нет — используется только название.">
         @foreach($parents as $p)
@@ -36,7 +40,7 @@
     <div class="max-w-2xl">
         @include('partials.form-delete', [
             'action' => route('topics.destroy', $topic),
-            'message' => 'Тема будет удалена. Записи и цитаты останутся, но без привязки к теме.',
+            'message' => 'Тема будет удалена. Записи останутся, но без привязки к теме.',
         ])
     </div>
 @endif

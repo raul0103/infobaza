@@ -41,6 +41,7 @@
         [
             'label' => 'Справка',
             'items' => [
+                ['route' => 'users.*', 'label' => 'Пользователи', 'icon' => 'target'],
                 ['route' => 'guide.*', 'label' => 'Руководство', 'icon' => 'help'],
             ],
         ],

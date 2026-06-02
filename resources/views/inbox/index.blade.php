@@ -15,9 +15,9 @@
     <div class="card mb-3">
         <p class="text-gray-800 whitespace-pre-wrap mb-4">{{ $item->content }}</p>
         @include('partials.inbox-convert', ['item' => $item, 'topicGroups' => $topicGroups, 'dictionaries' => $dictionaries])
-        <form method="POST" action="{{ route('inbox.destroy', $item) }}" class="mt-2">@csrf @method('DELETE')
-            <button class="text-sm text-red-600">Удалить</button>
-        </form>
+        <div class="mt-2">
+            @include('partials.delete-form', ['action' => route('inbox.destroy', $item), 'compact' => true])
+        </div>
     </div>
 @empty
     <p class="empty-state">Инбокс пуст</p>
@@ -33,9 +33,7 @@
         </div>
         <div class="flex items-center gap-3 shrink-0">
             @if($item->targetLabel())<span class="badge-gray">{{ $item->targetLabel() }}</span>@endif
-            <form method="POST" action="{{ route('inbox.destroy', $item) }}">@csrf @method('DELETE')
-                <button type="submit" class="text-sm text-red-600 hover:text-red-800">Удалить</button>
-            </form>
+            @include('partials.delete-form', ['action' => route('inbox.destroy', $item), 'compact' => true])
         </div>
     </div>
 @endforeach

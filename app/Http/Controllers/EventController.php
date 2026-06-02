@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Support\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class EventController extends Controller
@@ -12,10 +14,10 @@ class EventController extends Controller
     public function index(): View
     {
         return view('events.index', [
-            'upcoming' => Event::where('starts_at', '>=', now()->startOfDay())
+            'upcoming' => Event::where('user_id', Auth::id())->where('starts_at', '>=', now()->startOfDay())
                 ->orderBy('starts_at')
                 ->get(),
-            'past' => Event::where('starts_at', '<', now()->startOfDay())
+            'past' => Event::where('user_id', Auth::id())->where('starts_at', '<', now()->startOfDay())
                 ->orderByDesc('starts_at')
                 ->limit(30)
                 ->get(),
@@ -31,25 +33,28 @@ class EventController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        Event::create($this->validated($request));
+        Event::create($this->validated($request) + ['user_id' => CurrentUser::id(), 'visibility' => 'private']);
 
         return redirect()->route('events.index')->with('success', 'Событие создано.');
     }
 
     public function edit(Event $event): View
     {
+        $this->ensureOwnedByCurrentUser($event);
         return view('events.form', compact('event'));
     }
 
     public function update(Request $request, Event $event): RedirectResponse
     {
-        $event->update($this->validated($request));
+        $this->ensureOwnedByCurrentUser($event);
+        $event->update($this->validated($request) + ['visibility' => 'private']);
 
         return redirect()->route('events.index')->with('success', 'Событие обновлено.');
     }
 
     public function destroy(Event $event): RedirectResponse
     {
+        $this->ensureOwnedByCurrentUser($event);
         $event->delete();
 
         return redirect()->route('events.index')->with('success', 'Событие удалено.');

@@ -9,21 +9,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Note extends Model
 {
-    protected $fillable = ['topic_id', 'title', 'content', 'mastery_level', 'recap'];
-
-    public static function masteryLabels(): array
-    {
-        return [
-            0 => 'Не разобрал',
-            1 => 'Понял',
-            2 => 'Могу объяснить',
-            3 => 'Могу применить',
-        ];
-    }
+    protected $fillable = ['user_id', 'topic_id', 'title', 'visibility', 'content', 'recap'];
 
     public function topic(): BelongsTo
     {
         return $this->belongsTo(Topic::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function questions(): HasMany

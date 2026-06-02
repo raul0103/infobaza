@@ -18,6 +18,10 @@
             <option value="{{ $v }}" @selected(old('status', $movie->status ?? 'queued') == $v)>{{ $l }}</option>
         @endforeach
     </x-form.select>
+    <x-form.select name="visibility" label="Видимость" :placeholder="false">
+        <option value="private" @selected(old('visibility', $movie->visibility ?? 'private') === 'private')>Закрытая</option>
+        <option value="public" @selected(old('visibility', $movie->visibility ?? 'private') === 'public')>Открытая</option>
+    </x-form.select>
     <x-form.textarea name="description" label="Заметки о фильме" :value="$movie->description" :rows="4" />
 </x-form.shell>
 

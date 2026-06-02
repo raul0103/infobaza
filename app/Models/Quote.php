@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Quote extends Model
 {
     protected $fillable = [
-        'book_id', 'movie_id', 'topic_id',
+        'user_id', 'book_id', 'movie_id', 'visibility',
         'text', 'page', 'character', 'context',
     ];
 
@@ -22,9 +22,9 @@ class Quote extends Model
         return $this->belongsTo(Movie::class);
     }
 
-    public function topic(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Topic::class);
+        return $this->belongsTo(User::class);
     }
 
     public function sourceLabel(): string

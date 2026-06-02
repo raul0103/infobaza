@@ -6,15 +6,15 @@
 </x-page-header>
 <div class="space-y-4">
     @forelse($quotes as $quote)
-        <div class="card">
-            <blockquote class="text-lg italic text-gray-800 leading-relaxed">«{{ $quote->text }}»</blockquote>
-            <p class="text-sm text-blue-600 font-medium mt-3">{{ $quote->sourceLabel() }}</p>
-            <div class="mt-4 pt-3 border-t border-gray-100">
+        <div class="card p-4 sm:p-4">
+            <div class="flex items-start justify-between gap-3">
+                <blockquote class="text-sm italic text-gray-800 leading-relaxed flex-1">«{{ $quote->text }}»</blockquote>
                 @include('partials.item-actions', [
                     'edit' => route('quotes.edit', $quote),
                     'destroy' => route('quotes.destroy', $quote),
                 ])
             </div>
+            <p class="text-xs text-blue-600 font-medium mt-2">{{ $quote->sourceLabel() }}</p>
         </div>
     @empty
         <div class="card text-center py-12 text-gray-500">Цитат пока нет</div>

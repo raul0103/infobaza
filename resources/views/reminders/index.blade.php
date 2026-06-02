@@ -18,8 +18,10 @@
                 <form method="POST" action="{{ route('reminders.complete', $r) }}">@csrf
                     <button type="submit" class="btn btn-ghost text-emerald-600" title="Выполнено">✓</button>
                 </form>
-                <a href="{{ route('reminders.edit', $r) }}" class="link">Изменить</a>
-                @include('partials.delete-form', ['action' => route('reminders.destroy', $r)])
+                @include('partials.item-actions', [
+                    'edit' => route('reminders.edit', $r),
+                    'destroy' => route('reminders.destroy', $r),
+                ])
             </div>
         </div>
     @empty
