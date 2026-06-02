@@ -6,11 +6,11 @@
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="MyLive">
+    <meta name="apple-mobile-web-app-title" content="infobaza">
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
     <link rel="icon" href="{{ asset('icon.svg') }}" type="image/svg+xml">
     <link rel="apple-touch-icon" href="{{ asset('icon.svg') }}">
-    <title>@yield('title', 'Главная') — MyLive</title>
+    <title>@yield('title', 'Главная') — infobaza</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -101,7 +101,7 @@
         <div class="flex items-center justify-between p-4 border-b border-gray-100 lg:p-5">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 min-w-0" onclick="closeSidebar()">
                 <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white text-sm font-bold">M</span>
-                <span class="text-lg font-bold text-gray-900 truncate">MyLive</span>
+                <span class="text-lg font-bold text-gray-900 truncate">infobaza</span>
             </a>
             <button type="button" id="sidebar-close" class="lg:hidden p-2 -mr-1 rounded-lg text-gray-500 hover:bg-gray-100" aria-label="Закрыть меню">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -121,7 +121,7 @@
             <button type="button" id="sidebar-open" class="p-2 -ml-2 rounded-lg text-gray-600 hover:bg-gray-100" aria-label="Открыть меню">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
-            <a href="{{ route('dashboard') }}" class="font-semibold text-gray-900 truncate">MyLive</a>
+            <a href="{{ route('dashboard') }}" class="font-semibold text-gray-900 truncate">infobaza</a>
         </header>
 
         @if(session('success'))

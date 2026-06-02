@@ -2,7 +2,7 @@
 @section('title', 'Руководство')
 
 @section('content')
-<x-page-header title="Руководство" subtitle="Как пользоваться MyLive — без спешки, в своём темпе" />
+<x-page-header title="Руководство" subtitle="Как пользоваться infobaza — без спешки, в своём темпе" />
 
 <div class="lg:grid lg:grid-cols-[220px_1fr] lg:gap-8 items-start">
     <nav class="card mb-6 lg:mb-0 lg:sticky lg:top-6 text-sm">
@@ -26,9 +26,9 @@
 
     <div class="space-y-6 guide-prose">
         <section id="about" class="card scroll-mt-24">
-            <h2 class="section-title mb-3">Что такое MyLive</h2>
+            <h2 class="section-title mb-3">Что такое infobaza</h2>
             <p class="text-gray-600 leading-relaxed">
-                MyLive — личная база знаний на вашем компьютере. Сюда складывают мысли, конспекты, книги, слова и цитаты,
+                infobaza — личная база знаний на вашем компьютере. Сюда складывают мысли, конспекты, книги, слова и цитаты,
                 а потом спокойно разбирают и повторяют. Никто не торопит: нет целей, дедлайнов и «ты должен сегодня…».
             </p>
             <p class="text-gray-600 leading-relaxed mt-3">
@@ -152,7 +152,7 @@
         <section id="mobile" class="card scroll-mt-24">
             <h2 class="section-title mb-3">iPhone и iPad</h2>
             <p class="text-gray-600 leading-relaxed mb-4">
-                MyLive — сайт, а не приложение из App Store. На телефоне он открывается в Safari и может стоять на экране «Домой» как обычная иконка.
+                infobaza — сайт, а не приложение из App Store. На телефоне он открывается в Safari и может стоять на экране «Домой» как обычная иконка.
                 <strong>Компьютер и телефон должны быть в одной Wi‑Fi сети</strong> (или телефон — через VPN к домашней сети).
             </p>
 
@@ -191,7 +191,7 @@
             </ul>
 
             <p class="text-gray-500 text-sm mt-4">
-                В App Store отдельного MyLive нет: для доступа из любой точки мира нужен сервер в интернете (VPS, хостинг) с установленным Laravel — это отдельная настройка.
+                В App Store отдельного infobaza нет: для доступа из любой точки мира нужен сервер в интернете (VPS, хостинг) с установленным Laravel — это отдельная настройка.
             </p>
         </section>
 

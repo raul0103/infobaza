@@ -1,6 +1,6 @@
 {
-    "name": "MyLive",
-    "short_name": "MyLive",
+    "name": "infobaza",
+    "short_name": "infobaza",
     "description": "Личная база знаний",
     "start_url": "/",
     "display": "standalone",

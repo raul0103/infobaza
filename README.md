@@ -1,4 +1,4 @@
-# MyLive — личная база знаний
+# infobaza — личная база знаний
 
 Локальный сервис на **Laravel + SQLite** для постоянного обучения: заметки по темам, цитаты, словари с интервальным повторением, инбокс и дневник.
 
@@ -20,7 +20,7 @@
 ## Установка (OSPanel / локально)
 
 ```bash
-cd c:\OSPanel\home\MyLive
+cd c:\OSPanel\home\infobaza
 composer install
 copy .env.example .env
 php artisan key:generate
