@@ -41,7 +41,7 @@
             <label class="label">Автор</label>
             <input name="author" class="input" placeholder="Необязательно">
         </div>
-        <p class="hint">Попадёт в раздел «На очереди». Заметка из инбокса — в описание книги.</p>
+        <p class="hint">Попадёт в раздел «Хочу прочитать». Заметка из инбокса — в описание книги.</p>
     </div>
 
     <div class="inbox-panel inbox-panel-movie hidden space-y-3">
@@ -53,7 +53,7 @@
             <label class="label">Режиссёр</label>
             <input name="director" class="input" placeholder="Необязательно">
         </div>
-        <p class="hint">Попадёт в раздел «На очереди». Текст инбокса — в заметки о фильме.</p>
+        <p class="hint">Попадёт в раздел «Хочу посмотреть». Текст инбокса — в заметки о фильме.</p>
     </div>
 
     <div class="inbox-panel inbox-panel-word hidden space-y-3">

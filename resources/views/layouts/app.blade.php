@@ -113,13 +113,6 @@
             @include('partials.sidebar-nav')
         </nav>
         <div class="p-4 border-t border-gray-100 safe-bottom">
-            @auth
-                <p class="text-xs text-gray-500 text-center mb-2 truncate">{{ auth()->user()->name }}</p>
-                <form method="POST" action="{{ route('logout') }}" class="mb-2">
-                    @csrf
-                    <button type="submit" class="btn btn-secondary w-full">Выйти</button>
-                </form>
-            @endauth
             <p class="text-xs text-gray-400 text-center">SQLite · Laravel</p>
         </div>
     </aside>

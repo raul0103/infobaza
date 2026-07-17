@@ -2,7 +2,7 @@
 @section('title', 'Экзамен')
 @section('content')
 <div class="max-w-lg mx-auto w-full">
-    <x-page-header title="Экзамен" :subtitle="'Вопросов к повторению: '.$dueCount" />
+    <x-page-header title="Экзамен" subtitle="Вопросы из записей" />
     @if($question)
         <div class="card-form text-center py-8" id="q-view">
             <p class="text-xs uppercase text-gray-400 mb-4">Вопрос</p>
@@ -12,9 +12,8 @@
         </div>
         <div class="card-form hidden" id="a-view">
             <p class="text-gray-800 mb-6 whitespace-pre-wrap">{{ $question->answer }}</p>
-            <div class="flex gap-3 justify-center flex-wrap">
-                <form method="POST" action="{{ route('review.exam.answer', $question) }}">@csrf<input type="hidden" name="known" value="0"><button class="btn btn-danger">Не помню</button></form>
-                <form method="POST" action="{{ route('review.exam.answer', $question) }}">@csrf<input type="hidden" name="known" value="1"><button class="btn btn-success">Помню</button></form>
+            <div class="text-center">
+                <form method="POST" action="{{ route('review.exam.answer', $question) }}">@csrf<button class="btn btn-primary">Дальше</button></form>
             </div>
         </div>
     @else

@@ -9,16 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Note extends Model
 {
-    protected $fillable = ['user_id', 'topic_id', 'title', 'visibility', 'content', 'recap'];
+    protected $fillable = ['topic_id', 'title', 'content', 'recap'];
 
     public function topic(): BelongsTo
     {
         return $this->belongsTo(Topic::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     public function questions(): HasMany

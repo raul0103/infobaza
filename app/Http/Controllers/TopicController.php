@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Topic;
-use App\Support\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class TopicController extends Controller
@@ -15,7 +13,7 @@ class TopicController extends Controller
     public function index(): View
     {
         return view('topics.index', [
-            'groups' => Topic::grouped(Auth::id()),
+            'groups' => Topic::grouped(),
         ]);
     }
 
@@ -23,20 +21,19 @@ class TopicController extends Controller
     {
         return view('topics.form', [
             'topic' => new Topic(['parent_id' => $request->parent_id]),
-            'parents' => Topic::where('user_id', Auth::id())->roots()->orderBy('name')->get(),
+            'parents' => Topic::roots()->orderBy('name')->get(),
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        Topic::create($this->validated($request) + ['user_id' => CurrentUser::id()]);
+        Topic::create($this->validated($request));
 
         return redirect()->route('topics.index')->with('success', 'Тема создана.');
     }
 
     public function show(Topic $topic): View
     {
-        $this->ensureOwnedByCurrentUser($topic);
         $topic->load([
             'parent',
             'children' => fn ($q) => $q->orderBy('name'),
@@ -48,16 +45,14 @@ class TopicController extends Controller
 
     public function edit(Topic $topic): View
     {
-        $this->ensureOwnedByCurrentUser($topic);
         return view('topics.form', [
             'topic' => $topic,
-            'parents' => Topic::where('user_id', Auth::id())->roots()->where('id', '!=', $topic->id)->orderBy('name')->get(),
+            'parents' => Topic::roots()->where('id', '!=', $topic->id)->orderBy('name')->get(),
         ]);
     }
 
     public function update(Request $request, Topic $topic): RedirectResponse
     {
-        $this->ensureOwnedByCurrentUser($topic);
         $topic->update($this->validated($request));
 
         return redirect()->route('topics.show', $topic)->with('success', 'Тема обновлена.');
@@ -65,7 +60,6 @@ class TopicController extends Controller
 
     public function destroy(Topic $topic): RedirectResponse
     {
-        $this->ensureOwnedByCurrentUser($topic);
         $topic->delete();
 
         return redirect()->route('topics.index')->with('success', 'Тема удалена.');
@@ -79,13 +73,10 @@ class TopicController extends Controller
                 'nullable',
                 'string',
                 'max:255',
-                Rule::unique('topics', 'slug')
-                    ->where(fn ($query) => $query->where('user_id', Auth::id()))
-                    ->ignore($request->route('topic')?->id),
+                Rule::unique('topics', 'slug')->ignore($request->route('topic')?->id),
             ],
             'color' => 'nullable|string|max:7',
             'description' => 'nullable|string',
-            'visibility' => 'required|in:private,public',
             'parent_id' => [
                 'nullable',
                 'exists:topics,id',

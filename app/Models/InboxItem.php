@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class InboxItem extends Model
 {
     protected $fillable = [
-        'user_id',
         'content',
         'note_id',
         'book_id',
@@ -40,11 +39,6 @@ class InboxItem extends Model
     public function dictionaryEntry(): BelongsTo
     {
         return $this->belongsTo(DictionaryEntry::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     public function isProcessed(): bool

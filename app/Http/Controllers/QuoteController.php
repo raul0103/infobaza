@@ -6,17 +6,15 @@ use App\Models\Book;
 use App\Models\Movie;
 use App\Models\Quote;
 use App\Services\ActivityTracker;
-use App\Support\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class QuoteController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Quote::where('user_id', Auth::id())->with(['book', 'movie'])->latest();
+        $query = Quote::with(['book', 'movie'])->latest();
 
         if ($request->filled('book_id')) {
             $query->where('book_id', $request->book_id);
@@ -27,8 +25,8 @@ class QuoteController extends Controller
 
         return view('quotes.index', [
             'quotes' => $query->paginate(20)->withQueryString(),
-            'books' => Book::where('user_id', Auth::id())->orderBy('title')->get(),
-            'movies' => Movie::where('user_id', Auth::id())->orderBy('title')->get(),
+            'books' => Book::orderBy('title')->get(),
+            'movies' => Movie::orderBy('title')->get(),
         ]);
     }
 
@@ -39,14 +37,14 @@ class QuoteController extends Controller
                 'book_id' => $request->book_id,
                 'movie_id' => $request->movie_id,
             ]),
-            'books' => Book::where('user_id', Auth::id())->orderBy('title')->get(),
-            'movies' => Movie::where('user_id', Auth::id())->orderBy('title')->get(),
+            'books' => Book::orderBy('title')->get(),
+            'movies' => Movie::orderBy('title')->get(),
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $quote = Quote::create($this->validated($request) + ['user_id' => CurrentUser::id()]);
+        $quote = Quote::create($this->validated($request));
         ActivityTracker::log('quote');
 
         return $this->redirectAfterSave($quote)->with('success', 'Цитата сохранена.');
@@ -54,17 +52,15 @@ class QuoteController extends Controller
 
     public function edit(Quote $quote): View
     {
-        $this->ensureOwnedByCurrentUser($quote);
         return view('quotes.form', [
             'quote' => $quote,
-            'books' => Book::where('user_id', Auth::id())->orderBy('title')->get(),
-            'movies' => Movie::where('user_id', Auth::id())->orderBy('title')->get(),
+            'books' => Book::orderBy('title')->get(),
+            'movies' => Movie::orderBy('title')->get(),
         ]);
     }
 
     public function update(Request $request, Quote $quote): RedirectResponse
     {
-        $this->ensureOwnedByCurrentUser($quote);
         $quote->update($this->validated($request));
 
         return $this->redirectAfterSave($quote)->with('success', 'Цитата обновлена.');
@@ -72,7 +68,6 @@ class QuoteController extends Controller
 
     public function destroy(Quote $quote): RedirectResponse
     {
-        $this->ensureOwnedByCurrentUser($quote);
         $bookId = $quote->book_id;
         $movieId = $quote->movie_id;
         $quote->delete();
@@ -92,7 +87,6 @@ class QuoteController extends Controller
         $data = $request->validate([
             'book_id' => 'nullable|exists:books,id',
             'movie_id' => 'nullable|exists:movies,id',
-            'visibility' => 'required|in:private,public',
             'text' => 'required|string',
             'page' => 'nullable|string|max:50',
             'character' => 'nullable|string|max:255',

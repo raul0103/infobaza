@@ -10,10 +10,6 @@
 >
     <x-form.input name="name" label="Название" :value="$dictionary->name" required placeholder="Английский B1, Термины CCTV…" />
     <x-form.input name="language" label="Язык" :value="$dictionary->language" placeholder="ru, en, de" />
-    <x-form.select name="visibility" label="Видимость" :placeholder="false">
-        <option value="private" @selected(old('visibility', $dictionary->visibility ?? 'private') === 'private')>Закрытая</option>
-        <option value="public" @selected(old('visibility', $dictionary->visibility ?? 'private') === 'public')>Открытая</option>
-    </x-form.select>
     <x-form.textarea name="description" label="Описание" :value="$dictionary->description" :rows="3" />
 </x-form.shell>
 

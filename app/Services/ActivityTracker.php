@@ -12,7 +12,6 @@ class ActivityTracker
         $field = match ($type) {
             'note' => 'notes_count',
             'card' => 'cards_reviewed',
-            'journal' => 'journal_count',
             'quote' => 'quotes_count',
             'pages' => 'pages_read',
             'inbox' => 'inbox_processed',
@@ -48,7 +47,7 @@ class ActivityTracker
             return false;
         }
 
-        return ($activity->notes_count + $activity->cards_reviewed + $activity->journal_count
+        return ($activity->notes_count + $activity->cards_reviewed
             + $activity->quotes_count + $activity->pages_read + $activity->inbox_processed) > 0;
     }
 

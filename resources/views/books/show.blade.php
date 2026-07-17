@@ -20,9 +20,6 @@
     <progress class="w-full h-3 rounded-full overflow-hidden [&::-webkit-progress-bar]:bg-gray-100 [&::-webkit-progress-value]:bg-emerald-500 [&::-moz-progress-bar]:bg-emerald-500" max="100" value="{{ $readingPercent }}"></progress>
 </div>
 @endif
-@if($book->review_takeaway)
-<div class="card mb-6 border-l-4 border-l-emerald-500"><h2 class="section-title mb-2">Главный вывод</h2><p class="text-gray-600 whitespace-pre-wrap">{{ $book->review_takeaway }}</p></div>
-@endif
 @if($book->description)<div class="card mb-6 text-gray-600">{{ $book->description }}</div>@endif
 <h2 class="section-title mb-4">Цитаты <span class="text-gray-400 font-normal">({{ $book->quotes->count() }})</span></h2>
 <div class="space-y-4">

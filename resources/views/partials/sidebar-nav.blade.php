@@ -4,7 +4,6 @@
             'label' => 'Обзор',
             'items' => [
                 ['route' => 'dashboard', 'label' => 'Главная', 'icon' => 'home'],
-                ['route' => 'today.*', 'label' => 'Сегодня', 'icon' => 'today'],
             ],
         ],
         [
@@ -12,6 +11,8 @@
             'items' => [
                 ['route' => 'topics.*', 'label' => 'Темы', 'icon' => 'folder'],
                 ['route' => 'notes.*', 'label' => 'Записи', 'icon' => 'document'],
+                ['route' => 'facts.*', 'label' => 'Интересные факты', 'icon' => 'fact'],
+                ['route' => 'jokes.*', 'label' => 'Анекдоты', 'icon' => 'joke'],
             ],
         ],
         [
@@ -30,18 +31,14 @@
             ],
         ],
         [
-            'label' => 'Планирование',
+            'label' => 'Захват',
             'items' => [
                 ['route' => 'inbox.*', 'label' => 'Инбокс', 'icon' => 'inbox'],
-                ['route' => 'reminders.*', 'label' => 'Напоминания', 'icon' => 'bell'],
-                ['route' => 'events.*', 'label' => 'События', 'icon' => 'calendar'],
-                ['route' => 'journal.*', 'label' => 'Дневник', 'icon' => 'journal'],
             ],
         ],
         [
             'label' => 'Справка',
             'items' => [
-                ['route' => 'users.*', 'label' => 'Пользователи', 'icon' => 'target'],
                 ['route' => 'guide.*', 'label' => 'Руководство', 'icon' => 'help'],
             ],
         ],

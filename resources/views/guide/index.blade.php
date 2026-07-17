@@ -17,8 +17,7 @@
             <li><a href="#quotes" class="link block">Цитаты</a></li>
             <li><a href="#dictionaries" class="link block">Словари</a></li>
             <li><a href="#review" class="link block">Повторение</a></li>
-            <li><a href="#today" class="link block">Сегодня</a></li>
-            <li><a href="#planning" class="link block">Планирование</a></li>
+            <li><a href="#planning" class="link block">Инбокс</a></li>
             <li><a href="#mobile" class="link block">iPhone и iPad</a></li>
             <li><a href="#tips" class="link block">Советы</a></li>
         </ul>
@@ -55,8 +54,8 @@
             <p class="text-sm font-medium text-gray-800 mb-2">Куда можно сохранить:</p>
             <ul class="space-y-2 text-gray-600 text-sm">
                 <li><strong>Запись</strong> — полноценная заметка с темой и текстом из инбокса.</li>
-                <li><strong>Книга → на очереди</strong> — попадёт в раздел «На очереди» в книгах; текст — в описание.</li>
-                <li><strong>Фильм → на очереди</strong> — то же для фильмов.</li>
+                <li><strong>Книга → хочу прочитать</strong> — попадёт в раздел «Хочу прочитать» в книгах; текст — в описание.</li>
+                <li><strong>Фильм → хочу посмотреть</strong> — то же для фильмов.</li>
                 <li><strong>Слово в словарь</strong> — первая строка = слово, остальное = значение (можно поправить перед сохранением).</li>
             </ul>
             <p class="text-gray-500 text-sm mt-4">
@@ -91,15 +90,15 @@
             <p class="text-gray-600 leading-relaxed">
                 Укажите <strong>всего страниц</strong> и <strong>текущую страницу</strong> — появится полоска прогресса.
                 Или в редактировании: поле <strong>«Прочитал сегодня»</strong> — число прибавится к текущей странице.
-                После прочтения можно записать <strong>главный вывод</strong> и добавлять <strong>цитаты</strong> со страницами.
+                После прочтения можно добавлять <strong>цитаты</strong> со страницами.
             </p>
         </section>
 
         <section id="movies" class="card scroll-mt-24">
             <h2 class="section-title mb-3">Фильмы</h2>
             <p class="text-gray-600 leading-relaxed">
-                Как у книг: разделы <strong>На очереди</strong>, <strong>Смотрю</strong>, <strong>Просмотрено</strong>.
-                Из инбокса фильм сразу попадает «на очереди». Цитаты и реплики персонажей — на странице фильма.
+                Как у книг: разделы <strong>Хочу посмотреть</strong>, <strong>Смотрю</strong>, <strong>Просмотрено</strong>.
+                Из инбокса фильм сразу попадает в «Хочу посмотреть». Цитаты и реплики персонажей — на странице фильма.
             </p>
         </section>
 
@@ -121,31 +120,19 @@
         <section id="review" class="card scroll-mt-24">
             <h2 class="section-title mb-3">Повторение</h2>
             <p class="text-gray-600 leading-relaxed mb-4">
-                <strong>Карточки</strong> — интервальное повторение (SRS): «Помню» увеличивает интервал, «Не помню» — показывает раньше.
-                На главной странице повторения видно, сколько карточек готово к повтору.
+                <strong>Карточки</strong> — интервальное повторение (SRS): после каждого просмотра интервал до следующего показа увеличивается.
+                Так повторяются и слова из словарей, и <a href="{{ route('facts.index') }}" class="link">интересные факты</a>.
             </p>
             <p class="text-gray-600 leading-relaxed">
                 <strong>Экзамен</strong> — вопросы, которые вы сами добавили к записям. Откройте запись → блок «Вопросы для повторения» → добавьте вопрос и ответ.
             </p>
         </section>
 
-        <section id="today" class="card scroll-mt-24">
-            <h2 class="section-title mb-3">Сегодня</h2>
-            <p class="text-gray-600 leading-relaxed">
-                Страница дня: быстрый инбокс, счётчик «к повторению», активность за сегодня (записи, карточки, страницы…),
-                случайный «урок дня» (цитата, запись или слово). Удобно открыть утром или когда сели учиться — без лишних цифр на главной.
-            </p>
-        </section>
-
         <section id="planning" class="card scroll-mt-24">
-            <h2 class="section-title mb-3">Планирование</h2>
-            <ul class="space-y-3 text-gray-600 leading-relaxed">
-                <li><strong>Напоминания</strong> — дата и время, можно отметить выполненным.</li>
-                <li><strong>События</strong> — встречи, дедлайны, целый день или с временем.</li>
-                <li><strong>Дневник</strong> — запись за день: текст, настроение, заголовок.</li>
-            </ul>
-            <p class="text-gray-600 leading-relaxed mt-4">
-                На <a href="{{ route('dashboard') }}" class="link">главной</a> — напоминания, события, последние записи, что читаете сейчас, дневник за сегодня.
+            <h2 class="section-title mb-3">Инбокс</h2>
+            <p class="text-gray-600 leading-relaxed">
+                Быстрый захват мыслей: сохраните текст в инбокс, затем превратите в запись, книгу, фильм или слово.
+                На <a href="{{ route('dashboard') }}" class="link">главной</a> — последние записи и то, что читаете сейчас.
             </p>
         </section>
 

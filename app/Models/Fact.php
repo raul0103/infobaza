@@ -5,23 +5,17 @@ namespace App\Models;
 use App\Services\SpacedRepetition;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class DictionaryEntry extends Model
+class Fact extends Model
 {
     protected $fillable = [
-        'dictionary_id', 'term', 'definition', 'example',
+        'title', 'text', 'source',
         'next_review_at', 'interval_days', 'review_count',
     ];
 
     protected function casts(): array
     {
         return ['next_review_at' => 'datetime'];
-    }
-
-    public function dictionary(): BelongsTo
-    {
-        return $this->belongsTo(Dictionary::class);
     }
 
     public function scopeDue(Builder $query): Builder

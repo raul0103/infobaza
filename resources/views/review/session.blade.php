@@ -7,7 +7,7 @@
 
     <div class="text-center mb-8">
         <span class="badge-blue">{{ $dictionary->name }}</span>
-        <p class="text-sm text-gray-500 mt-2">{{ $total }} слов · <span class="{{ $due > 0 ? 'text-blue-600 font-medium' : '' }}">{{ $due }} к повтору</span></p>
+        <p class="text-sm text-gray-500 mt-2">{{ $total }} слов</p>
     </div>
 
     @if($entry)
@@ -21,18 +21,10 @@
                 <p class="text-xs uppercase tracking-wide text-gray-400 mb-4">Значение</p>
                 <div class="text-xl text-gray-800 mb-4 leading-relaxed">{{ $entry->definition }}</div>
                 @if($entry->example)<p class="text-gray-500 italic mb-8 text-sm">«{{ $entry->example }}»</p>@endif
-                <div class="flex gap-3 justify-center flex-wrap">
-                    <form method="POST" action="{{ route('review.answer', [$dictionary, $entry]) }}">
-                        @csrf
-                        <input type="hidden" name="known" value="0">
-                        <button class="btn btn-danger">Не помню</button>
-                    </form>
-                    <form method="POST" action="{{ route('review.answer', [$dictionary, $entry]) }}">
-                        @csrf
-                        <input type="hidden" name="known" value="1">
-                        <button class="btn btn-success">Помню</button>
-                    </form>
-                </div>
+                <form method="POST" action="{{ route('review.answer', [$dictionary, $entry]) }}">
+                    @csrf
+                    <button class="btn btn-primary">Дальше</button>
+                </form>
             </div>
         </div>
     @else

@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
-use App\Support\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class MovieController extends Controller
 {
     public function index(): View
     {
-        $movies = Movie::where('user_id', Auth::id())->withCount('quotes')->orderBy('title')->get()->groupBy('status');
+        $movies = Movie::withCount('quotes')->orderBy('title')->get()->groupBy('status');
 
         return view('movies.index', [
             'sections' => collect(Movie::statusLabels())->map(fn ($label, $status) => [
@@ -31,14 +29,13 @@ class MovieController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $movie = Movie::create($this->validated($request) + ['user_id' => CurrentUser::id()]);
+        $movie = Movie::create($this->validated($request));
 
         return redirect()->route('movies.show', $movie)->with('success', 'Фильм добавлен.');
     }
 
     public function show(Movie $movie): View
     {
-        $this->ensureOwnedByCurrentUser($movie);
         $movie->load(['quotes' => fn ($q) => $q->latest()]);
 
         return view('movies.show', compact('movie'));
@@ -46,13 +43,11 @@ class MovieController extends Controller
 
     public function edit(Movie $movie): View
     {
-        $this->ensureOwnedByCurrentUser($movie);
         return view('movies.form', compact('movie'));
     }
 
     public function update(Request $request, Movie $movie): RedirectResponse
     {
-        $this->ensureOwnedByCurrentUser($movie);
         $movie->update($this->validated($request));
 
         return redirect()->route('movies.show', $movie)->with('success', 'Фильм обновлен.');
@@ -60,7 +55,6 @@ class MovieController extends Controller
 
     public function destroy(Movie $movie): RedirectResponse
     {
-        $this->ensureOwnedByCurrentUser($movie);
         $movie->delete();
 
         return redirect()->route('movies.index')->with('success', 'Фильм удалён.');
@@ -74,7 +68,6 @@ class MovieController extends Controller
             'year' => 'nullable|integer|min:1|max:2100',
             'description' => 'nullable|string',
             'status' => 'required|in:queued,watching,watched',
-            'visibility' => 'required|in:private,public',
         ]);
     }
 }

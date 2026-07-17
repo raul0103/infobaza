@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class Topic extends Model
 {
-    protected $fillable = ['user_id', 'name', 'slug', 'color', 'description', 'parent_id', 'visibility'];
+    protected $fillable = ['name', 'slug', 'color', 'description', 'parent_id'];
 
     protected static function booted(): void
     {
@@ -24,7 +24,6 @@ class Topic extends Model
             $slug = $baseSlug;
             $counter = 2;
             while (static::query()
-                ->where('user_id', $topic->user_id)
                 ->where('slug', $slug)
                 ->when($topic->exists, fn ($q) => $q->where('id', '!=', $topic->id))
                 ->exists()) {
@@ -43,11 +42,6 @@ class Topic extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Topic::class, 'parent_id');
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     public function children(): HasMany
@@ -89,10 +83,9 @@ class Topic extends Model
     }
 
     /** @return array{groups: Collection<int, Topic>, standalone: Collection<int, Topic>} */
-    public static function grouped(?int $userId = null): array
+    public static function grouped(): array
     {
         $topics = static::query()
-            ->when($userId, fn ($q) => $q->where('user_id', $userId))
             ->withCount(['notes'])
             ->with(['children' => fn ($q) => $q->withCount(['notes'])->orderBy('name')])
             ->orderBy('name')
