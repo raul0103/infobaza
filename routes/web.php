@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BookThoughtController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DictionaryController;
 use App\Http\Controllers\DictionaryEntryController;
@@ -32,6 +33,7 @@ Route::delete('notes/{note}/questions/{question}', [NoteQuestionController::clas
 
 Route::resource('books', BookController::class);
 Route::patch('books/{book}/progress', [BookController::class, 'updateProgress'])->name('books.progress');
+Route::resource('books.thoughts', BookThoughtController::class)->except(['index', 'show']);
 Route::resource('movies', MovieController::class);
 Route::resource('quotes', QuoteController::class)->except(['show']);
 Route::resource('facts', FactController::class)->except(['show']);

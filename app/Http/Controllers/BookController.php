@@ -12,7 +12,7 @@ class BookController extends Controller
 {
     public function index(): View
     {
-        $books = Book::withCount('quotes')->orderBy('title')->get()->groupBy('status');
+        $books = Book::withCount(['quotes', 'thoughts'])->orderBy('title')->get()->groupBy('status');
 
         return view('books.index', [
             'sections' => collect(Book::statusLabels())->map(fn ($label, $status) => [
@@ -37,7 +37,10 @@ class BookController extends Controller
 
     public function show(Book $book): View
     {
-        $book->load(['quotes' => fn ($q) => $q->latest()]);
+        $book->load([
+            'quotes' => fn ($q) => $q->latest(),
+            'thoughts' => fn ($q) => $q->latest(),
+        ]);
 
         return view('books.show', compact('book'));
     }
