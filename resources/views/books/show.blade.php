@@ -13,11 +13,43 @@
 </x-page-header>
 @php
     $readingPercent = $book->readingPercent() ?? 0;
+    $currentPage = (int) ($book->current_page ?? 0);
+    $totalPages = (int) ($book->total_pages ?? 0);
 @endphp
-@if($book->status === 'reading' && $book->total_pages)
+@if($totalPages > 0)
 <div class="card mb-6">
-    <div class="flex justify-between text-sm mb-2"><span class="text-gray-600">Прогресс чтения</span><span class="font-medium">{{ $book->current_page ?? 0 }} / {{ $book->total_pages }} ({{ $readingPercent }}%)</span></div>
-    <progress class="w-full h-3 rounded-full overflow-hidden [&::-webkit-progress-bar]:bg-gray-100 [&::-webkit-progress-value]:bg-emerald-500 [&::-moz-progress-bar]:bg-emerald-500" max="100" value="{{ $readingPercent }}"></progress>
+    <form method="POST" action="{{ route('books.progress', $book) }}" id="book-progress-form" class="space-y-3">
+        @csrf
+        @method('PATCH')
+        <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Прогресс чтения</span>
+            <span class="font-medium tabular-nums">
+                <span id="book-progress-label">{{ $currentPage }}</span> / {{ $totalPages }}
+                <span class="text-gray-400">(<span id="book-progress-percent">{{ $readingPercent }}</span>%)</span>
+            </span>
+        </div>
+        <input
+            type="range"
+            name="current_page"
+            id="book-progress-range"
+            class="w-full accent-emerald-500 cursor-pointer"
+            min="0"
+            max="{{ $totalPages }}"
+            step="1"
+            value="{{ min($currentPage, $totalPages) }}"
+        >
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <p class="text-xs text-gray-500">Перетащите ползунок и нажмите «Сохранить прогресс».</p>
+            <button type="submit" class="btn btn-success">Сохранить прогресс</button>
+        </div>
+        @error('current_page')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+    </form>
+</div>
+@elseif($book->status === 'reading')
+<div class="card mb-6 text-sm text-gray-500">
+    Укажите общее число страниц в
+    <a href="{{ route('books.edit', $book) }}" class="link">редактировании книги</a>,
+    чтобы регулировать прогресс ползунком.
 </div>
 @endif
 @if($book->description)<div class="card mb-6 text-gray-600">{{ $book->description }}</div>@endif
@@ -38,4 +70,27 @@
         <div class="card text-center py-10 text-gray-500">Выписывайте цитаты по мере чтения</div>
     @endforelse
 </div>
+
+@if($totalPages > 0)
+@push('scripts')
+<script>
+(() => {
+    const range = document.getElementById('book-progress-range');
+    const label = document.getElementById('book-progress-label');
+    const percent = document.getElementById('book-progress-percent');
+    if (!range || !label || !percent) return;
+
+    const total = Number(range.max) || 0;
+    const update = () => {
+        const value = Number(range.value) || 0;
+        label.textContent = String(value);
+        percent.textContent = String(total ? Math.min(100, Math.round((value / total) * 100)) : 0);
+    };
+
+    range.addEventListener('input', update);
+    update();
+})();
+</script>
+@endpush
+@endif
 @endsection

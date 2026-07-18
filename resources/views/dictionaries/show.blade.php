@@ -5,6 +5,7 @@
 <x-page-header :title="$dictionary->name">
     <x-slot:actions>
         <a href="{{ route('review.session', $dictionary) }}" class="btn btn-success">Повторение</a>
+        <a href="{{ route('dictionaries.groups.create', $dictionary) }}" class="btn btn-secondary">Объединить слова</a>
         <a href="{{ route('dictionaries.entries.create', $dictionary) }}" class="btn btn-primary">+ Слово</a>
         @include('partials.item-actions', [
             'edit' => route('dictionaries.edit', $dictionary),
@@ -17,6 +18,7 @@
     $hasDescription = filled($dictionary->description);
     $previewLength = 200;
     $needsModal = $hasDescription && strlen($dictionary->description) > $previewLength;
+    $highlightGroupId = session('highlight_group');
 @endphp
 
 <div class="card mb-6 {{ $hasDescription ? 'cursor-pointer hover:border-blue-200 transition' : '' }}"
@@ -29,6 +31,9 @@
                     <span class="badge-blue">{{ strtoupper($dictionary->language) }}</span>
                 @endif
                 <span class="badge-gray">{{ $dictionary->entries->count() }} слов</span>
+                @if($dictionary->entryGroups->isNotEmpty())
+                    <span class="badge-gray">{{ $dictionary->entryGroups->count() }} объединений</span>
+                @endif
             </div>
 
             @if($hasDescription)
@@ -63,6 +68,65 @@
     </x-modal>
 @endif
 
+<div class="mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h2 class="section-title">Объединения слов</h2>
+        <a href="{{ route('dictionaries.groups.create', $dictionary) }}" class="link">+ Новое объединение</a>
+    </div>
+
+    @if($dictionary->entryGroups->isEmpty())
+        <div class="card text-center py-8 text-gray-500">
+            Можно объединить связанные слова, добавить общее описание, скриншоты и файлы.
+        </div>
+    @else
+        <div class="space-y-4">
+            @foreach($dictionary->entryGroups as $group)
+                <div id="group-{{ $group->id }}" class="card {{ (int) $highlightGroupId === (int) $group->id ? 'ring-2 ring-blue-300 border-blue-200' : '' }}">
+                    <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
+                        <div class="min-w-0">
+                            <h3 class="font-semibold text-gray-900">{{ $group->displayTitle() }}</h3>
+                            <p class="text-xs text-gray-500 mt-1">{{ $group->entries->count() }} слов · {{ $group->attachments->count() }} файлов</p>
+                        </div>
+                        @include('partials.item-actions', [
+                            'edit' => route('dictionaries.groups.edit', [$dictionary, $group]),
+                            'destroy' => route('dictionaries.groups.destroy', [$dictionary, $group]),
+                        ])
+                    </div>
+
+                    @if(filled($group->description))
+                        <div class="text-sm text-gray-600 whitespace-pre-wrap mb-4">{{ $group->description }}</div>
+                    @endif
+
+                    @if($group->entries->isNotEmpty())
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            @foreach($group->entries as $groupedEntry)
+                                <span class="badge-blue">{{ $groupedEntry->term }}</span>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if($group->attachments->isNotEmpty())
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            @foreach($group->attachments as $attachment)
+                                <a href="{{ $attachment->url() }}" target="_blank" rel="noopener" class="block rounded-lg border border-gray-200 overflow-hidden hover:border-blue-300 transition">
+                                    @if($attachment->isImage())
+                                        <img src="{{ $attachment->url() }}" alt="{{ $attachment->original_name }}" class="w-full h-28 object-cover bg-gray-50">
+                                    @else
+                                        <div class="h-28 flex items-center justify-center bg-gray-50 text-xs text-gray-500 px-2 text-center">
+                                            {{ $attachment->original_name }}
+                                        </div>
+                                    @endif
+                                    <div class="px-2 py-1.5 text-xs text-gray-600 truncate border-t border-gray-100">{{ $attachment->original_name }}</div>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    @endif
+</div>
+
 <div class="card overflow-hidden p-0">
     <div class="table-scroll">
     <table class="w-full min-w-[32rem] text-left text-sm">
@@ -79,7 +143,14 @@
                     $longDefinition = strlen($entry->definition) > 80;
                 @endphp
                 <tr class="hover:bg-gray-50">
-                    <td class="px-4 sm:px-6 py-4 font-medium text-gray-900 align-top">{{ $entry->term }}</td>
+                    <td class="px-4 sm:px-6 py-4 font-medium text-gray-900 align-top">
+                        <div>{{ $entry->term }}</div>
+                        @if($entry->group)
+                            <a href="#group-{{ $entry->group_id }}" class="badge-gray mt-1 inline-flex hover:bg-blue-50 hover:text-blue-700">
+                                {{ $entry->group->displayTitle() }}
+                            </a>
+                        @endif
+                    </td>
                     <td class="px-4 sm:px-6 py-4 text-gray-600 align-top">
                         @if($longDefinition)
                             <span>{{ Str::limit($entry->definition, 80) }}</span>

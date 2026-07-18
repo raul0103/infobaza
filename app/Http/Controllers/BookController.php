@@ -73,6 +73,43 @@ class BookController extends Controller
         return redirect()->route('books.index')->with('success', 'Книга удалена.');
     }
 
+    public function updateProgress(Request $request, Book $book): RedirectResponse
+    {
+        $data = $request->validate([
+            'current_page' => 'required|integer|min:0',
+        ]);
+
+        $newPage = (int) $data['current_page'];
+        if ($book->total_pages) {
+            $newPage = min($newPage, (int) $book->total_pages);
+        }
+
+        $oldPage = (int) ($book->current_page ?? 0);
+        $delta = $newPage - $oldPage;
+
+        $updates = ['current_page' => $newPage];
+
+        if ($book->total_pages && $newPage >= (int) $book->total_pages) {
+            $updates['status'] = 'finished';
+            if (! $book->finished_at) {
+                $updates['finished_at'] = now()->toDateString();
+            }
+        } elseif ($newPage > 0 && $book->status === 'queued') {
+            $updates['status'] = 'reading';
+            if (! $book->started_at) {
+                $updates['started_at'] = now()->toDateString();
+            }
+        }
+
+        $book->update($updates);
+
+        if ($delta > 0) {
+            ActivityTracker::log('pages', $delta);
+        }
+
+        return redirect()->route('books.show', $book)->with('success', 'Прогресс обновлён.');
+    }
+
     private function validated(Request $request): array
     {
         return $request->validate([

@@ -13,4 +13,9 @@ class Dictionary extends Model
     {
         return $this->hasMany(DictionaryEntry::class);
     }
+
+    public function entryGroups(): HasMany
+    {
+        return $this->hasMany(DictionaryEntryGroup::class);
+    }
 }

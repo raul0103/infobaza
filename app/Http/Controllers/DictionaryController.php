@@ -30,7 +30,15 @@ class DictionaryController extends Controller
 
     public function show(Dictionary $dictionary): View
     {
-        $dictionary->load(['entries' => fn ($q) => $q->orderByRaw('LOWER(term)')]);
+        $dictionary->load([
+            'entries' => fn ($q) => $q->with('group')->orderByRaw('LOWER(term)'),
+            'entryGroups' => fn ($q) => $q
+                ->with([
+                    'entries' => fn ($entries) => $entries->orderByRaw('LOWER(term)'),
+                    'attachments',
+                ])
+                ->latest(),
+        ]);
 
         return view('dictionaries.show', compact('dictionary'));
     }

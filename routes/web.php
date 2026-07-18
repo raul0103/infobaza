@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DictionaryController;
 use App\Http\Controllers\DictionaryEntryController;
+use App\Http\Controllers\DictionaryEntryGroupController;
 use App\Http\Controllers\FactController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\JokeController;
@@ -30,12 +31,18 @@ Route::post('notes/{note}/questions', [NoteQuestionController::class, 'store'])-
 Route::delete('notes/{note}/questions/{question}', [NoteQuestionController::class, 'destroy'])->name('notes.questions.destroy');
 
 Route::resource('books', BookController::class);
+Route::patch('books/{book}/progress', [BookController::class, 'updateProgress'])->name('books.progress');
 Route::resource('movies', MovieController::class);
 Route::resource('quotes', QuoteController::class)->except(['show']);
 Route::resource('facts', FactController::class)->except(['show']);
 Route::resource('jokes', JokeController::class)->except(['show']);
 Route::resource('dictionaries', DictionaryController::class);
 Route::resource('dictionaries.entries', DictionaryEntryController::class)->except(['show', 'index']);
+Route::resource('dictionaries.groups', DictionaryEntryGroupController::class)->except(['index', 'show']);
+Route::delete(
+    'dictionaries/{dictionary}/groups/{group}/attachments/{attachment}',
+    [DictionaryEntryGroupController::class, 'destroyAttachment']
+)->name('dictionaries.groups.attachments.destroy');
 
 Route::get('review', [ReviewController::class, 'index'])->name('review.index');
 Route::get('review/exam', [NoteQuestionController::class, 'exam'])->name('review.exam');

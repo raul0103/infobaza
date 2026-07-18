@@ -1,10 +1,10 @@
-@props(['title', 'subtitle' => null, 'action', 'method' => 'POST', 'back' => null, 'backLabel' => 'Отмена', 'wide' => false])
+@props(['title', 'subtitle' => null, 'action', 'method' => 'POST', 'back' => null, 'backLabel' => 'Отмена', 'wide' => false, 'files' => false])
 
 <x-page-header :title="$title" :subtitle="$subtitle" />
 
 <div class="w-full {{ $wide ? 'max-w-4xl' : 'max-w-2xl' }}">
     <div class="card-form">
-        <form method="POST" action="{{ $action }}" class="space-y-5">
+        <form method="POST" action="{{ $action }}" class="space-y-5" @if($files) enctype="multipart/form-data" @endif>
             @csrf
             @if(strtoupper($method) !== 'POST')
                 @method($method)
