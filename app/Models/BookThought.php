@@ -12,7 +12,13 @@ class BookThought extends Model
         'content',
         'chapter',
         'page',
+        'is_favorite',
     ];
+
+    protected function casts(): array
+    {
+        return ['is_favorite' => 'boolean'];
+    }
 
     public function book(): BelongsTo
     {

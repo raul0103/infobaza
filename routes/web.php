@@ -7,6 +7,7 @@ use App\Http\Controllers\DictionaryController;
 use App\Http\Controllers\DictionaryEntryController;
 use App\Http\Controllers\DictionaryEntryGroupController;
 use App\Http\Controllers\FactController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\JokeController;
 use App\Http\Controllers\InboxController;
@@ -20,6 +21,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('guide', [GuideController::class, 'index'])->name('guide.index');
+Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+Route::patch('favorites/thoughts/{thought}', [FavoriteController::class, 'toggleThought'])
+    ->name('favorites.thoughts.toggle');
+Route::patch('favorites/quotes/{quote}', [FavoriteController::class, 'toggleQuote'])
+    ->name('favorites.quotes.toggle');
 
 Route::get('inbox', [InboxController::class, 'index'])->name('inbox.index');
 Route::post('inbox', [InboxController::class, 'store'])->name('inbox.store');

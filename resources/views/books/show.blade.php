@@ -63,23 +63,7 @@
 </div>
 <div class="space-y-4">
     @forelse($book->thoughts as $thought)
-        <div class="card border-l-4 border-l-amber-400 p-3 sm:p-4">
-            <div class="flex items-start justify-between gap-3">
-                <div class="min-w-0 flex-1">
-                    <div class="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{{ $thought->content }}</div>
-                    @if($thought->chapter || $thought->page)
-                        <div class="flex flex-wrap gap-2 mt-3">
-                            @if($thought->chapter)<span class="badge-gray">{{ $thought->chapter }}</span>@endif
-                            @if($thought->page)<span class="badge-gray">Стр. {{ $thought->page }}</span>@endif
-                        </div>
-                    @endif
-                </div>
-                @include('partials.item-actions', [
-                    'edit' => route('books.thoughts.edit', [$book, $thought]),
-                    'destroy' => route('books.thoughts.destroy', [$book, $thought]),
-                ])
-            </div>
-        </div>
+        @include('books.thoughts.card', ['thought' => $thought])
     @empty
         <div class="card text-center py-8 text-gray-500">
             Записывайте свои выводы, вопросы и идеи по мере чтения.
@@ -93,16 +77,7 @@
 </div>
 <div class="space-y-4">
     @forelse($book->quotes as $quote)
-        <div class="card border-l-4 border-l-blue-500 p-3 sm:p-3">
-            <blockquote class="text-sm text-gray-800 italic leading-relaxed">«{{ $quote->text }}»</blockquote>
-            @if($quote->page)<p class="text-sm text-gray-500 mt-3">Стр. {{ $quote->page }}</p>@endif
-            <div class="mt-3 pt-2 border-t border-gray-100">
-                @include('partials.item-actions', [
-                    'edit' => route('quotes.edit', $quote),
-                    'destroy' => route('quotes.destroy', $quote),
-                ])
-            </div>
-        </div>
+        @include('quotes.card', ['quote' => $quote])
     @empty
         <div class="card text-center py-10 text-gray-500">Выписывайте цитаты по мере чтения</div>
     @endforelse

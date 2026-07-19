@@ -9,8 +9,13 @@ class Quote extends Model
 {
     protected $fillable = [
         'book_id', 'movie_id',
-        'text', 'page', 'character', 'context',
+        'text', 'page', 'character', 'context', 'is_favorite',
     ];
+
+    protected function casts(): array
+    {
+        return ['is_favorite' => 'boolean'];
+    }
 
     public function book(): BelongsTo
     {

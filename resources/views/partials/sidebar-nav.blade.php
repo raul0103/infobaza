@@ -4,6 +4,7 @@
             'label' => 'Обзор',
             'items' => [
                 ['route' => 'dashboard', 'label' => 'Главная', 'icon' => 'home'],
+                ['route' => 'favorites.*', 'label' => 'Избранное', 'icon' => 'star'],
             ],
         ],
         [

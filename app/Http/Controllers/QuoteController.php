@@ -14,7 +14,7 @@ class QuoteController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Quote::with(['book', 'movie'])->latest();
+        $query = Quote::with(['book', 'movie'])->orderByDesc('is_favorite')->latest();
 
         if ($request->filled('book_id')) {
             $query->where('book_id', $request->book_id);

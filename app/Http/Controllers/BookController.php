@@ -38,8 +38,8 @@ class BookController extends Controller
     public function show(Book $book): View
     {
         $book->load([
-            'quotes' => fn ($q) => $q->latest(),
-            'thoughts' => fn ($q) => $q->latest(),
+            'quotes' => fn ($q) => $q->orderByDesc('is_favorite')->latest(),
+            'thoughts' => fn ($q) => $q->orderByDesc('is_favorite')->latest(),
         ]);
 
         return view('books.show', compact('book'));

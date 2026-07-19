@@ -13,16 +13,7 @@
 </x-page-header>
 <div class="space-y-4">
     @forelse($movie->quotes as $quote)
-        <div class="card border-l-4 border-l-violet-400 p-3 sm:p-3">
-            <blockquote class="text-sm italic text-gray-800">«{{ $quote->text }}»</blockquote>
-            @if($quote->character)<p class="text-sm text-gray-500 mt-2">— {{ $quote->character }}</p>@endif
-            <div class="mt-4 pt-3 border-t border-gray-100">
-                @include('partials.item-actions', [
-                    'edit' => route('quotes.edit', $quote),
-                    'destroy' => route('quotes.destroy', $quote),
-                ])
-            </div>
-        </div>
+        @include('quotes.card', ['quote' => $quote])
     @empty
         <div class="card text-center py-10 text-gray-500">Нет цитат</div>
     @endforelse
