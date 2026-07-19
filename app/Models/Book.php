@@ -9,7 +9,7 @@ class Book extends Model
 {
     protected $fillable = [
         'title', 'author', 'year', 'description', 'status',
-        'current_page', 'total_pages', 'started_at', 'finished_at',
+        'current_page', 'total_pages', 'started_at', 'finished_at', 'priority',
     ];
 
     protected function casts(): array
@@ -23,8 +23,8 @@ class Book extends Model
     public static function statusLabels(): array
     {
         return [
-            'queued' => 'Хочу прочитать',
             'reading' => 'Читаю',
+            'queued' => 'Хочу прочитать',
             'finished' => 'Прочитано',
         ];
     }

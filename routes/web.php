@@ -39,6 +39,7 @@ Route::delete('notes/{note}/questions/{question}', [NoteQuestionController::clas
 
 Route::resource('books', BookController::class);
 Route::patch('books/{book}/progress', [BookController::class, 'updateProgress'])->name('books.progress');
+Route::patch('books/queued/reorder', [BookController::class, 'reorderQueued'])->name('books.queued.reorder');
 Route::resource('books.thoughts', BookThoughtController::class)->except(['index', 'show']);
 Route::resource('movies', MovieController::class);
 Route::resource('quotes', QuoteController::class)->except(['show']);

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Services\ActivityTracker;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class BookController extends Controller
@@ -15,11 +17,21 @@ class BookController extends Controller
         $books = Book::withCount(['quotes', 'thoughts'])->orderBy('title')->get()->groupBy('status');
 
         return view('books.index', [
-            'sections' => collect(Book::statusLabels())->map(fn ($label, $status) => [
-                'status' => $status,
-                'label' => $label,
-                'books' => $books->get($status, collect()),
-            ])->values(),
+            'sections' => collect(Book::statusLabels())->map(function ($label, $status) use ($books) {
+                $sectionBooks = $books->get($status, collect());
+
+                if ($status === 'queued') {
+                    $sectionBooks = $sectionBooks
+                        ->sortBy(fn (Book $book) => [(int) $book->priority, mb_strtolower($book->title)])
+                        ->values();
+                }
+
+                return [
+                    'status' => $status,
+                    'label' => $label,
+                    'books' => $sectionBooks,
+                ];
+            })->values(),
         ]);
     }
 
@@ -30,7 +42,13 @@ class BookController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $book = Book::create($this->validated($request));
+        $data = $this->validated($request);
+
+        if ($data['status'] === 'queued') {
+            $data['priority'] = ((int) Book::where('status', 'queued')->max('priority')) + 1;
+        }
+
+        $book = Book::create($data);
 
         return redirect()->route('books.show', $book)->with('success', 'Книга добавлена.');
     }
@@ -55,6 +73,10 @@ class BookController extends Controller
         $data = $this->validated($request);
         $pagesAdded = (int) ($data['pages_added'] ?? 0);
         unset($data['pages_added']);
+
+        if ($data['status'] === 'queued' && $book->status !== 'queued') {
+            $data['priority'] = ((int) Book::where('status', 'queued')->max('priority')) + 1;
+        }
 
         if ($pagesAdded > 0) {
             $data['current_page'] = ($data['current_page'] ?? $book->current_page ?? 0) + $pagesAdded;
@@ -111,6 +133,31 @@ class BookController extends Controller
         }
 
         return redirect()->route('books.show', $book)->with('success', 'Прогресс обновлён.');
+    }
+
+    public function reorderQueued(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'book_ids' => 'required|array',
+            'book_ids.*' => 'required|integer|distinct|exists:books,id',
+        ]);
+
+        $bookIds = collect($data['book_ids'])->map(fn ($id) => (int) $id)->values();
+        $queuedCount = Book::whereIn('id', $bookIds)
+            ->where('status', 'queued')
+            ->count();
+
+        if ($queuedCount !== $bookIds->count()) {
+            return response()->json(['message' => 'Можно сортировать только книги из списка «Хочу прочитать».'], 422);
+        }
+
+        DB::transaction(function () use ($bookIds) {
+            foreach ($bookIds as $index => $bookId) {
+                Book::whereKey($bookId)->update(['priority' => $index + 1]);
+            }
+        });
+
+        return response()->json(['message' => 'Приоритет сохранён.']);
     }
 
     private function validated(Request $request): array

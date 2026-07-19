@@ -157,8 +157,18 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeSidebar();
         document.querySelectorAll('[role="dialog"]:not(.hidden)').forEach((dialog) => closeModal(dialog.id));
+        document.querySelectorAll('details[open]').forEach((menu) => menu.removeAttribute('open'));
     }
 });
+
+// Capture-фаза: срабатывает даже там, где клики гасятся через stopPropagation
+document.addEventListener('click', (e) => {
+    document.querySelectorAll('details[open]').forEach((menu) => {
+        if (!menu.contains(e.target)) {
+            menu.removeAttribute('open');
+        }
+    });
+}, true);
 
 const sidebar = document.getElementById('sidebar');
 const backdrop = document.getElementById('sidebar-backdrop');

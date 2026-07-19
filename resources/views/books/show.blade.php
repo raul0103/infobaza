@@ -18,11 +18,11 @@
     $totalPages = (int) ($book->total_pages ?? 0);
 @endphp
 @if($totalPages > 0)
-<div class="card mb-6 progress-control">
-    <form method="POST" action="{{ route('books.progress', $book) }}" id="book-progress-form" class="space-y-3">
+<div class="card mb-6 progress-control !p-3 sm:!p-4">
+    <form method="POST" action="{{ route('books.progress', $book) }}" id="book-progress-form" class="space-y-1.5">
         @csrf
         @method('PATCH')
-        <div class="flex justify-between text-sm">
+        <div class="flex justify-between text-xs sm:text-sm">
             <span class="text-gray-600">Прогресс чтения</span>
             <span class="font-medium tabular-nums">
                 <span id="book-progress-label">{{ $currentPage }}</span> / {{ $totalPages }}
@@ -41,10 +41,6 @@
             style="--reading-progress: {{ $readingPercent }}%"
             aria-label="Текущая страница"
         >
-        <div class="flex flex-wrap items-center justify-between gap-3">
-            <p class="progress-hint text-xs text-gray-400 transition-colors">Наведите на шкалу, чтобы изменить прогресс.</p>
-            <button type="submit" id="book-progress-submit" class="btn btn-secondary" disabled>Сохранить прогресс</button>
-        </div>
         @error('current_page')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
     </form>
 </div>
@@ -89,14 +85,14 @@
     .reading-range {
         appearance: none;
         -webkit-appearance: none;
-        height: 24px;
+        height: 18px;
         margin: 0;
         background: transparent;
         cursor: default;
     }
 
     .reading-range::-webkit-slider-runnable-track {
-        height: 5px;
+        height: 4px;
         border-radius: 9999px;
         background: linear-gradient(
             to right,
@@ -109,13 +105,13 @@
     }
 
     .reading-range::-moz-range-track {
-        height: 5px;
+        height: 4px;
         border-radius: 9999px;
         background: #e5e7eb;
     }
 
     .reading-range::-moz-range-progress {
-        height: 5px;
+        height: 4px;
         border-radius: 9999px;
         background: #86efac;
     }
@@ -123,10 +119,10 @@
     .reading-range::-webkit-slider-thumb {
         appearance: none;
         -webkit-appearance: none;
-        width: 16px;
-        height: 16px;
-        margin-top: -5.5px;
-        border: 3px solid #34d399;
+        width: 14px;
+        height: 14px;
+        margin-top: -5px;
+        border: 2px solid #34d399;
         border-radius: 9999px;
         background: #fff;
         box-shadow: 0 1px 4px rgb(15 23 42 / 0.16);
@@ -136,9 +132,9 @@
     }
 
     .reading-range::-moz-range-thumb {
-        width: 12px;
-        height: 12px;
-        border: 3px solid #34d399;
+        width: 10px;
+        height: 10px;
+        border: 2px solid #34d399;
         border-radius: 9999px;
         background: #fff;
         box-shadow: 0 1px 4px rgb(15 23 42 / 0.16);
@@ -169,11 +165,7 @@
 
     .progress-control:hover .reading-range::-webkit-slider-runnable-track,
     .reading-range:focus-visible::-webkit-slider-runnable-track {
-        box-shadow: 0 0 0 4px rgb(16 185 129 / 0.08);
-    }
-
-    .progress-control:hover .progress-hint {
-        color: #6b7280;
+        box-shadow: 0 0 0 3px rgb(16 185 129 / 0.08);
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -192,32 +184,30 @@
 @push('scripts')
 <script>
 (() => {
+    const form = document.getElementById('book-progress-form');
     const range = document.getElementById('book-progress-range');
     const label = document.getElementById('book-progress-label');
     const percent = document.getElementById('book-progress-percent');
-    const submit = document.getElementById('book-progress-submit');
-    if (!range || !label || !percent || !submit) return;
+    if (!form || !range || !label || !percent) return;
 
     const total = Number(range.max) || 0;
     const initialValue = range.value;
+
     const update = () => {
         const value = Number(range.value) || 0;
         const progress = total ? Math.min(100, Math.round((value / total) * 100)) : 0;
         label.textContent = String(value);
         percent.textContent = String(progress);
         range.style.setProperty('--reading-progress', `${progress}%`);
-        submit.disabled = range.value === initialValue;
+    };
 
-        if (submit.disabled) {
-            submit.classList.remove('btn-success');
-            submit.classList.add('btn-secondary');
-        } else {
-            submit.classList.remove('btn-secondary');
-            submit.classList.add('btn-success');
-        }
+    const save = () => {
+        if (range.value === initialValue) return;
+        form.submit();
     };
 
     range.addEventListener('input', update);
+    range.addEventListener('change', save);
     update();
 })();
 </script>
