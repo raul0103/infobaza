@@ -119,8 +119,9 @@ class BookController extends Controller
             if (! $book->finished_at) {
                 $updates['finished_at'] = now()->toDateString();
             }
-        } elseif ($newPage > 0 && $book->status === 'queued') {
+        } elseif ($newPage > 0 && in_array($book->status, ['queued', 'finished'], true)) {
             $updates['status'] = 'reading';
+            $updates['finished_at'] = null;
             if (! $book->started_at) {
                 $updates['started_at'] = now()->toDateString();
             }

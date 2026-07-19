@@ -18,12 +18,7 @@
         <h2 class="section-title">Сейчас читаю</h2>
         <a href="{{ route('books.index') }}" class="link">Все книги →</a>
     </div>
-    @foreach($readingBooks as $book)
-        <a href="{{ route('books.show', $book) }}" class="block mb-3 last:mb-0">
-            <div class="flex justify-between text-sm mb-1"><span class="font-medium text-gray-900">{{ $book->title }}</span><span class="text-gray-500">{{ $book->readingPercent() }}%</span></div>
-            <div class="h-2 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 rounded-full" style="width:{{ $book->readingPercent() }}%"></div></div>
-        </a>
-    @endforeach
+    @include('partials.reading-books', ['books' => $readingBooks])
 </div>
 @endif
 

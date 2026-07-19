@@ -141,6 +141,8 @@
     </div>
 </div>
 
+@stack('modals')
+
 <script>
 function openModal(id) {
     const el = document.getElementById(id);

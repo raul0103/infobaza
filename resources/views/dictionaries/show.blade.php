@@ -138,10 +138,11 @@
             </thead>
             <tbody class="divide-y divide-gray-100">
                 @forelse($dictionary->entries as $entry)
-                    @php
-                        $longDefinition = strlen($entry->definition) > 80;
-                    @endphp
-                    <tr class="hover:bg-gray-50">
+                    <tr class="hover:bg-gray-50 cursor-pointer"
+                        data-term="{{ rawurlencode($entry->term) }}"
+                        data-definition="{{ rawurlencode($entry->definition) }}"
+                        data-example="{{ rawurlencode((string) $entry->example) }}"
+                        onclick="if (!event.target.closest('a, button, form')) openEntryModal(decodeURIComponent(this.dataset.term), decodeURIComponent(this.dataset.definition), decodeURIComponent(this.dataset.example))">
                         <td class="px-4 sm:px-6 py-4 font-medium text-gray-900 align-top">
                             <div>{{ $entry->term }}</div>
                             @if($entry->group)
@@ -152,19 +153,7 @@
                             @endif
                         </td>
                         <td class="px-4 sm:px-6 py-4 text-gray-600 align-top">
-                            @if($longDefinition)
-                                <span>{{ Str::limit($entry->definition, 80) }}</span>
-                                <button type="button"
-                                    class="link ml-1 text-xs"
-                                    data-term="{{ rawurlencode($entry->term) }}"
-                                    data-definition="{{ rawurlencode($entry->definition) }}"
-                                    data-example="{{ rawurlencode((string) $entry->example) }}"
-                                    onclick="openEntryModal(decodeURIComponent(this.dataset.term), decodeURIComponent(this.dataset.definition), decodeURIComponent(this.dataset.example))">
-                                    ещё
-                                </button>
-                            @else
-                                {{ $entry->definition }}
-                            @endif
+                            {{ Str::limit($entry->definition, 80) }}
                         </td>
                         <td class="px-4 sm:px-6 py-4 text-left sm:text-right align-top whitespace-nowrap">
                             @include('partials.item-actions', [

@@ -1,0 +1,67 @@
+@once
+@push('modals')
+<x-modal id="card-detail-modal" title="Запись" size="lg">
+    <div id="card-modal-text" class="whitespace-pre-wrap text-gray-800"></div>
+
+    <div id="card-modal-context-wrap" class="hidden mt-4 rounded-lg bg-blue-50/60 px-3 py-2 text-sm text-gray-600">
+        <span class="text-xs font-medium uppercase tracking-wide text-blue-500">Контекст</span>
+        <div id="card-modal-context" class="mt-1 whitespace-pre-wrap"></div>
+    </div>
+
+    <div id="card-modal-meta" class="hidden flex flex-wrap gap-2 mt-4"></div>
+
+    <div id="card-modal-source-wrap" class="hidden mt-4 border-t border-gray-100 pt-4">
+        <a id="card-modal-source" href="#" class="link"></a>
+    </div>
+</x-modal>
+@endpush
+
+@push('scripts')
+<script>
+function openCardModal(el) {
+    const d = el.dataset;
+    const decode = (value) => decodeURIComponent(value || '');
+    const isQuote = d.kind === 'quote';
+    const text = decode(d.text);
+
+    document.getElementById('card-detail-modal-title').textContent = isQuote ? 'Цитата' : 'Мысль';
+
+    const textEl = document.getElementById('card-modal-text');
+    textEl.textContent = isQuote ? '«' + text + '»' : text;
+    textEl.classList.toggle('italic', isQuote);
+
+    const contextWrap = document.getElementById('card-modal-context-wrap');
+    const context = decode(d.context);
+    contextWrap.classList.toggle('hidden', !context);
+    document.getElementById('card-modal-context').textContent = context;
+
+    const meta = document.getElementById('card-modal-meta');
+    meta.innerHTML = '';
+    const badges = [];
+    if (decode(d.chapter)) badges.push(decode(d.chapter));
+    if (decode(d.page)) badges.push('Стр. ' + decode(d.page));
+    if (decode(d.character)) badges.push('— ' + decode(d.character));
+    badges.forEach((label) => {
+        const badge = document.createElement('span');
+        badge.className = 'badge-gray';
+        badge.textContent = label;
+        meta.appendChild(badge);
+    });
+    meta.classList.toggle('hidden', badges.length === 0);
+
+    const sourceWrap = document.getElementById('card-modal-source-wrap');
+    const sourceLabel = decode(d.sourceLabel);
+    if (sourceLabel && d.sourceUrl) {
+        const link = document.getElementById('card-modal-source');
+        link.textContent = 'Источник: ' + sourceLabel + ' →';
+        link.href = d.sourceUrl;
+        sourceWrap.classList.remove('hidden');
+    } else {
+        sourceWrap.classList.add('hidden');
+    }
+
+    openModal('card-detail-modal');
+}
+</script>
+@endpush
+@endonce
