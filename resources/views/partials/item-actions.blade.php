@@ -1,7 +1,7 @@
 @props(['edit', 'destroy'])
 
 <div class="shrink-0 relative" onclick="event.stopPropagation()">
-    <details class="group relative">
+    <details class="group relative action-menu">
         <summary class="list-none inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-800">
             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zm0 6a.75.75 0 110-1.5.75.75 0 010 1.5zm0 6a.75.75 0 110-1.5.75.75 0 010 1.5z"/>

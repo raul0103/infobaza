@@ -11,6 +11,13 @@
     wide
 >
     <x-form.input name="title" label="Заголовок" :value="$fact->title" placeholder="Необязательно" />
+    <x-form.select name="fact_group_id" label="Группа" hint="Необязательно. Группы можно создавать на странице интересных фактов.">
+        @foreach($groups as $group)
+            <option value="{{ $group->id }}" @selected((string) old('fact_group_id', $fact->fact_group_id) === (string) $group->id)>
+                {{ $group->name }}
+            </option>
+        @endforeach
+    </x-form.select>
     <x-form.textarea name="text" label="Факт" :value="$fact->text" :rows="6" required />
     <x-form.input name="source" label="Источник" :value="$fact->source" placeholder="Книга, сайт, человек…" />
 </x-form.shell>

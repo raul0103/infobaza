@@ -7,6 +7,7 @@ use App\Http\Controllers\DictionaryController;
 use App\Http\Controllers\DictionaryEntryController;
 use App\Http\Controllers\DictionaryEntryGroupController;
 use App\Http\Controllers\FactController;
+use App\Http\Controllers\FactGroupController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\JokeController;
@@ -44,6 +45,7 @@ Route::resource('books.thoughts', BookThoughtController::class)->except(['index'
 Route::resource('movies', MovieController::class);
 Route::resource('quotes', QuoteController::class)->except(['show']);
 Route::resource('facts', FactController::class)->except(['show']);
+Route::resource('fact-groups', FactGroupController::class)->except(['index', 'show']);
 Route::resource('jokes', JokeController::class)->except(['show']);
 Route::resource('dictionaries', DictionaryController::class);
 Route::resource('dictionaries.entries', DictionaryEntryController::class)->except(['show', 'index']);

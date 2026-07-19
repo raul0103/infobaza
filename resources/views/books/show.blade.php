@@ -53,11 +53,11 @@
 @endif
 @if($book->description)<div class="card mb-6 text-gray-600">{{ $book->description }}</div>@endif
 
-<div class="flex flex-wrap items-center justify-between gap-3 mt-8 mb-4">
-    <h2 class="section-title">Мои мысли <span class="text-gray-400 font-normal">({{ $book->thoughts->count() }})</span></h2>
-    <a href="{{ route('books.thoughts.create', $book) }}" class="link">+ Добавить мысль</a>
-</div>
-<div class="space-y-4">
+<x-collapsible title="Мои мысли" :count="$book->thoughts->count()">
+    <x-slot:actions>
+        <a href="{{ route('books.thoughts.create', $book) }}" class="link">+ Добавить мысль</a>
+    </x-slot:actions>
+
     @forelse($book->thoughts as $thought)
         @include('books.thoughts.card', ['thought' => $thought])
     @empty
@@ -65,19 +65,19 @@
             Записывайте свои выводы, вопросы и идеи по мере чтения.
         </div>
     @endforelse
-</div>
+</x-collapsible>
 
-<div class="flex flex-wrap items-center justify-between gap-3 mt-8 mb-4">
-    <h2 class="section-title">Цитаты <span class="text-gray-400 font-normal">({{ $book->quotes->count() }})</span></h2>
-    <a href="{{ route('quotes.create', ['book_id' => $book->id]) }}" class="link">+ Добавить цитату</a>
-</div>
-<div class="space-y-4">
+<x-collapsible title="Цитаты" :count="$book->quotes->count()">
+    <x-slot:actions>
+        <a href="{{ route('quotes.create', ['book_id' => $book->id]) }}" class="link">+ Добавить цитату</a>
+    </x-slot:actions>
+
     @forelse($book->quotes as $quote)
         @include('quotes.card', ['quote' => $quote])
     @empty
         <div class="card text-center py-10 text-gray-500">Выписывайте цитаты по мере чтения</div>
     @endforelse
-</div>
+</x-collapsible>
 
 @if($totalPages > 0)
 @push('head')

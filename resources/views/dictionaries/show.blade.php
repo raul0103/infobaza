@@ -68,118 +68,119 @@
     </x-modal>
 @endif
 
-<div class="mb-6">
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <h2 class="section-title">Объединения слов</h2>
-        <a href="{{ route('dictionaries.groups.create', $dictionary) }}" class="link">+ Новое объединение</a>
-    </div>
-
-    @if($dictionary->entryGroups->isEmpty())
+@if($dictionary->entryGroups->isEmpty())
+    <x-collapsible title="Объединения слов" :count="0">
+        <x-slot:actions>
+            <a href="{{ route('dictionaries.groups.create', $dictionary) }}" class="link">+ Новое объединение</a>
+        </x-slot:actions>
         <div class="card text-center py-8 text-gray-500">
             Можно объединить связанные слова, добавить общее описание, скриншоты и файлы.
         </div>
-    @else
-        <div class="space-y-4">
-            @foreach($dictionary->entryGroups as $group)
-                <div id="group-{{ $group->id }}" class="card {{ (int) $highlightGroupId === (int) $group->id ? 'ring-2 ring-blue-300 border-blue-200' : '' }}">
-                    <div class="flex flex-wrap items-start justify-between gap-3 mb-3">
-                        <div class="min-w-0">
-                            <h3 class="font-semibold text-gray-900">{{ $group->displayTitle() }}</h3>
-                            <p class="text-xs text-gray-500 mt-1">{{ $group->entries->count() }} слов · {{ $group->attachments->count() }} файлов</p>
-                        </div>
-                        @include('partials.item-actions', [
-                            'edit' => route('dictionaries.groups.edit', [$dictionary, $group]),
-                            'destroy' => route('dictionaries.groups.destroy', [$dictionary, $group]),
-                        ])
-                    </div>
+    </x-collapsible>
+@else
+    @foreach($dictionary->entryGroups as $group)
+        <x-collapsible
+            :id="'group-'.$group->id"
+            :title="$group->displayTitle()"
+            :count="$group->entries->count()"
+            :open="(int) $highlightGroupId === (int) $group->id"
+        >
+            <x-slot:actions>
+                @include('partials.item-actions', [
+                    'edit' => route('dictionaries.groups.edit', [$dictionary, $group]),
+                    'destroy' => route('dictionaries.groups.destroy', [$dictionary, $group]),
+                ])
+            </x-slot:actions>
+            @if(filled($group->description))
+                <x-slot:subtitle>{{ $group->description }}</x-slot:subtitle>
+            @endif
 
-                    @if(filled($group->description))
-                        <div class="text-sm text-gray-600 whitespace-pre-wrap mb-4">{{ $group->description }}</div>
-                    @endif
+            <p class="text-xs text-gray-500 -mt-1">{{ $group->attachments->count() }} файлов</p>
 
-                    @if($group->entries->isNotEmpty())
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            @foreach($group->entries as $groupedEntry)
-                                <span class="badge-blue">{{ $groupedEntry->term }}</span>
-                            @endforeach
-                        </div>
-                    @endif
-
-                    @if($group->attachments->isNotEmpty())
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                            @foreach($group->attachments as $attachment)
-                                <a href="{{ $attachment->url() }}" target="_blank" rel="noopener" class="block rounded-lg border border-gray-200 overflow-hidden hover:border-blue-300 transition">
-                                    @if($attachment->isImage())
-                                        <img src="{{ $attachment->url() }}" alt="{{ $attachment->original_name }}" class="w-full h-28 object-cover bg-gray-50">
-                                    @else
-                                        <div class="h-28 flex items-center justify-center bg-gray-50 text-xs text-gray-500 px-2 text-center">
-                                            {{ $attachment->original_name }}
-                                        </div>
-                                    @endif
-                                    <div class="px-2 py-1.5 text-xs text-gray-600 truncate border-t border-gray-100">{{ $attachment->original_name }}</div>
-                                </a>
-                            @endforeach
-                        </div>
-                    @endif
+            @if($group->entries->isNotEmpty())
+                <div class="flex flex-wrap gap-2">
+                    @foreach($group->entries as $groupedEntry)
+                        <span class="badge-blue">{{ $groupedEntry->term }}</span>
+                    @endforeach
                 </div>
-            @endforeach
-        </div>
-    @endif
-</div>
+            @endif
 
-<div class="card overflow-hidden p-0">
-    <div class="table-scroll">
-    <table class="w-full min-w-[32rem] text-left text-sm">
-        <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
-            <tr>
-                <th class="px-4 sm:px-6 py-3 font-medium">Слово</th>
-                <th class="px-4 sm:px-6 py-3 font-medium">Значение</th>
-                <th class="px-4 sm:px-6 py-3 w-28 sm:w-32"></th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-            @forelse($dictionary->entries as $entry)
-                @php
-                    $longDefinition = strlen($entry->definition) > 80;
-                @endphp
-                <tr class="hover:bg-gray-50">
-                    <td class="px-4 sm:px-6 py-4 font-medium text-gray-900 align-top">
-                        <div>{{ $entry->term }}</div>
-                        @if($entry->group)
-                            <a href="#group-{{ $entry->group_id }}" class="badge-gray mt-1 inline-flex hover:bg-blue-50 hover:text-blue-700">
-                                {{ $entry->group->displayTitle() }}
-                            </a>
-                        @endif
-                    </td>
-                    <td class="px-4 sm:px-6 py-4 text-gray-600 align-top">
-                        @if($longDefinition)
-                            <span>{{ Str::limit($entry->definition, 80) }}</span>
-                            <button type="button"
-                                class="link ml-1 text-xs"
-                                data-term="{{ rawurlencode($entry->term) }}"
-                                data-definition="{{ rawurlencode($entry->definition) }}"
-                                data-example="{{ rawurlencode((string) $entry->example) }}"
-                                onclick="openEntryModal(decodeURIComponent(this.dataset.term), decodeURIComponent(this.dataset.definition), decodeURIComponent(this.dataset.example))">
-                                ещё
-                            </button>
-                        @else
-                            {{ $entry->definition }}
-                        @endif
-                    </td>
-                    <td class="px-4 sm:px-6 py-4 text-left sm:text-right align-top whitespace-nowrap">
-                        @include('partials.item-actions', [
-                            'edit' => route('dictionaries.entries.edit', [$dictionary, $entry]),
-                            'destroy' => route('dictionaries.entries.destroy', [$dictionary, $entry]),
-                        ])
-                    </td>
+            @if($group->attachments->isNotEmpty())
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    @foreach($group->attachments as $attachment)
+                        <a href="{{ $attachment->url() }}" target="_blank" rel="noopener" class="block rounded-lg border border-gray-200 overflow-hidden hover:border-blue-300 transition">
+                            @if($attachment->isImage())
+                                <img src="{{ $attachment->url() }}" alt="{{ $attachment->original_name }}" class="w-full h-28 object-cover bg-gray-50">
+                            @else
+                                <div class="h-28 flex items-center justify-center bg-gray-50 text-xs text-gray-500 px-2 text-center">
+                                    {{ $attachment->original_name }}
+                                </div>
+                            @endif
+                            <div class="px-2 py-1.5 text-xs text-gray-600 truncate border-t border-gray-100">{{ $attachment->original_name }}</div>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+        </x-collapsible>
+    @endforeach
+@endif
+
+<x-collapsible title="Все слова" :count="$dictionary->entries->count()" :open="true">
+    <div class="card overflow-hidden p-0">
+        <div class="table-scroll">
+        <table class="w-full min-w-[32rem] text-left text-sm">
+            <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
+                <tr>
+                    <th class="px-4 sm:px-6 py-3 font-medium">Слово</th>
+                    <th class="px-4 sm:px-6 py-3 font-medium">Значение</th>
+                    <th class="px-4 sm:px-6 py-3 w-28 sm:w-32"></th>
                 </tr>
-            @empty
-                <tr><td colspan="3" class="px-6 py-12 text-center text-gray-500">Добавьте слова для изучения</td></tr>
-            @endforelse
-        </tbody>
-    </table>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                @forelse($dictionary->entries as $entry)
+                    @php
+                        $longDefinition = strlen($entry->definition) > 80;
+                    @endphp
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 sm:px-6 py-4 font-medium text-gray-900 align-top">
+                            <div>{{ $entry->term }}</div>
+                            @if($entry->group)
+                                <a href="#group-{{ $entry->group_id }}" class="badge-gray mt-1 inline-flex hover:bg-blue-50 hover:text-blue-700"
+                                   onclick="document.getElementById('group-{{ $entry->group_id }}')?.setAttribute('open','')">
+                                    {{ $entry->group->displayTitle() }}
+                                </a>
+                            @endif
+                        </td>
+                        <td class="px-4 sm:px-6 py-4 text-gray-600 align-top">
+                            @if($longDefinition)
+                                <span>{{ Str::limit($entry->definition, 80) }}</span>
+                                <button type="button"
+                                    class="link ml-1 text-xs"
+                                    data-term="{{ rawurlencode($entry->term) }}"
+                                    data-definition="{{ rawurlencode($entry->definition) }}"
+                                    data-example="{{ rawurlencode((string) $entry->example) }}"
+                                    onclick="openEntryModal(decodeURIComponent(this.dataset.term), decodeURIComponent(this.dataset.definition), decodeURIComponent(this.dataset.example))">
+                                    ещё
+                                </button>
+                            @else
+                                {{ $entry->definition }}
+                            @endif
+                        </td>
+                        <td class="px-4 sm:px-6 py-4 text-left sm:text-right align-top whitespace-nowrap">
+                            @include('partials.item-actions', [
+                                'edit' => route('dictionaries.entries.edit', [$dictionary, $entry]),
+                                'destroy' => route('dictionaries.entries.destroy', [$dictionary, $entry]),
+                            ])
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="3" class="px-6 py-12 text-center text-gray-500">Добавьте слова для изучения</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+        </div>
     </div>
-</div>
+</x-collapsible>
 
 <x-modal id="entry-detail-modal" title="Слово" size="lg">
     <div id="entry-modal-definition" class="whitespace-pre-wrap text-gray-800 mb-4"></div>

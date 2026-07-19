@@ -4,10 +4,7 @@
 @section('content')
 <x-page-header title="Избранное" subtitle="Сохранённые мысли и цитаты со ссылками на источники" />
 
-<div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-    <h2 class="section-title">Мои мысли <span class="text-gray-400 font-normal">({{ $thoughts->count() }})</span></h2>
-</div>
-<div class="space-y-4">
+<x-collapsible title="Мои мысли" :count="$thoughts->count()">
     @forelse($thoughts as $thought)
         @include('books.thoughts.card', ['thought' => $thought, 'showSource' => true])
     @empty
@@ -15,12 +12,9 @@
             Добавьте мысль в избранное кнопкой со звездой.
         </div>
     @endforelse
-</div>
+</x-collapsible>
 
-<div class="flex flex-wrap items-center justify-between gap-3 mt-8 mb-4">
-    <h2 class="section-title">Цитаты <span class="text-gray-400 font-normal">({{ $quotes->count() }})</span></h2>
-</div>
-<div class="space-y-4">
+<x-collapsible title="Цитаты" :count="$quotes->count()">
     @forelse($quotes as $quote)
         @include('quotes.card', ['quote' => $quote, 'showSource' => true])
     @empty
@@ -28,5 +22,5 @@
             Добавьте цитату в избранное кнопкой со звездой.
         </div>
     @endforelse
-</div>
+</x-collapsible>
 @endsection

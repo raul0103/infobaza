@@ -87,6 +87,10 @@
             .page-actions .btn { @apply w-full sm:w-auto justify-center; }
             .safe-top { padding-top: max(0px, env(safe-area-inset-top)); }
             .safe-bottom { padding-bottom: max(0px, env(safe-area-inset-bottom)); }
+            .collapsible-section > summary::-webkit-details-marker { display: none; }
+            .collapsible-section > summary { list-style: none; }
+            .collapsible-section .collapse-chevron { @apply transition-transform; }
+            .collapsible-section[open] .collapse-chevron { transform: rotate(90deg); }
         }
     </style>
     @stack('head')
@@ -112,9 +116,6 @@
         <nav class="flex-1 px-3 py-2 overflow-y-auto overscroll-contain">
             @include('partials.sidebar-nav')
         </nav>
-        <div class="p-4 border-t border-gray-100 safe-bottom">
-            <p class="text-xs text-gray-400 text-center">SQLite · Laravel</p>
-        </div>
     </aside>
 
     <div class="flex flex-1 flex-col min-w-0 w-full lg:pt-0 pt-14">
@@ -157,13 +158,13 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closeSidebar();
         document.querySelectorAll('[role="dialog"]:not(.hidden)').forEach((dialog) => closeModal(dialog.id));
-        document.querySelectorAll('details[open]').forEach((menu) => menu.removeAttribute('open'));
+        document.querySelectorAll('details.action-menu[open]').forEach((menu) => menu.removeAttribute('open'));
     }
 });
 
 // Capture-фаза: срабатывает даже там, где клики гасятся через stopPropagation
 document.addEventListener('click', (e) => {
-    document.querySelectorAll('details[open]').forEach((menu) => {
+    document.querySelectorAll('details.action-menu[open]').forEach((menu) => {
         if (!menu.contains(e.target)) {
             menu.removeAttribute('open');
         }

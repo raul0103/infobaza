@@ -11,11 +11,16 @@
         ])
     </x-slot:actions>
 </x-page-header>
-<div class="space-y-4">
+
+<x-collapsible title="Цитаты" :count="$movie->quotes->count()">
+    <x-slot:actions>
+        <a href="{{ route('quotes.create', ['movie_id' => $movie->id]) }}" class="link">+ Добавить цитату</a>
+    </x-slot:actions>
+
     @forelse($movie->quotes as $quote)
         @include('quotes.card', ['quote' => $quote])
     @empty
         <div class="card text-center py-10 text-gray-500">Нет цитат</div>
     @endforelse
-</div>
+</x-collapsible>
 @endsection
