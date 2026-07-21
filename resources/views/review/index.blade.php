@@ -1,11 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Повторение')
 @section('content')
-<x-page-header title="Повторение" subtitle="Интервальное повторение слов и фактов, экзамен по записям">
-    <x-slot:actions>
-        <a href="{{ route('review.exam') }}" class="btn btn-secondary">Экзамен</a>
-    </x-slot:actions>
-</x-page-header>
+<x-page-header title="Повторение" subtitle="Интервальное повторение слов и фактов" />
 
 <div class="grid md:grid-cols-2 gap-4">
     @if($totalFacts > 0)
@@ -25,7 +21,7 @@
         @if($totalFacts === 0)
             <div class="col-span-full card text-center py-12">
                 <p class="text-gray-500">Сначала создайте словарь и добавьте слова</p>
-                <a href="{{ route('dictionaries.create') }}" class="btn btn-primary mt-4">Создать словарь</a>
+                <a href="{{ route('dictionaries.create') }}" class="btn btn-primary">Создать словарь</a>
             </div>
         @endif
     @endforelse

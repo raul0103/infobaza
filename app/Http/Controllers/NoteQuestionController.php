@@ -34,7 +34,7 @@ class NoteQuestionController extends Controller
         $question = (clone $ownedQuestions)->due()->with('note')->inRandomOrder()->first()
             ?? (clone $ownedQuestions)->with('note')->inRandomOrder()->first();
 
-        return view('review.exam', [
+        return view('exam.index', [
             'question' => $question,
         ]);
     }
@@ -44,6 +44,6 @@ class NoteQuestionController extends Controller
         $question->recordReview(true);
         \App\Services\ActivityTracker::log('card');
 
-        return redirect()->route('review.exam');
+        return redirect()->route('exam');
     }
 }

@@ -13,7 +13,7 @@
         <div class="card-form hidden" id="a-view">
             <p class="text-gray-800 mb-6 whitespace-pre-wrap">{{ $question->answer }}</p>
             <div class="text-center">
-                <form method="POST" action="{{ route('review.exam.answer', $question) }}">@csrf<button class="btn btn-primary">Дальше</button></form>
+                <form method="POST" action="{{ route('exam.answer', $question) }}">@csrf<button class="btn btn-primary">Дальше</button></form>
             </div>
         </div>
     @else

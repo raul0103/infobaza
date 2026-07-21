@@ -55,9 +55,10 @@ Route::delete(
     [DictionaryEntryGroupController::class, 'destroyAttachment']
 )->name('dictionaries.groups.attachments.destroy');
 
+Route::get('exam', [NoteQuestionController::class, 'exam'])->name('exam');
+Route::post('exam/{question}', [NoteQuestionController::class, 'examAnswer'])->name('exam.answer');
+
 Route::get('review', [ReviewController::class, 'index'])->name('review.index');
-Route::get('review/exam', [NoteQuestionController::class, 'exam'])->name('review.exam');
-Route::post('review/exam/{question}', [NoteQuestionController::class, 'examAnswer'])->name('review.exam.answer');
 Route::get('review/facts', [ReviewController::class, 'factsSession'])->name('review.facts');
 Route::post('review/facts/{fact}', [ReviewController::class, 'factsAnswer'])->name('review.facts.answer');
 Route::get('review/{dictionary}', [ReviewController::class, 'session'])->name('review.session');

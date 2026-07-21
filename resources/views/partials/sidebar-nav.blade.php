@@ -29,6 +29,7 @@
             'items' => [
                 ['route' => 'dictionaries.*', 'label' => 'Словари', 'icon' => 'dictionary'],
                 ['route' => 'review.*', 'label' => 'Повторение', 'icon' => 'repeat'],
+                ['route' => 'exam', 'match' => 'exam*', 'label' => 'Экзамен', 'icon' => 'exam'],
             ],
         ],
         [
@@ -54,9 +55,7 @@
                 $href = $item['route'] === 'dashboard'
                     ? route('dashboard')
                     : route(str_replace('.*', '.index', $item['route']));
-                $active = $item['route'] === 'dashboard'
-                    ? request()->routeIs('dashboard')
-                    : request()->routeIs($item['route']);
+                $active = request()->routeIs($item['match'] ?? $item['route']);
             @endphp
             <a href="{{ $href }}" class="nav-link {{ $active ? 'active' : '' }}">
                 @include('partials.nav-icon', ['name' => $item['icon']])
