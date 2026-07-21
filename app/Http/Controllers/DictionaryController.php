@@ -3,16 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dictionary;
+use App\Models\DictionaryEntry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DictionaryController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $q = trim((string) $request->query('q', ''));
+
+        $searchResults = collect();
+        if ($q !== '') {
+            $searchResults = DictionaryEntry::query()
+                ->with('dictionary')
+                ->search($q)
+                ->orderByRaw('LOWER(term)')
+                ->limit(100)
+                ->get();
+        }
+
         return view('dictionaries.index', [
             'dictionaries' => Dictionary::withCount('entries')->orderBy('name')->get(),
+            'q' => $q,
+            'searchResults' => $searchResults,
         ]);
     }
 
@@ -28,11 +43,16 @@ class DictionaryController extends Controller
         return redirect()->route('dictionaries.show', $dictionary)->with('success', 'Словарь создан.');
     }
 
-    public function show(Dictionary $dictionary): View
+    public function show(Request $request, Dictionary $dictionary): View
     {
+        $q = trim((string) $request->query('q', ''));
+
         $dictionary->load([
-            'entries' => fn ($q) => $q->with('group')->orderByRaw('LOWER(term)'),
-            'entryGroups' => fn ($q) => $q
+            'entries' => fn ($query) => $query
+                ->with('group')
+                ->search($q)
+                ->orderByRaw('LOWER(term)'),
+            'entryGroups' => fn ($query) => $query
                 ->with([
                     'entries' => fn ($entries) => $entries->orderByRaw('LOWER(term)'),
                     'attachments',
@@ -40,7 +60,11 @@ class DictionaryController extends Controller
                 ->latest(),
         ]);
 
-        return view('dictionaries.show', compact('dictionary'));
+        return view('dictionaries.show', [
+            'dictionary' => $dictionary,
+            'q' => $q,
+            'totalEntries' => $dictionary->entries()->count(),
+        ]);
     }
 
     public function edit(Dictionary $dictionary): View

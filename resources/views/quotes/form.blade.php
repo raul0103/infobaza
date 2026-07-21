@@ -7,7 +7,7 @@
     subtitle="Привяжите к книге, фильму или теме"
     :action="$quote->exists ? route('quotes.update', $quote) : route('quotes.store')"
     :method="$quote->exists ? 'PUT' : 'POST'"
-    :back="url()->previous() !== url()->current() ? url()->previous() : route('quotes.index')"
+    :back="url()->previous() !== url()->current() ? url()->previous() : route('dashboard')"
     wide
 >
     <div class="grid sm:grid-cols-2 gap-5">

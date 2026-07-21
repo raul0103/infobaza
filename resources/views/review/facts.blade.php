@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="max-w-lg mx-auto w-full px-1 sm:px-0">
-    <a href="{{ route('review.index') }}" class="link mb-6 inline-flex items-center gap-1">← Назад к повторению</a>
+    <a href="{{ route('facts.index') }}" class="link mb-6 inline-flex items-center gap-1">← Назад к фактам</a>
 
     <div class="text-center mb-8">
         <span class="badge-blue">Интересные факты</span>

@@ -36,6 +36,23 @@ class DictionaryEntry extends Model
         });
     }
 
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        $term = trim((string) $term);
+
+        if ($term === '') {
+            return $query;
+        }
+
+        $like = '%'.$term.'%';
+
+        return $query->where(function (Builder $q) use ($like) {
+            $q->whereRaw('LOWER(term) LIKE LOWER(?)', [$like])
+                ->orWhereRaw('LOWER(definition) LIKE LOWER(?)', [$like])
+                ->orWhereRaw('LOWER(COALESCE(example, "")) LIKE LOWER(?)', [$like]);
+        });
+    }
+
     public function recordReview(bool $known): void
     {
         SpacedRepetition::scheduleReview($this, $known);

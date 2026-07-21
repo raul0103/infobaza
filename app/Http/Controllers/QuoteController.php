@@ -12,24 +12,6 @@ use Illuminate\View\View;
 
 class QuoteController extends Controller
 {
-    public function index(Request $request): View
-    {
-        $query = Quote::with(['book', 'movie'])->orderByDesc('is_favorite')->latest();
-
-        if ($request->filled('book_id')) {
-            $query->where('book_id', $request->book_id);
-        }
-        if ($request->filled('movie_id')) {
-            $query->where('movie_id', $request->movie_id);
-        }
-
-        return view('quotes.index', [
-            'quotes' => $query->paginate(20)->withQueryString(),
-            'books' => Book::orderBy('title')->get(),
-            'movies' => Movie::orderBy('title')->get(),
-        ]);
-    }
-
     public function create(Request $request): View
     {
         return view('quotes.form', [
@@ -79,7 +61,7 @@ class QuoteController extends Controller
             return redirect()->route('movies.show', $movieId)->with('success', 'Цитата удалена.');
         }
 
-        return redirect()->route('quotes.index')->with('success', 'Цитата удалена.');
+        return redirect()->route('dashboard')->with('success', 'Цитата удалена.');
     }
 
     private function validated(Request $request): array
@@ -111,6 +93,6 @@ class QuoteController extends Controller
             return redirect()->route('movies.show', $quote->movie_id);
         }
 
-        return redirect()->route('quotes.index');
+        return redirect()->route('dashboard');
     }
 }

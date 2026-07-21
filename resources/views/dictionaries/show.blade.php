@@ -126,6 +126,27 @@
 @endif
 
 <x-collapsible title="Все слова" :count="$dictionary->entries->count()" :open="true">
+    <form method="GET" action="{{ route('dictionaries.show', $dictionary) }}" class="mb-3" onclick="event.stopPropagation()">
+        <div class="flex gap-2">
+            <input
+                type="search"
+                name="q"
+                value="{{ $q }}"
+                class="input flex-1"
+                placeholder="Поиск по слову или значению…"
+            >
+            <button type="submit" class="btn btn-secondary shrink-0">Найти</button>
+            @if($q !== '')
+                <a href="{{ route('dictionaries.show', $dictionary) }}" class="btn btn-secondary shrink-0">Сброс</a>
+            @endif
+        </div>
+        @if($q !== '')
+            <p class="text-xs text-gray-500 mt-2">
+                Показано {{ $dictionary->entries->count() }} из {{ $totalEntries }}
+            </p>
+        @endif
+    </form>
+
     <div class="card overflow-hidden p-0">
         <div class="table-scroll">
         <table class="w-full min-w-[32rem] text-left text-sm">
@@ -139,10 +160,10 @@
             <tbody class="divide-y divide-gray-100">
                 @forelse($dictionary->entries as $entry)
                     <tr class="hover:bg-gray-50 cursor-pointer"
+                        onclick="if (!event.target.closest('a, button, form')) openEntryModal(this)"
                         data-term="{{ rawurlencode($entry->term) }}"
                         data-definition="{{ rawurlencode($entry->definition) }}"
-                        data-example="{{ rawurlencode((string) $entry->example) }}"
-                        onclick="if (!event.target.closest('a, button, form')) openEntryModal(decodeURIComponent(this.dataset.term), decodeURIComponent(this.dataset.definition), decodeURIComponent(this.dataset.example))">
+                        data-example="{{ rawurlencode((string) $entry->example) }}">
                         <td class="px-4 sm:px-6 py-4 font-medium text-gray-900 align-top">
                             <div>{{ $entry->term }}</div>
                             @if($entry->group)
@@ -163,7 +184,15 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="3" class="px-6 py-12 text-center text-gray-500">Добавьте слова для изучения</td></tr>
+                    <tr>
+                        <td colspan="3" class="px-6 py-12 text-center text-gray-500">
+                            @if($q !== '')
+                                Ничего не найдено по «{{ $q }}»
+                            @else
+                                Добавьте слова для изучения
+                            @endif
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
@@ -171,30 +200,5 @@
     </div>
 </x-collapsible>
 
-<x-modal id="entry-detail-modal" title="Слово" size="lg">
-    <div id="entry-modal-definition" class="whitespace-pre-wrap text-gray-800 mb-4"></div>
-    <div id="entry-modal-example-wrap" class="hidden border-t border-gray-100 pt-4">
-        <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Пример</p>
-        <p id="entry-modal-example" class="text-gray-600 italic whitespace-pre-wrap"></p>
-    </div>
-</x-modal>
-
-@push('scripts')
-<script>
-function openEntryModal(term, definition, example) {
-    document.getElementById('entry-detail-modal-title').textContent = term;
-    document.getElementById('entry-modal-definition').textContent = definition;
-    const exampleWrap = document.getElementById('entry-modal-example-wrap');
-    const exampleEl = document.getElementById('entry-modal-example');
-    if (example) {
-        exampleWrap.classList.remove('hidden');
-        exampleEl.textContent = example;
-    } else {
-        exampleWrap.classList.add('hidden');
-        exampleEl.textContent = '';
-    }
-    openModal('entry-detail-modal');
-}
-</script>
-@endpush
+@include('partials.entry-detail-modal')
 @endsection

@@ -43,7 +43,7 @@ Route::patch('books/{book}/progress', [BookController::class, 'updateProgress'])
 Route::patch('books/queued/reorder', [BookController::class, 'reorderQueued'])->name('books.queued.reorder');
 Route::resource('books.thoughts', BookThoughtController::class)->except(['index', 'show']);
 Route::resource('movies', MovieController::class);
-Route::resource('quotes', QuoteController::class)->except(['show']);
+Route::resource('quotes', QuoteController::class)->except(['index', 'show']);
 Route::resource('facts', FactController::class)->except(['show']);
 Route::resource('fact-groups', FactGroupController::class)->except(['index', 'show']);
 Route::resource('jokes', JokeController::class)->except(['show']);
@@ -59,6 +59,8 @@ Route::get('exam', [NoteQuestionController::class, 'exam'])->name('exam');
 Route::post('exam/{question}', [NoteQuestionController::class, 'examAnswer'])->name('exam.answer');
 
 Route::get('review', [ReviewController::class, 'index'])->name('review.index');
+Route::get('review/all', [ReviewController::class, 'allSession'])->name('review.all');
+Route::post('review/all/{entry}', [ReviewController::class, 'allAnswer'])->name('review.all.answer');
 Route::get('review/facts', [ReviewController::class, 'factsSession'])->name('review.facts');
 Route::post('review/facts/{fact}', [ReviewController::class, 'factsAnswer'])->name('review.facts.answer');
 Route::get('review/{dictionary}', [ReviewController::class, 'session'])->name('review.session');

@@ -12,17 +12,9 @@ use Illuminate\View\View;
 
 class ReviewController extends Controller
 {
-    public function index(): View
+    public function index(): RedirectResponse
     {
-        $dictionaries = Dictionary::withCount('entries')
-            ->whereHas('entries')
-            ->orderBy('name')
-            ->get();
-
-        return view('review.index', [
-            'dictionaries' => $dictionaries,
-            'totalFacts' => Fact::count(),
-        ]);
+        return redirect()->route('dictionaries.index');
     }
 
     public function factsSession(Request $request): View
@@ -48,6 +40,31 @@ class ReviewController extends Controller
         ActivityTracker::log('card');
 
         return redirect()->route('review.facts', ['exclude' => $fact->id]);
+    }
+
+    public function allSession(Request $request): View
+    {
+        $query = DictionaryEntry::query()->due()->orderBy('next_review_at');
+
+        if ($request->filled('exclude')) {
+            $query->where('id', '!=', $request->integer('exclude'));
+        }
+
+        $entry = $query->with('dictionary')->first()
+            ?? DictionaryEntry::with('dictionary')->inRandomOrder()->first();
+
+        return view('review.all', [
+            'entry' => $entry,
+            'total' => DictionaryEntry::count(),
+        ]);
+    }
+
+    public function allAnswer(DictionaryEntry $entry): RedirectResponse
+    {
+        $entry->recordReview(true);
+        ActivityTracker::log('card');
+
+        return redirect()->route('review.all', ['exclude' => $entry->id]);
     }
 
     public function session(Request $request, Dictionary $dictionary): View

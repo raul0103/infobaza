@@ -12,7 +12,7 @@
             'items' => [
                 ['route' => 'topics.*', 'label' => 'Темы', 'icon' => 'folder'],
                 ['route' => 'notes.*', 'label' => 'Записи', 'icon' => 'document'],
-                ['route' => 'facts.*', 'label' => 'Интересные факты', 'icon' => 'fact'],
+                ['route' => 'facts.*', 'match' => ['facts.*', 'fact-groups.*', 'review.facts', 'review.facts.answer'], 'label' => 'Интересные факты', 'icon' => 'fact'],
                 ['route' => 'jokes.*', 'label' => 'Анекдоты', 'icon' => 'joke'],
             ],
         ],
@@ -21,14 +21,12 @@
             'items' => [
                 ['route' => 'books.*', 'label' => 'Книги', 'icon' => 'book'],
                 ['route' => 'movies.*', 'label' => 'Фильмы', 'icon' => 'film'],
-                ['route' => 'quotes.*', 'label' => 'Цитаты', 'icon' => 'quote'],
             ],
         ],
         [
             'label' => 'Обучение',
             'items' => [
-                ['route' => 'dictionaries.*', 'label' => 'Словари', 'icon' => 'dictionary'],
-                ['route' => 'review.*', 'label' => 'Повторение', 'icon' => 'repeat'],
+                ['route' => 'dictionaries.*', 'match' => ['dictionaries.*', 'review.session', 'review.answer', 'review.all', 'review.all.answer'], 'label' => 'Словари', 'icon' => 'dictionary'],
                 ['route' => 'exam', 'match' => 'exam*', 'label' => 'Экзамен', 'icon' => 'exam'],
             ],
         ],
@@ -55,7 +53,7 @@
                 $href = $item['route'] === 'dashboard'
                     ? route('dashboard')
                     : route(str_replace('.*', '.index', $item['route']));
-                $active = request()->routeIs($item['match'] ?? $item['route']);
+                $active = request()->routeIs(...(array) ($item['match'] ?? $item['route']));
             @endphp
             <a href="{{ $href }}" class="nav-link {{ $active ? 'active' : '' }}">
                 @include('partials.nav-icon', ['name' => $item['icon']])

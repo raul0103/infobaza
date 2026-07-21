@@ -14,9 +14,8 @@
             <li><a href="#topics" class="link block">Темы и записи</a></li>
             <li><a href="#books" class="link block">Книги</a></li>
             <li><a href="#movies" class="link block">Фильмы</a></li>
-            <li><a href="#quotes" class="link block">Цитаты</a></li>
             <li><a href="#dictionaries" class="link block">Словари</a></li>
-            <li><a href="#review" class="link block">Повторение</a></li>
+            <li><a href="#review" class="link block">Повторение и экзамен</a></li>
             <li><a href="#planning" class="link block">Инбокс</a></li>
             <li><a href="#mobile" class="link block">iPhone и iPad</a></li>
             <li><a href="#tips" class="link block">Советы</a></li>
@@ -42,7 +41,7 @@
                 <li>Запишите мысль в <a href="{{ route('inbox.index') }}" class="link">Инбокс</a> — не думая, куда она относится.</li>
                 <li>Когда будет время — откройте инбокс и выберите, куда сохранить: запись, книга, фильм или слово.</li>
                 <li>Создайте <a href="{{ route('topics.index') }}" class="link">темы</a> (Физика, Работа…) и привязывайте к ним записи.</li>
-                <li>Для запоминания — <a href="{{ route('dictionaries.index') }}" class="link">словари</a> и <a href="{{ route('review.index') }}" class="link">повторение</a>.</li>
+                <li>Для запоминания — <a href="{{ route('dictionaries.index') }}" class="link">словари</a> (кнопка «Повторение» на карточке) и <a href="{{ route('exam') }}" class="link">экзамен</a>.</li>
             </ol>
         </section>
 
@@ -100,13 +99,7 @@
             <p class="text-gray-600 leading-relaxed">
                 Как у книг: разделы <strong>Хочу посмотреть</strong>, <strong>Смотрю</strong>, <strong>Просмотрено</strong>.
                 Из инбокса фильм сразу попадает в «Хочу посмотреть». Цитаты и реплики персонажей — на странице фильма.
-            </p>
-        </section>
-
-        <section id="quotes" class="card scroll-mt-24">
-            <h2 class="section-title mb-3">Цитаты</h2>
-            <p class="text-gray-600 leading-relaxed">
-                Общий список или добавление с страницы книги/фильма. Можно указать страницу, персонажа, тему и контекст.
+                На <a href="{{ route('dashboard') }}" class="link">главной</a> показывается случайная цитата.
             </p>
         </section>
 
@@ -116,14 +109,17 @@
                 Создайте словарь (язык, тема), добавляйте слова: термин, определение, пример.
                 Связанные слова можно <strong>объединять</strong>: у объединения — общее описание, скриншоты и файлы.
                 Сами слова при этом остаются в словаре. Слова из инбокса тоже можно сразу отправить в выбранный словарь.
+                На главной — три случайных слова для быстрого повторения.
             </p>
         </section>
 
         <section id="review" class="card scroll-mt-24">
             <h2 class="section-title mb-3">Повторение и экзамен</h2>
             <p class="text-gray-600 leading-relaxed mb-4">
-                <strong>Повторение</strong> — интервальные карточки (SRS): после каждого просмотра интервал до следующего показа увеличивается.
-                Так повторяются и слова из словарей, и <a href="{{ route('facts.index') }}" class="link">интересные факты</a>.
+                <strong>Повторение</strong> — интервальные карточки (SRS). Запускается кнопкой
+                <strong>«Повторение»</strong> на странице <a href="{{ route('dictionaries.index') }}" class="link">словарей</a>
+                или внутри конкретного словаря. Факты повторяются кнопкой
+                <strong>«Повторять»</strong> на странице <a href="{{ route('facts.index') }}" class="link">интересных фактов</a>.
             </p>
             <p class="text-gray-600 leading-relaxed">
                 <strong><a href="{{ route('exam') }}" class="link">Экзамен</a></strong> — отдельный режим: вопросы, которые вы сами добавили к записям.
@@ -135,7 +131,7 @@
             <h2 class="section-title mb-3">Инбокс</h2>
             <p class="text-gray-600 leading-relaxed">
                 Быстрый захват мыслей: сохраните текст в инбокс, затем превратите в запись, книгу, фильм или слово.
-                На <a href="{{ route('dashboard') }}" class="link">главной</a> — последние записи и то, что читаете сейчас.
+                На <a href="{{ route('dashboard') }}" class="link">главной</a> — случайная цитата, слова для повторения, последние записи и то, что читаете сейчас.
             </p>
         </section>
 
