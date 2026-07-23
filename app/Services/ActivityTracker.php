@@ -14,7 +14,6 @@ class ActivityTracker
             'card' => 'cards_reviewed',
             'quote' => 'quotes_count',
             'pages' => 'pages_read',
-            'inbox' => 'inbox_processed',
             default => null,
         };
 
@@ -48,7 +47,7 @@ class ActivityTracker
         }
 
         return ($activity->notes_count + $activity->cards_reviewed
-            + $activity->quotes_count + $activity->pages_read + $activity->inbox_processed) > 0;
+            + $activity->quotes_count + $activity->pages_read) > 0;
     }
 
     public static function todayActivity(): DailyActivity

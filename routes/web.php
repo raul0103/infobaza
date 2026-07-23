@@ -11,7 +11,6 @@ use App\Http\Controllers\FactGroupController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\JokeController;
-use App\Http\Controllers\InboxController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\MemoEntryController;
 use App\Http\Controllers\MovieController;
@@ -29,11 +28,6 @@ Route::patch('favorites/thoughts/{thought}', [FavoriteController::class, 'toggle
     ->name('favorites.thoughts.toggle');
 Route::patch('favorites/quotes/{quote}', [FavoriteController::class, 'toggleQuote'])
     ->name('favorites.quotes.toggle');
-
-Route::get('inbox', [InboxController::class, 'index'])->name('inbox.index');
-Route::post('inbox', [InboxController::class, 'store'])->name('inbox.store');
-Route::post('inbox/{inbox}/convert', [InboxController::class, 'convert'])->name('inbox.convert');
-Route::delete('inbox/{inbox}', [InboxController::class, 'destroy'])->name('inbox.destroy');
 
 Route::resource('topics', TopicController::class);
 Route::resource('notes', NoteController::class);

@@ -4,6 +4,8 @@
             'label' => null,
             'items' => [
                 ['route' => 'dashboard', 'label' => 'Главная', 'icon' => 'home'],
+                ['route' => 'dictionaries.*', 'match' => ['dictionaries.*', 'review.session', 'review.answer', 'review.all', 'review.all.answer'], 'label' => 'Словари', 'icon' => 'dictionary'],
+                ['route' => 'books.*', 'label' => 'Книги', 'icon' => 'book'],
                 ['route' => 'favorites.*', 'label' => 'Избранное', 'icon' => 'star'],
                 ['route' => 'memos.*', 'label' => 'Заметки', 'icon' => 'memo'],
             ],
@@ -20,21 +22,13 @@
         [
             'label' => 'Медиатека',
             'items' => [
-                ['route' => 'books.*', 'label' => 'Книги', 'icon' => 'book'],
                 ['route' => 'movies.*', 'match' => ['movies.*'], 'label' => 'Фильмы', 'icon' => 'film'],
             ],
         ],
         [
             'label' => 'Обучение',
             'items' => [
-                ['route' => 'dictionaries.*', 'match' => ['dictionaries.*', 'review.session', 'review.answer', 'review.all', 'review.all.answer'], 'label' => 'Словари', 'icon' => 'dictionary'],
                 ['route' => 'exam', 'match' => 'exam*', 'label' => 'Экзамен', 'icon' => 'exam'],
-            ],
-        ],
-        [
-            'label' => 'Захват',
-            'items' => [
-                ['route' => 'inbox.*', 'label' => 'Инбокс', 'icon' => 'inbox'],
             ],
         ],
         [

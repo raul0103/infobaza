@@ -8,6 +8,7 @@
     data-page="{{ rawurlencode((string) $thought->page) }}"
     data-source-label="{{ rawurlencode($showSource && $thought->book ? $thought->book->title : '') }}"
     data-source-url="{{ $showSource && $thought->book ? route('books.show', $thought->book) : '' }}"
+    data-edit-url="{{ route('books.thoughts.edit', [$thought->book_id, $thought]) }}"
     onclick="if (!event.target.closest('a, button, form')) openCardModal(this)"
 >
     <p class="flex-1 min-w-0 text-sm text-gray-800 truncate">{{ $thought->content }}</p>

@@ -53,14 +53,30 @@ class BookController extends Controller
         return redirect()->route('books.show', $book)->with('success', 'Книга добавлена.');
     }
 
-    public function show(Book $book): View
+    public function show(Request $request, Book $book): View
     {
+        $q = trim((string) $request->query('q', ''));
+
         $book->load([
-            'quotes' => fn ($q) => $q->orderByDesc('is_favorite')->latest(),
-            'thoughts' => fn ($q) => $q->orderByDesc('is_favorite')->latest(),
+            'quotes' => function ($query) use ($q) {
+                $query->orderByDesc('is_favorite')->latest();
+                if ($q !== '') {
+                    $query->where(function ($inner) use ($q) {
+                        $inner->where('text', 'like', "%{$q}%")
+                            ->orWhere('character', 'like', "%{$q}%")
+                            ->orWhere('context', 'like', "%{$q}%")
+                            ->orWhere('page', 'like', "%{$q}%");
+                    });
+                }
+            },
+            'thoughts' => fn ($query) => $query->orderByDesc('is_favorite')->latest(),
         ]);
 
-        return view('books.show', compact('book'));
+        return view('books.show', [
+            'book' => $book,
+            'q' => $q,
+            'quotesTotal' => $book->quotes()->count(),
+        ]);
     }
 
     public function edit(Book $book): View

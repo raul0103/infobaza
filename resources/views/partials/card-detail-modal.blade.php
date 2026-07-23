@@ -13,6 +13,10 @@
     <div id="card-modal-source-wrap" class="hidden mt-4 border-t border-gray-100 pt-4">
         <a id="card-modal-source" href="#" class="link"></a>
     </div>
+
+    <div id="card-modal-actions" class="hidden mt-4 border-t border-gray-100 pt-4">
+        <a id="card-modal-edit" href="#" class="btn btn-secondary text-sm">Редактировать</a>
+    </div>
 </x-modal>
 @endpush
 
@@ -58,6 +62,15 @@ function openCardModal(el) {
         sourceWrap.classList.remove('hidden');
     } else {
         sourceWrap.classList.add('hidden');
+    }
+
+    const actionsWrap = document.getElementById('card-modal-actions');
+    const editLink = document.getElementById('card-modal-edit');
+    if (d.editUrl) {
+        editLink.href = d.editUrl;
+        actionsWrap.classList.remove('hidden');
+    } else {
+        actionsWrap.classList.add('hidden');
     }
 
     openModal('card-detail-modal');

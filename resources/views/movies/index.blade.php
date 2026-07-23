@@ -20,6 +20,6 @@
         @endforeach
     </div>
 @else
-    <div class="card text-center py-12 text-gray-500">Добавьте фильм или перенесите из инбокса</div>
+    <div class="card text-center py-12 text-gray-500">Добавьте фильм</div>
 @endif
 @endsection

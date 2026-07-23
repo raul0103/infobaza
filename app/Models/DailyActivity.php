@@ -8,7 +8,7 @@ class DailyActivity extends Model
 {
     protected $fillable = [
         'date', 'notes_count', 'cards_reviewed',
-        'quotes_count', 'pages_read', 'inbox_processed',
+        'quotes_count', 'pages_read',
     ];
 
     protected function casts(): array

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Dictionary;
 use App\Models\DictionaryEntry;
 use App\Models\Note;
 use App\Models\Quote;
@@ -14,11 +15,16 @@ class DashboardController extends Controller
 {
     public function index(Request $request): View
     {
+        $dictionaries = Dictionary::withCount('entries')->orderBy('name')->get();
+        $primaryDictionary = $dictionaries->sortByDesc('entries_count')->first();
+
         return view('dashboard', [
             'recentNotes' => Note::with('topic.parent')->latest()->limit(5)->get(),
             'readingBooks' => Book::where('status', 'reading')->orderBy('title')->limit(3)->get(),
             'randomQuote' => $this->pickQuote($request),
             'randomWords' => $this->pickWords($request),
+            'primaryDictionary' => $primaryDictionary,
+            'hasWords' => $dictionaries->sum('entries_count') > 0,
         ]);
     }
 

@@ -10,14 +10,12 @@
         <ul class="space-y-2 text-gray-600">
             <li><a href="#about" class="link block">Что это</a></li>
             <li><a href="#flow" class="link block">С чего начать</a></li>
-            <li><a href="#inbox" class="link block">Инбокс</a></li>
             <li><a href="#topics" class="link block">Темы и записи</a></li>
             <li><a href="#memos" class="link block">Заметки</a></li>
             <li><a href="#books" class="link block">Книги</a></li>
             <li><a href="#movies" class="link block">Фильмы</a></li>
             <li><a href="#dictionaries" class="link block">Словари</a></li>
             <li><a href="#review" class="link block">Повторение и экзамен</a></li>
-            <li><a href="#planning" class="link block">Инбокс</a></li>
             <li><a href="#mobile" class="link block">iPhone и iPad</a></li>
             <li><a href="#tips" class="link block">Советы</a></li>
         </ul>
@@ -39,28 +37,11 @@
         <section id="flow" class="card scroll-mt-24">
             <h2 class="section-title mb-3">С чего начать</h2>
             <ol class="list-decimal list-inside space-y-2 text-gray-600 leading-relaxed">
-                <li>Запишите мысль в <a href="{{ route('inbox.index') }}" class="link">Инбокс</a> — не думая, куда она относится.</li>
-                <li>Когда будет время — откройте инбокс и выберите, куда сохранить: запись, книга, фильм или слово.</li>
+                <li>Откройте <a href="{{ route('dashboard') }}" class="link">главную</a> — оттуда быстро добавить слово или цитату.</li>
                 <li>Создайте <a href="{{ route('topics.index') }}" class="link">темы</a> (Физика, Работа…) и привязывайте к ним записи.</li>
                 <li>Для запоминания — <a href="{{ route('dictionaries.index') }}" class="link">словари</a> (кнопка «Повторение» на карточке) и <a href="{{ route('exam') }}" class="link">экзамен</a>.</li>
+                <li>Цитаты из книг добавляйте прямо со страницы книги или с главной.</li>
             </ol>
-        </section>
-
-        <section id="inbox" class="card scroll-mt-24">
-            <h2 class="section-title mb-3">Инбокс</h2>
-            <p class="text-gray-600 leading-relaxed mb-4">
-                Быстрый захват: название книги, термин, идея для статьи — всё в одно поле. Позже разберёте.
-            </p>
-            <p class="text-sm font-medium text-gray-800 mb-2">Куда можно сохранить:</p>
-            <ul class="space-y-2 text-gray-600 text-sm">
-                <li><strong>Запись</strong> — полноценная заметка с темой и текстом из инбокса.</li>
-                <li><strong>Книга → хочу прочитать</strong> — попадёт в раздел «Хочу прочитать» в книгах; текст — в описание.</li>
-                <li><strong>Фильм → хочу посмотреть</strong> — то же для фильмов.</li>
-                <li><strong>Слово в словарь</strong> — первая строка = слово, остальное = значение (можно поправить перед сохранением).</li>
-            </ul>
-            <p class="text-gray-500 text-sm mt-4">
-                В блоке «Недавно разобрано» можно удалить запись из истории инбокса — созданная книга или запись не удалится.
-            </p>
         </section>
 
         <section id="topics" class="card scroll-mt-24">
@@ -110,7 +91,7 @@
                 Статусы показаны карточками, как категории в словарях и заметках:
                 <strong>Хочу посмотреть</strong>, <strong>Смотрю</strong>, <strong>Просмотрено</strong> —
                 клик открывает список фильмов в этом статусе.
-                Из инбокса фильм сразу попадает в «Хочу посмотреть». Цитаты — на странице фильма.
+                Цитаты и реплики — на странице фильма.
                 На <a href="{{ route('dashboard') }}" class="link">главной</a> показывается случайная цитата.
             </p>
         </section>
@@ -120,7 +101,7 @@
             <p class="text-gray-600 leading-relaxed">
                 Создайте словарь (язык, тема), добавляйте слова: термин, определение, пример.
                 Связанные слова можно <strong>объединять</strong>: у объединения — общее описание, скриншоты и файлы.
-                Сами слова при этом остаются в словаре. Слова из инбокса тоже можно сразу отправить в выбранный словарь.
+                Сами слова при этом остаются в словаре.
                 На главной — три случайных слова для быстрого повторения.
             </p>
         </section>
@@ -136,14 +117,6 @@
             <p class="text-gray-600 leading-relaxed">
                 <strong><a href="{{ route('exam') }}" class="link">Экзамен</a></strong> — отдельный режим: вопросы, которые вы сами добавили к записям.
                 Откройте запись → блок «Вопросы для повторения» → добавьте вопрос и ответ.
-            </p>
-        </section>
-
-        <section id="planning" class="card scroll-mt-24">
-            <h2 class="section-title mb-3">Инбокс</h2>
-            <p class="text-gray-600 leading-relaxed">
-                Быстрый захват мыслей: сохраните текст в инбокс, затем превратите в запись, книгу, фильм или слово.
-                На <a href="{{ route('dashboard') }}" class="link">главной</a> — случайная цитата, слова для повторения, последние записи и то, что читаете сейчас.
             </p>
         </section>
 
@@ -196,9 +169,8 @@
         <section id="tips" class="card scroll-mt-24">
             <h2 class="section-title mb-3">Советы</h2>
             <ul class="space-y-2 text-gray-600 text-sm list-disc list-inside">
-                <li>Не обязаны разбирать инбокс каждый день — пусть копится, разберёте когда удобно.</li>
-                <li>Одна мысль — один инбокс; не нужно сразу выбирать правильную категорию.</li>
-                <li>Для языка: слово в инбокс → в словарь → повторение карточками.</li>
+                <li>Слово сразу в словарь → повторение карточками с главной или со страницы словаря.</li>
+                <li>Цитату — со страницы книги или кнопкой «+ Цитата» на главной.</li>
                 <li>Для конспекта: запись + вопросы → экзамен через пару дней.</li>
                 <li>Резервная копия: скопируйте файл <code class="bg-gray-100 px-1 rounded">database/database.sqlite</code>.</li>
             </ul>

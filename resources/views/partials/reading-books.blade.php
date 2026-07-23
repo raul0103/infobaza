@@ -1,5 +1,6 @@
 @php
     $showActions = $showActions ?? false;
+    $showQuoteAdd = $showQuoteAdd ?? false;
 @endphp
 
 @foreach($books as $book)
@@ -13,11 +14,16 @@
                 <div class="h-full bg-emerald-500 rounded-full" style="width:{{ $book->readingPercent() ?? 0 }}%"></div>
             </div>
         </a>
-        @if($showActions)
-            @include('partials.item-actions', [
-                'edit' => route('books.edit', $book),
-                'destroy' => route('books.destroy', $book),
-            ])
-        @endif
+        <div class="flex items-center gap-1 shrink-0">
+            @if($showQuoteAdd)
+                <a href="{{ route('quotes.create', ['book_id' => $book->id]) }}" class="btn btn-ghost text-xs !px-2 !py-1.5" title="Добавить цитату">+ Цитата</a>
+            @endif
+            @if($showActions)
+                @include('partials.item-actions', [
+                    'edit' => route('books.edit', $book),
+                    'destroy' => route('books.destroy', $book),
+                ])
+            @endif
+        </div>
     </div>
 @endforeach

@@ -93,7 +93,7 @@
 @endforeach
 
 @if(! $hasBooks)
-    <div class="card text-center py-12"><p class="text-gray-500">Добавьте первую книгу или перенесите из инбокса</p></div>
+    <div class="card text-center py-12"><p class="text-gray-500">Добавьте первую книгу</p></div>
 @endif
 
 @push('scripts')

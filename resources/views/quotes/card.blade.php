@@ -21,6 +21,7 @@
     data-character="{{ rawurlencode((string) $quote->character) }}"
     data-source-label="{{ rawurlencode($quoteSourceLabel) }}"
     data-source-url="{{ $quoteSourceUrl }}"
+    data-edit-url="{{ route('quotes.edit', $quote) }}"
     onclick="if (!event.target.closest('a, button, form')) openCardModal(this)"
 >
     <p class="flex-1 min-w-0 text-sm text-gray-800 italic truncate">«{{ $quote->text }}»</p>

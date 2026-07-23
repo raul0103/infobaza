@@ -42,6 +42,7 @@
                     data-example="{{ rawurlencode((string) $entry->example) }}"
                     data-dictionary-label="{{ rawurlencode($entry->dictionary->name) }}"
                     data-dictionary-url="{{ route('dictionaries.show', $entry->dictionary) }}"
+                    data-edit-url="{{ route('dictionaries.entries.edit', [$entry->dictionary, $entry]) }}"
                     onclick="openEntryModal(this)"
                 >
                     <div class="min-w-0 flex-1">
