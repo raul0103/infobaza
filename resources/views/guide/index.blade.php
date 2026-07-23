@@ -12,6 +12,7 @@
             <li><a href="#flow" class="link block">С чего начать</a></li>
             <li><a href="#inbox" class="link block">Инбокс</a></li>
             <li><a href="#topics" class="link block">Темы и записи</a></li>
+            <li><a href="#memos" class="link block">Заметки</a></li>
             <li><a href="#books" class="link block">Книги</a></li>
             <li><a href="#movies" class="link block">Фильмы</a></li>
             <li><a href="#dictionaries" class="link block">Словари</a></li>
@@ -78,6 +79,15 @@
             </ul>
         </section>
 
+        <section id="memos" class="card scroll-mt-24">
+            <h2 class="section-title mb-3">Заметки</h2>
+            <p class="text-gray-600 leading-relaxed mb-3">
+                Личные мысли, советы и наблюдения — отдельно от <strong>записей</strong> базы знаний.
+                Как у словарей: сначала создаёте <strong>категорию</strong> (Советы, Мысли, Привычки…),
+                потом добавляете в неё заметки. На главной странице раздела — карточки категорий.
+            </p>
+        </section>
+
         <section id="books" class="card scroll-mt-24">
             <h2 class="section-title mb-3">Книги</h2>
             <p class="text-gray-600 leading-relaxed mb-3">Статусы:</p>
@@ -97,8 +107,10 @@
         <section id="movies" class="card scroll-mt-24">
             <h2 class="section-title mb-3">Фильмы</h2>
             <p class="text-gray-600 leading-relaxed">
-                Как у книг: разделы <strong>Хочу посмотреть</strong>, <strong>Смотрю</strong>, <strong>Просмотрено</strong>.
-                Из инбокса фильм сразу попадает в «Хочу посмотреть». Цитаты и реплики персонажей — на странице фильма.
+                Статусы показаны карточками, как категории в словарях и заметках:
+                <strong>Хочу посмотреть</strong>, <strong>Смотрю</strong>, <strong>Просмотрено</strong> —
+                клик открывает список фильмов в этом статусе.
+                Из инбокса фильм сразу попадает в «Хочу посмотреть». Цитаты — на странице фильма.
                 На <a href="{{ route('dashboard') }}" class="link">главной</a> показывается случайная цитата.
             </p>
         </section>

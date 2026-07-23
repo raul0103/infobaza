@@ -2,11 +2,16 @@
 @section('title', $movie->exists ? 'Редактировать' : 'Новый фильм')
 
 @section('content')
+@php
+    $back = $movie->exists
+        ? route('movies.show', $movie)
+        : route('movies.status', $movie->status ?? 'queued');
+@endphp
 <x-form.shell
     :title="$movie->exists ? 'Редактировать фильм' : 'Новый фильм'"
     :action="$movie->exists ? route('movies.update', $movie) : route('movies.store')"
     :method="$movie->exists ? 'PUT' : 'POST'"
-    :back="route('movies.index')"
+    :back="$back"
 >
     <x-form.input name="title" label="Название" :value="$movie->title" required />
     <div class="grid sm:grid-cols-2 gap-5">

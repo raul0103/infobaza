@@ -1,10 +1,11 @@
 @php
     $sections = [
         [
-            'label' => 'Обзор',
+            'label' => null,
             'items' => [
                 ['route' => 'dashboard', 'label' => 'Главная', 'icon' => 'home'],
                 ['route' => 'favorites.*', 'label' => 'Избранное', 'icon' => 'star'],
+                ['route' => 'memos.*', 'label' => 'Заметки', 'icon' => 'memo'],
             ],
         ],
         [
@@ -20,7 +21,7 @@
             'label' => 'Медиатека',
             'items' => [
                 ['route' => 'books.*', 'label' => 'Книги', 'icon' => 'book'],
-                ['route' => 'movies.*', 'label' => 'Фильмы', 'icon' => 'film'],
+                ['route' => 'movies.*', 'match' => ['movies.*'], 'label' => 'Фильмы', 'icon' => 'film'],
             ],
         ],
         [
@@ -46,7 +47,9 @@
 @endphp
 
 @foreach($sections as $section)
-    <p class="nav-section-label">{{ $section['label'] }}</p>
+    @if($section['label'])
+        <p class="nav-section-label">{{ $section['label'] }}</p>
+    @endif
     <div class="space-y-0.5 mb-1">
         @foreach($section['items'] as $item)
             @php
