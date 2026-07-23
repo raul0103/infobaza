@@ -12,6 +12,7 @@
             <li><a href="#flow" class="link block">С чего начать</a></li>
             <li><a href="#topics" class="link block">Темы и записи</a></li>
             <li><a href="#memos" class="link block">Заметки</a></li>
+            <li><a href="#plans" class="link block">Планы</a></li>
             <li><a href="#books" class="link block">Книги</a></li>
             <li><a href="#movies" class="link block">Фильмы</a></li>
             <li><a href="#dictionaries" class="link block">Словари</a></li>
@@ -41,6 +42,7 @@
                 <li>Создайте <a href="{{ route('topics.index') }}" class="link">темы</a> (Физика, Работа…) и привязывайте к ним записи.</li>
                 <li>Для запоминания — <a href="{{ route('dictionaries.index') }}" class="link">словари</a> (кнопка «Повторение» на карточке) и <a href="{{ route('exam') }}" class="link">экзамен</a>.</li>
                 <li>Цитаты из книг добавляйте прямо со страницы книги или с главной.</li>
+                <li>Задачи и идеи — в <a href="{{ route('plans.index') }}" class="link">планах</a> со шагами и прогрессом.</li>
             </ol>
         </section>
 
@@ -69,6 +71,15 @@
             </p>
         </section>
 
+        <section id="plans" class="card scroll-mt-24">
+            <h2 class="section-title mb-3">Планы</h2>
+            <p class="text-gray-600 leading-relaxed mb-3">
+                Задачи и идеи, которые хотите довести до конца.
+                Статусы — как у фильмов: <strong>Хочу сделать</strong>, <strong>В работе</strong>, <strong>Сделано</strong>.
+                Внутри плана — <strong>шаги</strong> с галочками и прогрессом.
+            </p>
+        </section>
+
         <section id="books" class="card scroll-mt-24">
             <h2 class="section-title mb-3">Книги</h2>
             <p class="text-gray-600 leading-relaxed mb-3">Статусы:</p>
@@ -89,9 +100,8 @@
         <section id="movies" class="card scroll-mt-24">
             <h2 class="section-title mb-3">Фильмы</h2>
             <p class="text-gray-600 leading-relaxed">
-                Статусы показаны карточками, как категории в словарях и заметках:
-                <strong>Хочу посмотреть</strong>, <strong>Смотрю</strong>, <strong>Просмотрено</strong> —
-                клик открывает список фильмов в этом статусе.
+                Статусы — выпадающие списки:
+                <strong>Хочу посмотреть</strong>, <strong>Смотрю</strong>, <strong>Просмотрено</strong>.
                 На странице фильма — <strong>цитаты</strong> и <strong>приёмы</strong> (трюки, механики, советы).
                 На <a href="{{ route('dashboard') }}" class="link">главной</a> показывается случайная цитата.
             </p>

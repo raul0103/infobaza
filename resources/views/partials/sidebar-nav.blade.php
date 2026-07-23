@@ -8,6 +8,7 @@
                 ['route' => 'books.*', 'label' => 'Книги', 'icon' => 'book'],
                 ['route' => 'favorites.*', 'label' => 'Избранное', 'icon' => 'star'],
                 ['route' => 'memos.*', 'label' => 'Заметки', 'icon' => 'memo'],
+                ['route' => 'plans.*', 'match' => ['plans.*'], 'label' => 'Планы', 'icon' => 'plan'],
             ],
         ],
         [

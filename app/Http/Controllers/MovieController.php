@@ -11,32 +11,25 @@ class MovieController extends Controller
 {
     public function index(): View
     {
-        $counts = Movie::query()
-            ->selectRaw('status, count(*) as aggregate')
-            ->groupBy('status')
-            ->pluck('aggregate', 'status');
+        $movies = Movie::withCount(['quotes', 'tips'])
+            ->orderBy('title')
+            ->get()
+            ->groupBy('status');
 
         return view('movies.index', [
             'sections' => collect(Movie::statusLabels())->map(fn ($label, $status) => [
                 'status' => $status,
                 'label' => $label,
-                'count' => (int) $counts->get($status, 0),
+                'movies' => $movies->get($status, collect()),
             ])->values(),
         ]);
     }
 
-    public function status(string $status): View
+    public function status(string $status): RedirectResponse
     {
         abort_unless(array_key_exists($status, Movie::statusLabels()), 404);
 
-        return view('movies.status', [
-            'status' => $status,
-            'label' => Movie::statusLabels()[$status],
-            'movies' => Movie::withCount('quotes')
-                ->where('status', $status)
-                ->orderBy('title')
-                ->get(),
-        ]);
+        return redirect()->route('movies.index');
     }
 
     public function create(Request $request): View
@@ -51,9 +44,9 @@ class MovieController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $movie = Movie::create($this->validated($request));
+        Movie::create($this->validated($request));
 
-        return redirect()->route('movies.status', $movie->status)->with('success', 'Фильм добавлен.');
+        return redirect()->route('movies.index')->with('success', 'Фильм добавлен.');
     }
 
     public function show(Movie $movie): View
@@ -80,10 +73,9 @@ class MovieController extends Controller
 
     public function destroy(Movie $movie): RedirectResponse
     {
-        $status = $movie->status;
         $movie->delete();
 
-        return redirect()->route('movies.status', $status)->with('success', 'Фильм удалён.');
+        return redirect()->route('movies.index')->with('success', 'Фильм удалён.');
     }
 
     private function validated(Request $request): array

@@ -3,9 +3,7 @@
 
 @section('content')
 @php
-    $back = $movie->exists
-        ? route('movies.show', $movie)
-        : route('movies.status', $movie->status ?? 'queued');
+    $back = route('movies.index');
 @endphp
 <x-form.shell
     :title="$movie->exists ? 'Редактировать фильм' : 'Новый фильм'"

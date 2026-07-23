@@ -26,33 +26,38 @@
                 :count="$section['books']->count()"
             >
                 @if($section['status'] === 'queued')
-                    <p class="text-xs text-gray-500 -mt-1">Перетаскивайте книги или используйте стрелки, чтобы менять приоритет.</p>
                     <div
                         id="queued-books-list"
-                        class="space-y-2"
+                        class="divide-y divide-gray-100"
                         data-reorder-url="{{ route('books.queued.reorder') }}"
                         data-csrf="{{ csrf_token() }}"
                     >
                         @foreach($section['books'] as $book)
                             <div
-                                class="queued-book card-hover flex items-center gap-2 !p-2.5 sm:!p-3 transition-opacity"
+                                class="queued-book group/row relative flex items-stretch rounded-lg hover:bg-gray-50 transition-colors transition-opacity"
                                 data-book-id="{{ $book->id }}"
                             >
-                                <span draggable="true" class="drag-handle inline-flex h-8 w-7 shrink-0 cursor-grab items-center justify-center text-gray-300 hover:text-gray-500 active:cursor-grabbing" title="Перетащить">
-                                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                        <circle cx="7" cy="5" r="1.25"/><circle cx="13" cy="5" r="1.25"/>
-                                        <circle cx="7" cy="10" r="1.25"/><circle cx="13" cy="10" r="1.25"/>
-                                        <circle cx="7" cy="15" r="1.25"/><circle cx="13" cy="15" r="1.25"/>
-                                    </svg>
-                                </span>
-                                <span class="priority-number w-6 shrink-0 text-center text-xs font-medium text-gray-400">{{ $loop->iteration }}</span>
-                                <a href="{{ route('books.show', $book) }}" class="flex-1 min-w-0 flex items-center justify-between gap-3">
-                                    <h3 class="text-sm font-medium text-gray-900 truncate">{{ $book->title }}</h3>
+                                <a href="{{ route('books.show', $book) }}" class="absolute inset-0 z-0 rounded-lg" aria-label="{{ $book->title }}"></a>
+
+                                <div class="relative z-10 flex shrink-0 items-center gap-1 py-1.5 pl-1">
+                                    <span draggable="true" class="drag-handle inline-flex h-8 w-7 shrink-0 cursor-grab items-center justify-center text-gray-300 hover:text-gray-500 active:cursor-grabbing" title="Перетащить">
+                                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <circle cx="7" cy="5" r="1.25"/><circle cx="13" cy="5" r="1.25"/>
+                                            <circle cx="7" cy="10" r="1.25"/><circle cx="13" cy="10" r="1.25"/>
+                                            <circle cx="7" cy="15" r="1.25"/><circle cx="13" cy="15" r="1.25"/>
+                                        </svg>
+                                    </span>
+                                    <span class="priority-number w-6 shrink-0 text-center text-xs font-medium text-gray-400 pointer-events-none">{{ $loop->iteration }}</span>
+                                </div>
+
+                                <div class="relative z-10 flex min-w-0 flex-1 items-center gap-3 pointer-events-none py-2.5 px-1">
+                                    <h3 class="min-w-0 flex-1 text-sm font-medium text-gray-900 truncate group-hover/row:text-blue-600">{{ $book->title }}</h3>
                                     @if($book->author)
                                         <span class="text-xs text-gray-400 truncate max-w-[40%] shrink-0 hidden sm:inline">{{ $book->author }}</span>
                                     @endif
-                                </a>
-                                <div class="flex items-center gap-0.5 shrink-0">
+                                </div>
+
+                                <div class="relative z-10 flex items-center gap-0.5 shrink-0 py-1.5 pr-1">
                                     <button type="button" class="move-up inline-flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 disabled:opacity-25" title="Повысить приоритет" @disabled($loop->first)>
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
                                     </button>
@@ -69,21 +74,19 @@
                     </div>
                     <p id="priority-save-status" class="h-4 text-xs text-gray-400" aria-live="polite"></p>
                 @else
-                    <div class="space-y-3">
+                    <div class="divide-y divide-gray-100">
                         @foreach($section['books'] as $book)
-                            <div class="card-hover list-row sm:items-center">
-                                <a href="{{ route('books.show', $book) }}" class="flex-1 min-w-0">
-                                    <h3 class="font-semibold text-gray-900">{{ $book->title }}</h3>
-                                    @if($book->author)<p class="text-sm text-gray-500 mt-0.5">{{ $book->author }}@if($book->year), {{ $book->year }}@endif</p>@endif
-                                </a>
-                                <div class="flex items-center gap-4 shrink-0">
-                                    <span class="badge-gray hidden sm:inline">{{ $book->quotes_count }} цитат</span>
-                                    @include('partials.item-actions', [
-                                        'edit' => route('books.edit', $book),
-                                        'destroy' => route('books.destroy', $book),
-                                    ])
-                                </div>
-                            </div>
+                            <x-list-row-card
+                                :href="route('books.show', $book)"
+                                :title="$book->title"
+                                :subtitle="$book->author"
+                            >
+                                <span class="badge-gray hidden sm:inline shrink-0">{{ $book->quotes_count }} цитат</span>
+                                @include('partials.item-actions', [
+                                    'edit' => route('books.edit', $book),
+                                    'destroy' => route('books.destroy', $book),
+                                ])
+                            </x-list-row-card>
                         @endforeach
                     </div>
                 @endif
