@@ -39,6 +39,7 @@
                 class="min-w-0 flex-1 text-left cursor-pointer"
                 data-title="{{ rawurlencode($entry->title) }}"
                 data-content="{{ rawurlencode((string) $entry->content) }}"
+                data-content-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->content)->toHtml()) }}"
                 data-edit-url="{{ route('memos.entries.edit', [$memo, $entry]) }}"
                 onclick="openMemoModal(this)"
             >

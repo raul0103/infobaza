@@ -30,7 +30,7 @@
         <x-form.input name="started_at" type="date" label="Начал читать" :value="old('started_at', $book->started_at?->format('Y-m-d'))" />
         <x-form.input name="finished_at" type="date" label="Закончил" :value="old('finished_at', $book->finished_at?->format('Y-m-d'))" />
     </div>
-    <x-form.textarea name="description" label="Описание" :value="$book->description" :rows="3" />
+    <x-form.textarea name="description" label="Описание" :value="$book->description" :rows="3" markdown />
 </x-form.shell>
 @if($book->exists)
     <div class="max-w-4xl">@include('partials.form-delete', ['action' => route('books.destroy', $book)])</div>

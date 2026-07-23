@@ -11,7 +11,7 @@
     :wide="true"
 >
     <x-form.input name="title" label="Заголовок" :value="$entry->title" required placeholder="Кратко о сути…" />
-    <x-form.textarea name="content" label="Текст" :value="$entry->content" :rows="12" placeholder="Мысль, совет, наблюдение…" />
+    <x-form.textarea name="content" label="Текст" :value="$entry->content" :rows="12" placeholder="Мысль, совет, наблюдение…" markdown />
 </x-form.shell>
 
 @if($entry->exists)

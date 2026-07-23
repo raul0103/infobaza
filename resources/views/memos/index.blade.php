@@ -34,6 +34,7 @@
                     class="card-hover !p-3 flex items-center gap-3 w-full text-left cursor-pointer"
                     data-title="{{ rawurlencode($entry->title) }}"
                     data-content="{{ rawurlencode((string) $entry->content) }}"
+                    data-content-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->content)->toHtml()) }}"
                     data-category-label="{{ rawurlencode($entry->memo->name) }}"
                     data-category-url="{{ route('memos.show', $entry->memo) }}"
                     data-edit-url="{{ route('memos.entries.edit', [$entry->memo, $entry]) }}"

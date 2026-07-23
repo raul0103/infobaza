@@ -1,7 +1,7 @@
 @once
 @push('modals')
 <x-modal id="memo-detail-modal" title="Заметка" size="lg">
-    <div id="memo-modal-content" class="whitespace-pre-wrap text-gray-800 leading-relaxed"></div>
+    <div id="memo-modal-content" class="markdown-body text-gray-800 leading-relaxed"></div>
     <div id="memo-modal-empty" class="hidden text-gray-500">Текст пока не добавлен.</div>
     <div id="memo-modal-source-wrap" class="hidden mt-4 border-t border-gray-100 pt-4">
         <a id="memo-modal-source" href="#" class="link"></a>
@@ -19,6 +19,7 @@ function openMemoModal(el) {
     const decode = (value) => decodeURIComponent(value || '');
     const title = decode(d.title);
     const content = decode(d.content);
+    const contentHtml = decode(d.contentHtml || '');
     const categoryLabel = decode(d.categoryLabel);
     const categoryUrl = d.categoryUrl || '';
     const editUrl = d.editUrl || '';
@@ -27,12 +28,16 @@ function openMemoModal(el) {
 
     const contentEl = document.getElementById('memo-modal-content');
     const emptyEl = document.getElementById('memo-modal-empty');
-    if (content) {
-        contentEl.textContent = content;
+    if (contentHtml || content) {
+        if (contentHtml) {
+            contentEl.innerHTML = contentHtml;
+        } else {
+            contentEl.textContent = content;
+        }
         contentEl.classList.remove('hidden');
         emptyEl.classList.add('hidden');
     } else {
-        contentEl.textContent = '';
+        contentEl.innerHTML = '';
         contentEl.classList.add('hidden');
         emptyEl.classList.remove('hidden');
     }

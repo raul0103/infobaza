@@ -21,7 +21,7 @@
             <option value="{{ $v }}" @selected(old('status', $movie->status ?? 'queued') == $v)>{{ $l }}</option>
         @endforeach
     </x-form.select>
-    <x-form.textarea name="description" label="Заметки о фильме" :value="$movie->description" :rows="4" />
+    <x-form.textarea name="description" label="Заметки о фильме" :value="$movie->description" :rows="4" markdown />
 </x-form.shell>
 
 @if($movie->exists)

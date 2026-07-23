@@ -54,14 +54,14 @@
         </div>
     @endif
 
-    <x-form.textarea name="text" label="Текст цитаты" :value="$quote->text" :rows="5" required autofocus />
+    <x-form.textarea name="text" label="Текст цитаты" :value="$quote->text" :rows="5" required autofocus markdown />
 
     <div class="grid sm:grid-cols-2 gap-5">
         <x-form.input name="page" label="Страница" :value="$quote->page" />
         <x-form.input name="character" label="Персонаж / автор реплики" :value="$quote->character" />
     </div>
 
-    <x-form.textarea name="context" label="Контекст" :value="$quote->context" :rows="2" hint="Когда и при каких обстоятельствах" />
+    <x-form.textarea name="context" label="Контекст" :value="$quote->context" :rows="2" hint="Когда и при каких обстоятельствах" markdown />
 </x-form.shell>
 
 @if($quote->exists)

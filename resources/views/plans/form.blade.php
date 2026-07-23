@@ -25,6 +25,7 @@
         :value="$plan->description"
         :rows="5"
         hint="Детали, ссылки, что купить…"
+        markdown
     />
 
     <x-form.select name="status" label="Статус" :placeholder="false">

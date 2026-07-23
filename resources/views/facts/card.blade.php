@@ -4,7 +4,7 @@
             @if($fact->title)
                 <h3 class="font-semibold text-gray-900 mb-1.5">{{ $fact->title }}</h3>
             @endif
-            <p class="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{{ $fact->text }}</p>
+            <div class="text-sm text-gray-800 leading-relaxed"><x-markdown :content="$fact->text" /></div>
             @if($fact->source)
                 <p class="text-xs text-blue-600 font-medium mt-2">{{ $fact->source }}</p>
             @endif

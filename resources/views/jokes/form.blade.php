@@ -10,7 +10,7 @@
     :back="route('jokes.index')"
     wide
 >
-    <x-form.textarea name="text" label="Анекдот" :value="$joke->text" :rows="8" required />
+    <x-form.textarea name="text" label="Анекдот" :value="$joke->text" :rows="8" required markdown />
     <x-form.input name="source" label="Откуда" :value="$joke->source" placeholder="Необязательно" />
 </x-form.shell>
 

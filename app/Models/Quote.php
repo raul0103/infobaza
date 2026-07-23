@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\OrdersByPage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Quote extends Model
 {
+    use OrdersByPage;
+
     protected $fillable = [
         'book_id', 'movie_id',
         'text', 'page', 'character', 'context', 'is_favorite',

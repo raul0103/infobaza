@@ -10,11 +10,14 @@
         ])
     </x-slot:actions>
 </x-page-header>
-<div class="card prose prose-gray max-w-none mb-6">
-    <div class="whitespace-pre-wrap text-gray-700 leading-relaxed">{{ $note->content }}</div>
+<div class="card mb-6">
+    <x-markdown :content="$note->content" />
 </div>
 @if($note->recap)
-<div class="card mb-6"><h2 class="section-title mb-2">Мой пересказ</h2><p class="text-gray-600 whitespace-pre-wrap">{{ $note->recap }}</p></div>
+<div class="card mb-6">
+    <h2 class="section-title mb-2">Мой пересказ</h2>
+    <x-markdown :content="$note->recap" class="text-gray-600" />
+</div>
 @endif
 @if($note->linkedNotes->isNotEmpty())
 <div class="card mb-6">

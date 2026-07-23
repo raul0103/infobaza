@@ -17,6 +17,7 @@
     data-kind="tip"
     data-title="{{ rawurlencode((string) $tip->title) }}"
     data-text="{{ rawurlencode($tip->content) }}"
+    data-text-html="{{ rawurlencode(\App\Support\Markdown::parse($tip->content)->toHtml()) }}"
     data-chapter="{{ rawurlencode((string) $tip->chapter) }}"
     data-page="{{ rawurlencode((string) $tip->page) }}"
     data-source-label="{{ rawurlencode($tipSourceLabel) }}"

@@ -19,7 +19,9 @@
 </x-page-header>
 
 @if(filled($plan->description))
-    <div class="card mb-6 text-gray-700 whitespace-pre-wrap leading-relaxed">{{ $plan->description }}</div>
+    <div class="card mb-6">
+        <x-markdown :content="$plan->description" class="text-gray-700" />
+    </div>
 @endif
 
 @if($total > 0)

@@ -10,7 +10,7 @@
 >
     <x-form.input name="name" label="Название" :value="$dictionary->name" required placeholder="Английский B1, Термины CCTV…" />
     <x-form.input name="language" label="Язык" :value="$dictionary->language" placeholder="ru, en, de" />
-    <x-form.textarea name="description" label="Описание" :value="$dictionary->description" :rows="3" />
+    <x-form.textarea name="description" label="Описание" :value="$dictionary->description" :rows="3" markdown />
 </x-form.shell>
 
 @if($dictionary->exists)

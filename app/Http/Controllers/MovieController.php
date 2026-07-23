@@ -52,8 +52,8 @@ class MovieController extends Controller
     public function show(Movie $movie): View
     {
         $movie->load([
-            'quotes' => fn ($q) => $q->latest(),
-            'tips' => fn ($q) => $q->latest(),
+            'quotes' => fn ($q) => $q->orderByPageAsc()->latest(),
+            'tips' => fn ($q) => $q->orderByPageAsc()->latest(),
         ]);
 
         return view('movies.show', compact('movie'));

@@ -91,6 +91,30 @@
             .collapsible-section > summary { list-style: none; }
             .collapsible-section .collapse-chevron { @apply transition-transform; }
             .collapsible-section[open] .collapse-chevron { transform: rotate(90deg); }
+            .markdown-body { @apply text-gray-800 leading-relaxed; }
+            .markdown-body > :first-child { @apply mt-0; }
+            .markdown-body > :last-child { @apply mb-0; }
+            .markdown-body p { @apply my-3; }
+            .markdown-body p + p { @apply mt-3; }
+            .markdown-body strong { @apply font-semibold text-gray-900; }
+            .markdown-body em { @apply italic; }
+            .markdown-body a { @apply text-blue-600 underline hover:text-blue-800; }
+            .markdown-body ul { @apply my-3 list-disc pl-5 space-y-1; }
+            .markdown-body ol { @apply my-3 list-decimal pl-5 space-y-1; }
+            .markdown-body li { @apply my-0.5; }
+            .markdown-body blockquote { @apply my-3 border-l-4 border-gray-200 pl-3 text-gray-600 italic; }
+            .markdown-body code { @apply rounded bg-gray-100 px-1 py-0.5 text-[0.9em] font-mono text-gray-800; }
+            .markdown-body pre { @apply my-3 overflow-x-auto rounded-lg bg-gray-900 p-3 text-sm text-gray-100; }
+            .markdown-body pre code { @apply bg-transparent p-0 text-inherit; }
+            .markdown-body h1, .markdown-body h2, .markdown-body h3 { @apply font-semibold text-gray-900 mt-4 mb-2; }
+            .markdown-body h1 { @apply text-xl; }
+            .markdown-body h2 { @apply text-lg; }
+            .markdown-body h3 { @apply text-base; }
+            .markdown-body table { @apply my-3 w-full text-sm border-collapse; }
+            .markdown-body th, .markdown-body td { @apply border border-gray-200 px-2 py-1.5 text-left; }
+            .markdown-body th { @apply bg-gray-50 font-medium; }
+            .markdown-body hr { @apply my-4 border-gray-200; }
+            .markdown-body input[type="checkbox"] { @apply mr-2 align-middle; }
         }
     </style>
     @stack('head')

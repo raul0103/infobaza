@@ -4,6 +4,7 @@
     class="card border-l-4 border-l-amber-400 !p-2.5 sm:!p-3 flex items-center gap-2 cursor-pointer hover:border-amber-300 transition"
     data-kind="thought"
     data-text="{{ rawurlencode($thought->content) }}"
+    data-text-html="{{ rawurlencode(\App\Support\Markdown::parse($thought->content)->toHtml()) }}"
     data-chapter="{{ rawurlencode((string) $thought->chapter) }}"
     data-page="{{ rawurlencode((string) $thought->page) }}"
     data-source-label="{{ rawurlencode($showSource && $thought->book ? $thought->book->title : '') }}"

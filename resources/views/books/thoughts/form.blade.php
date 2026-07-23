@@ -19,6 +19,7 @@
         :rows="7"
         hint="Наблюдение, вывод, вопрос или идея, возникшая во время чтения."
         required
+        markdown
     />
 
     <div class="grid sm:grid-cols-2 gap-5">

@@ -12,7 +12,7 @@
     :wide="true"
 >
     <x-form.input name="title" label="Название объединения" :value="$group->title" hint="Необязательно. Например: синонимы, однокоренные, устойчивое выражение." />
-    <x-form.textarea name="description" label="Описание" :value="$group->description" :rows="4" hint="Общее описание для всех слов в объединении." />
+    <x-form.textarea name="description" label="Описание" :value="$group->description" :rows="4" hint="Общее описание для всех слов в объединении." markdown />
 
     <div class="form-group">
         <label class="label">Слова в объединении</label>

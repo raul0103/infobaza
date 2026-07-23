@@ -1,10 +1,10 @@
 @once
 @push('modals')
 <x-modal id="entry-detail-modal" title="Слово" size="lg">
-    <div id="entry-modal-definition" class="whitespace-pre-wrap text-gray-800 mb-4"></div>
+    <div id="entry-modal-definition" class="markdown-body text-gray-800 mb-4"></div>
     <div id="entry-modal-example-wrap" class="hidden border-t border-gray-100 pt-4">
         <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Пример</p>
-        <p id="entry-modal-example" class="text-gray-600 italic whitespace-pre-wrap"></p>
+        <div id="entry-modal-example" class="markdown-body text-gray-600 italic"></div>
     </div>
     <div id="entry-modal-source-wrap" class="hidden mt-4 border-t border-gray-100 pt-4">
         <a id="entry-modal-source" href="#" class="link"></a>
@@ -20,7 +20,9 @@
 function openEntryModal(termOrEl, definition, example, dictionaryLabel, dictionaryUrl) {
     let term = termOrEl;
     let def = definition || '';
+    let defHtml = '';
     let ex = example || '';
+    let exHtml = '';
     let dictLabel = dictionaryLabel || '';
     let dictUrl = dictionaryUrl || '';
     let editUrl = '';
@@ -30,20 +32,31 @@ function openEntryModal(termOrEl, definition, example, dictionaryLabel, dictiona
         const decode = (v) => decodeURIComponent(v || '');
         term = decode(d.term);
         def = decode(d.definition);
+        defHtml = decode(d.definitionHtml || '');
         ex = decode(d.example);
+        exHtml = decode(d.exampleHtml || '');
         dictLabel = decode(d.dictionaryLabel);
         dictUrl = d.dictionaryUrl || '';
         editUrl = d.editUrl || '';
     }
 
     document.getElementById('entry-detail-modal-title').textContent = term;
-    document.getElementById('entry-modal-definition').textContent = def;
+    const defEl = document.getElementById('entry-modal-definition');
+    if (defHtml) {
+        defEl.innerHTML = defHtml;
+    } else {
+        defEl.textContent = def;
+    }
 
     const exampleWrap = document.getElementById('entry-modal-example-wrap');
     const exampleEl = document.getElementById('entry-modal-example');
-    if (ex) {
+    if (ex || exHtml) {
         exampleWrap.classList.remove('hidden');
-        exampleEl.textContent = ex;
+        if (exHtml) {
+            exampleEl.innerHTML = exHtml;
+        } else {
+            exampleEl.textContent = ex;
+        }
     } else {
         exampleWrap.classList.add('hidden');
         exampleEl.textContent = '';

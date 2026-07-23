@@ -18,7 +18,7 @@
             </option>
         @endforeach
     </x-form.select>
-    <x-form.textarea name="text" label="Факт" :value="$fact->text" :rows="6" required />
+    <x-form.textarea name="text" label="Факт" :value="$fact->text" :rows="6" required markdown />
     <x-form.input name="source" label="Источник" :value="$fact->source" placeholder="Книга, сайт, человек…" />
 </x-form.shell>
 

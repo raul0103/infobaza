@@ -13,7 +13,7 @@
         <div class="card p-4 sm:p-4">
             <div class="flex items-start justify-between gap-3">
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">{{ $joke->text }}</p>
+                    <p class="text-sm text-gray-800 leading-relaxed"><x-markdown :content="$joke->text" /></p>
                     @if($joke->source)
                         <p class="text-xs text-blue-600 font-medium mt-2">{{ $joke->source }}</p>
                     @endif

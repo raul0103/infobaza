@@ -14,7 +14,9 @@
 </x-page-header>
 
 @if($movie->description)
-    <div class="card mb-6 text-gray-600 whitespace-pre-wrap">{{ $movie->description }}</div>
+    <div class="card mb-6">
+        <x-markdown :content="$movie->description" class="text-gray-600" />
+    </div>
 @endif
 
 <x-collapsible title="Цитаты" :count="$movie->quotes->count()" :open="true">

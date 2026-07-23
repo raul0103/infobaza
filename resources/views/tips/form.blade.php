@@ -70,6 +70,7 @@
         required
         autofocus
         hint="Как это работает, когда применять, нюансы."
+        markdown
     />
 
     <div class="grid sm:grid-cols-2 gap-5">

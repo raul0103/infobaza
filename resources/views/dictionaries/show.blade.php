@@ -68,7 +68,9 @@
                         onclick="if (!event.target.closest('a, button, form')) openEntryModal(this)"
                         data-term="{{ rawurlencode($entry->term) }}"
                         data-definition="{{ rawurlencode($entry->definition) }}"
+                        data-definition-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->definition)->toHtml()) }}"
                         data-example="{{ rawurlencode((string) $entry->example) }}"
+                        data-example-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->example)->toHtml()) }}"
                         data-edit-url="{{ route('dictionaries.entries.edit', [$dictionary, $entry]) }}">
                         <td class="px-4 sm:px-6 py-3 font-medium text-gray-900 align-top">
                             <div>{{ $entry->term }}</div>
@@ -112,7 +114,7 @@
         @if($dictionary->language)
             <p class="mb-4"><span class="badge-blue">{{ strtoupper($dictionary->language) }}</span></p>
         @endif
-        <div class="whitespace-pre-wrap text-base text-gray-800">{{ $dictionary->description }}</div>
+        <div class="markdown-body text-base text-gray-800">{!! \App\Support\Markdown::parse($dictionary->description) !!}</div>
     </x-modal>
 @endif
 
