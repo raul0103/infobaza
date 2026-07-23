@@ -19,6 +19,7 @@ use App\Http\Controllers\NoteQuestionController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\TipController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -43,6 +44,7 @@ Route::resource('movies', MovieController::class);
 Route::resource('memos', MemoController::class);
 Route::resource('memos.entries', MemoEntryController::class)->except(['index']);
 Route::resource('quotes', QuoteController::class)->except(['index', 'show']);
+Route::resource('tips', TipController::class)->except(['index', 'show']);
 Route::resource('facts', FactController::class)->except(['show']);
 Route::resource('fact-groups', FactGroupController::class)->except(['index', 'show']);
 Route::resource('jokes', JokeController::class)->except(['show']);

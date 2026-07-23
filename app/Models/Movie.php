@@ -22,4 +22,9 @@ class Movie extends Model
     {
         return $this->hasMany(Quote::class);
     }
+
+    public function tips(): HasMany
+    {
+        return $this->hasMany(Tip::class);
+    }
 }

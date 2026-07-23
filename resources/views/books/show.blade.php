@@ -5,6 +5,7 @@
     <x-slot:actions>
         <span class="badge-gray">{{ \App\Models\Book::statusLabels()[$book->status] ?? '' }}</span>
         <a href="{{ route('quotes.create', ['book_id' => $book->id]) }}" class="btn btn-primary">+ Цитата</a>
+        <a href="{{ route('tips.create', ['book_id' => $book->id]) }}" class="btn btn-secondary">+ Приём</a>
         <a href="{{ route('books.thoughts.create', $book) }}" class="btn btn-secondary">+ Мысль</a>
         @include('partials.item-actions', [
             'edit' => route('books.edit', $book),
@@ -56,7 +57,7 @@
 @endif
 @if($book->description)<div class="card mb-6 text-gray-600">{{ $book->description }}</div>@endif
 
-<x-collapsible title="Цитаты" :count="$quotesCountLabel" :open="true">
+<x-collapsible title="Цитаты" :count="$quotesCountLabel">
     <x-slot:actions>
         <a href="{{ route('quotes.create', ['book_id' => $book->id]) }}" class="link">+ Добавить</a>
     </x-slot:actions>
@@ -92,7 +93,23 @@
     </div>
 </x-collapsible>
 
-<x-collapsible title="Мои мысли" :count="$book->thoughts->count()" :open="$book->thoughts->isNotEmpty() && $book->quotes->isEmpty()">
+<x-collapsible title="Приёмы" :count="$book->tips->count()" :open="$book->tips->isNotEmpty()">
+    <x-slot:actions>
+        <a href="{{ route('tips.create', ['book_id' => $book->id]) }}" class="link">+ Добавить</a>
+    </x-slot:actions>
+
+    <div class="space-y-2">
+        @forelse($book->tips as $tip)
+            @include('tips.card', ['tip' => $tip])
+        @empty
+            <div class="card text-center py-8 text-gray-500">
+                Механики, трюки и советы из книги.
+            </div>
+        @endforelse
+    </div>
+</x-collapsible>
+
+<x-collapsible title="Мои мысли" :count="$book->thoughts->count()" :open="$book->thoughts->isNotEmpty() && $book->quotes->isEmpty() && $book->tips->isEmpty()">
     <x-slot:actions>
         <a href="{{ route('books.thoughts.create', $book) }}" class="link">+ Добавить мысль</a>
     </x-slot:actions>

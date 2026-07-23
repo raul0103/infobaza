@@ -25,14 +25,17 @@
 function openCardModal(el) {
     const d = el.dataset;
     const decode = (value) => decodeURIComponent(value || '');
-    const isQuote = d.kind === 'quote';
+    const kind = d.kind || 'thought';
     const text = decode(d.text);
+    const title = decode(d.title);
 
-    document.getElementById('card-detail-modal-title').textContent = isQuote ? 'Цитата' : 'Мысль';
+    const titles = { quote: 'Цитата', thought: 'Мысль', tip: 'Приём' };
+    document.getElementById('card-detail-modal-title').textContent =
+        (kind === 'tip' && title) ? title : (titles[kind] || 'Запись');
 
     const textEl = document.getElementById('card-modal-text');
-    textEl.textContent = isQuote ? '«' + text + '»' : text;
-    textEl.classList.toggle('italic', isQuote);
+    textEl.textContent = kind === 'quote' ? '«' + text + '»' : text;
+    textEl.classList.toggle('italic', kind === 'quote');
 
     const contextWrap = document.getElementById('card-modal-context-wrap');
     const context = decode(d.context);
@@ -43,7 +46,7 @@ function openCardModal(el) {
     meta.innerHTML = '';
     const badges = [];
     if (decode(d.chapter)) badges.push(decode(d.chapter));
-    if (decode(d.page)) badges.push('Стр. ' + decode(d.page));
+    if (decode(d.page)) badges.push(kind === 'tip' ? decode(d.page) : 'Стр. ' + decode(d.page));
     if (decode(d.character)) badges.push('— ' + decode(d.character));
     badges.forEach((label) => {
         const badge = document.createElement('span');

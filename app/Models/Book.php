@@ -39,6 +39,11 @@ class Book extends Model
         return $this->hasMany(BookThought::class);
     }
 
+    public function tips(): HasMany
+    {
+        return $this->hasMany(Tip::class);
+    }
+
     public function readingPercent(): ?int
     {
         if (! $this->total_pages || $this->current_page === null) {
