@@ -14,7 +14,7 @@
 <x-page-header title="Главная" subtitle="Слова, цитаты и то, что сейчас читаете">
     <x-slot:actions>
         @if($hasWords)
-            <a href="{{ route('review.all') }}" class="btn btn-success">Повторить</a>
+            <a href="{{ route('review.index') }}" class="btn btn-success">Повторить</a>
         @endif
         <a href="{{ $addQuoteUrl }}" class="btn btn-secondary">+ Цитата</a>
         <a href="{{ $addWordUrl }}" class="btn btn-primary">

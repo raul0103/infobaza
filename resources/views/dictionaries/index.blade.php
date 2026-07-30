@@ -6,7 +6,7 @@
 <x-page-header title="Словари" subtitle="Слова и фразы для изучения">
     <x-slot:actions>
         @if($totalWords > 0)
-            <a href="{{ route('review.all') }}" class="btn btn-success">Повторить все</a>
+            <a href="{{ route('review.index') }}" class="btn btn-success">Повторить</a>
         @endif
         <a href="{{ route('dictionaries.create') }}" class="btn btn-primary">+ Словарь</a>
     </x-slot:actions>
@@ -67,9 +67,6 @@
             :title="$dict->name"
             :subtitle="$dict->entries_count.' слов'"
         >
-            @if($dict->entries_count > 0)
-                <a href="{{ route('review.session', $dict) }}" class="btn btn-success text-xs !px-2.5 !py-1.5 shrink-0">Повторение</a>
-            @endif
             @include('partials.item-actions', [
                 'edit' => route('dictionaries.edit', $dict),
                 'destroy' => route('dictionaries.destroy', $dict),

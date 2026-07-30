@@ -10,7 +10,7 @@
             'href' => route('dictionaries.index'),
             'label' => 'Словари',
             'icon' => 'dictionary',
-            'active' => request()->routeIs('dictionaries.*', 'review.session', 'review.answer', 'review.all', 'review.all.answer'),
+            'active' => request()->routeIs('dictionaries.*', 'review.index', 'review.session', 'review.answer', 'review.all', 'review.all.answer'),
         ],
         [
             'href' => route('books.index'),

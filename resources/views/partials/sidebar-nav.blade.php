@@ -24,7 +24,7 @@
         [
             'label' => 'Обучение',
             'items' => [
-                ['href' => route('review.all'), 'match' => ['review.all', 'review.all.answer', 'review.session', 'review.answer'], 'label' => 'Повторение', 'icon' => 'repeat'],
+                ['href' => route('review.index'), 'match' => ['review.index', 'review.all', 'review.all.answer', 'review.session', 'review.answer'], 'label' => 'Повторение', 'icon' => 'repeat'],
                 ['route' => 'exam', 'match' => 'exam*', 'label' => 'Экзамен', 'icon' => 'exam'],
             ],
         ],

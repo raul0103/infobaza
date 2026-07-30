@@ -9,9 +9,6 @@
     <div id="entry-modal-source-wrap" class="hidden mt-4 border-t border-gray-100 pt-4">
         <a id="entry-modal-source" href="#" class="link"></a>
     </div>
-    <div id="entry-modal-actions" class="hidden mt-4 border-t border-gray-100 pt-4">
-        <a id="entry-modal-edit" href="#" class="btn btn-secondary text-sm">Редактировать</a>
-    </div>
 </x-modal>
 @endpush
 
@@ -25,7 +22,6 @@ function openEntryModal(termOrEl, definition, example, dictionaryLabel, dictiona
     let exHtml = '';
     let dictLabel = dictionaryLabel || '';
     let dictUrl = dictionaryUrl || '';
-    let editUrl = '';
 
     if (termOrEl && typeof termOrEl === 'object' && termOrEl.dataset) {
         const d = termOrEl.dataset;
@@ -37,7 +33,6 @@ function openEntryModal(termOrEl, definition, example, dictionaryLabel, dictiona
         exHtml = decode(d.exampleHtml || '');
         dictLabel = decode(d.dictionaryLabel);
         dictUrl = d.dictionaryUrl || '';
-        editUrl = d.editUrl || '';
     }
 
     document.getElementById('entry-detail-modal-title').textContent = term;
@@ -70,15 +65,6 @@ function openEntryModal(termOrEl, definition, example, dictionaryLabel, dictiona
         sourceWrap.classList.remove('hidden');
     } else {
         sourceWrap.classList.add('hidden');
-    }
-
-    const actionsWrap = document.getElementById('entry-modal-actions');
-    const editLink = document.getElementById('entry-modal-edit');
-    if (editUrl) {
-        editLink.href = editUrl;
-        actionsWrap.classList.remove('hidden');
-    } else {
-        actionsWrap.classList.add('hidden');
     }
 
     openModal('entry-detail-modal');

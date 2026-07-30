@@ -17,9 +17,18 @@ class ReviewController extends Controller
 {
     private const BATCH_SIZE = 9;
 
-    public function index(): RedirectResponse
+    public function index(): View
     {
-        return redirect()->route('dictionaries.index');
+        $dictionaries = Dictionary::query()
+            ->withCount('entries')
+            ->has('entries')
+            ->orderBy('name')
+            ->get();
+
+        return view('review.index', [
+            'dictionaries' => $dictionaries,
+            'totalWords' => DictionaryEntry::count(),
+        ]);
     }
 
     public function factsSession(Request $request): View

@@ -4,7 +4,7 @@
 @section('content')
 <div class="max-w-3xl mx-auto w-full px-1 sm:px-0" data-csrf="{{ csrf_token() }}">
     <div class="flex items-center justify-between gap-3 mb-6">
-        <a href="{{ route('dictionaries.show', $dictionary) }}" class="link inline-flex items-center gap-1">← Назад к «{{ $dictionary->name }}»</a>
+        <a href="{{ route('review.index') }}" class="link inline-flex items-center gap-1">← К выбору</a>
         @if($entries->isNotEmpty())
             <a href="{{ route('review.session', $dictionary) }}" class="btn btn-secondary text-sm shrink-0">Обновить</a>
         @endif
