@@ -8,14 +8,20 @@
     $percent = $total > 0 ? (int) round(($done / $total) * 100) : null;
 @endphp
 
-<x-page-header :title="$plan->title" :subtitle="\App\Models\Plan::statusLabels()[$plan->status] ?? ''">
-    <x-slot:actions>
-        <a href="{{ route('plans.status', $plan->status) }}" class="btn btn-secondary">К списку</a>
+<x-page-header :title="$plan->title">
+    <x-slot:breadcrumb>
+        <x-breadcrumb :items="[
+            ['label' => 'Планы', 'url' => route('plans.index')],
+            ['label' => \App\Models\Plan::statusLabels()[$plan->status] ?? 'Статус', 'url' => route('plans.status', $plan->status)],
+            ['label' => $plan->title],
+        ]" />
+    </x-slot:breadcrumb>
+    <x-slot:title-actions>
         @include('partials.item-actions', [
             'edit' => route('plans.edit', $plan),
             'destroy' => route('plans.destroy', $plan),
         ])
-    </x-slot:actions>
+    </x-slot:title-actions>
 </x-page-header>
 
 @if(filled($plan->description))

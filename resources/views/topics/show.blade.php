@@ -1,19 +1,26 @@
 @extends('layouts.app')
 @section('title', $topic->name)
 @section('content')
+@php
+    $topicCrumbs = array_values(array_filter([
+        ['label' => 'Темы', 'url' => route('topics.index')],
+        $topic->parent ? ['label' => $topic->parent->name, 'url' => route('topics.show', $topic->parent)] : null,
+        ['label' => $topic->name],
+    ]));
+@endphp
 <x-page-header :title="$topic->name" :subtitle="$topic->description">
+    <x-slot:breadcrumb>
+        <x-breadcrumb :items="$topicCrumbs" />
+    </x-slot:breadcrumb>
     <x-slot:actions>
-        @if($topic->parent)
-            <a href="{{ route('topics.show', $topic->parent) }}" class="btn btn-ghost text-sm">
-                ↑ {{ $topic->parent->name }}
-            </a>
-        @endif
         <a href="{{ route('notes.create', ['topic_id' => $topic->id]) }}" class="btn btn-primary">+ Запись</a>
+    </x-slot:actions>
+    <x-slot:title-actions>
         @include('partials.item-actions', [
             'edit' => route('topics.edit', $topic),
             'destroy' => route('topics.destroy', $topic),
         ])
-    </x-slot:actions>
+    </x-slot:title-actions>
 </x-page-header>
 
 @if($topic->parent)

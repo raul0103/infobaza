@@ -3,8 +3,13 @@
 
 @section('content')
 <x-page-header :title="$label">
+    <x-slot:breadcrumb>
+        <x-breadcrumb :items="[
+            ['label' => 'Планы', 'url' => route('plans.index')],
+            ['label' => $label],
+        ]" />
+    </x-slot:breadcrumb>
     <x-slot:actions>
-        <a href="{{ route('plans.index') }}" class="btn btn-secondary">Все статусы</a>
         <a href="{{ route('plans.create', ['status' => $status]) }}" class="btn btn-primary">+ План</a>
     </x-slot:actions>
 </x-page-header>

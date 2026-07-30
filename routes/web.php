@@ -14,6 +14,7 @@ use App\Http\Controllers\JokeController;
 use App\Http\Controllers\MemoController;
 use App\Http\Controllers\MemoEntryController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\MovieThoughtController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\NoteQuestionController;
 use App\Http\Controllers\PlanController;
@@ -43,6 +44,7 @@ Route::patch('books/queued/reorder', [BookController::class, 'reorderQueued'])->
 Route::resource('books.thoughts', BookThoughtController::class)->except(['index', 'show']);
 Route::get('movies/status/{status}', [MovieController::class, 'status'])->name('movies.status');
 Route::resource('movies', MovieController::class);
+Route::resource('movies.thoughts', MovieThoughtController::class)->except(['index', 'show']);
 Route::resource('memos', MemoController::class);
 Route::resource('memos.entries', MemoEntryController::class)->except(['index']);
 Route::get('plans/status/{status}', [PlanController::class, 'status'])->name('plans.status');

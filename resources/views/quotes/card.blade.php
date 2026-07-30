@@ -28,6 +28,10 @@
 >
     <p class="flex-1 min-w-0 text-sm text-gray-800 italic truncate">«{{ $quote->text }}»</p>
 
+    @if($quoteSourceUrl)
+        <a href="{{ $quoteSourceUrl }}" class="badge-blue shrink-0 max-w-[8rem] truncate hover:bg-blue-100" title="{{ $quoteSourceLabel }}">{{ $quoteSourceLabel }}</a>
+    @endif
+
     @if($quote->page)
         <span class="badge-gray shrink-0 hidden sm:inline-flex">Стр. {{ $quote->page }}</span>
     @endif

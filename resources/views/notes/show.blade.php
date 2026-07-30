@@ -2,14 +2,23 @@
 @section('title', $note->title)
 @section('content')
 <x-page-header :title="$note->title">
-    <x-slot:actions>
-        @if($note->topic)@include('partials.topic-badge', ['topic' => $note->topic])@endif
+    <x-slot:breadcrumb>
+        <x-breadcrumb :items="array_values(array_filter([
+            ['label' => 'Записи', 'url' => route('notes.index')],
+            $note->topic ? ['label' => $note->topic->name, 'url' => route('topics.show', $note->topic)] : null,
+            ['label' => $note->title],
+        ]))" />
+    </x-slot:breadcrumb>
+    <x-slot:title-actions>
         @include('partials.item-actions', [
             'edit' => route('notes.edit', $note),
             'destroy' => route('notes.destroy', $note),
         ])
-    </x-slot:actions>
+    </x-slot:title-actions>
 </x-page-header>
+@if($note->topic)
+    <div class="mb-4">@include('partials.topic-badge', ['topic' => $note->topic])</div>
+@endif
 <div class="card mb-6">
     <x-markdown :content="$note->content" />
 </div>

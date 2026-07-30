@@ -87,10 +87,10 @@
             .page-actions .btn { @apply w-full sm:w-auto justify-center; }
             .safe-top { padding-top: max(0px, env(safe-area-inset-top)); }
             .safe-bottom { padding-bottom: max(0px, env(safe-area-inset-bottom)); }
-            .collapsible-section > summary::-webkit-details-marker { display: none; }
-            .collapsible-section > summary { list-style: none; }
-            .collapsible-section .collapse-chevron { @apply transition-transform; }
-            .collapsible-section[open] .collapse-chevron { transform: rotate(90deg); }
+            .has-bottom-nav { padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px)); }
+            @media (min-width: 1024px) { .has-bottom-nav { padding-bottom: 0; } }
+            .scrollbar-none { scrollbar-width: none; }
+            .scrollbar-none::-webkit-scrollbar { display: none; }
             .markdown-body { @apply text-gray-800 leading-relaxed; }
             .markdown-body > :first-child { @apply mt-0; }
             .markdown-body > :last-child { @apply mb-0; }
@@ -157,13 +157,15 @@
             </div>
         @endif
 
-        <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden overflow-y-auto">
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden overflow-y-auto has-bottom-nav">
             <div class="max-w-6xl mx-auto w-full">
                 @yield('content')
             </div>
         </main>
     </div>
 </div>
+
+@include('partials.bottom-nav')
 
 @stack('modals')
 
@@ -216,6 +218,7 @@ function closeSidebar() {
 
 document.getElementById('sidebar-open')?.addEventListener('click', openSidebar);
 document.getElementById('sidebar-close')?.addEventListener('click', closeSidebar);
+document.getElementById('bottom-nav-more')?.addEventListener('click', openSidebar);
 backdrop?.addEventListener('click', closeSidebar);
 
 sidebar?.querySelectorAll('a.nav-link').forEach((link) => {

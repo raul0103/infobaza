@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="max-w-lg mx-auto w-full px-1 sm:px-0">
-    <a href="{{ route('dictionaries.index') }}" class="link mb-6 inline-flex items-center gap-1">← Назад к словарям</a>
+    <a href="{{ route('dictionaries.show', $dictionary) }}" class="link mb-6 inline-flex items-center gap-1">← Назад к «{{ $dictionary->name }}»</a>
 
     <div class="text-center mb-8">
         <span class="badge-blue">{{ $dictionary->name }}</span>

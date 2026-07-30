@@ -5,27 +5,29 @@
     <x-slot:actions><a href="{{ route('books.create') }}" class="btn btn-primary">+ Книга</a></x-slot:actions>
 </x-page-header>
 
-@php $hasBooks = $sections->sum(fn ($s) => $s['books']->count()) > 0; @endphp
+@php
+    $visible = $sections->filter(fn ($s) => $s['books']->isNotEmpty())->values();
+    $bookTabs = $visible->map(fn ($s) => [
+        'id' => 'books-'.$s['status'],
+        'label' => $s['status'] === 'reading' ? 'Сейчас читаю' : $s['label'],
+        'count' => $s['books']->count(),
+    ])->all();
+    $openStatus = $visible->first(fn ($s) => $s['status'] === 'reading')['status']
+        ?? ($visible->first()['status'] ?? null);
+    $bookActive = $openStatus ? 'books-'.$openStatus : null;
+@endphp
 
-@foreach($sections as $section)
-    @if($section['books']->isNotEmpty())
-        @if($section['status'] === 'reading')
-            <div class="card mt-6 first:mt-0">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="section-title">Сейчас читаю</h2>
-                    <span class="badge-gray">{{ $section['books']->count() }}</span>
-                </div>
-                @include('partials.reading-books', [
-                    'books' => $section['books'],
-                    'showActions' => true,
-                ])
-            </div>
-        @else
-            <x-collapsible
-                :title="$section['label']"
-                :count="$section['books']->count()"
-            >
-                @if($section['status'] === 'queued')
+@if($visible->isNotEmpty())
+    <x-tabs :items="$bookTabs" :active="$bookActive">
+        @foreach($visible as $section)
+            @php $sid = 'books-'.$section['status']; @endphp
+            <x-tab-panel :id="$sid" :show="$bookActive === $sid">
+                @if($section['status'] === 'reading')
+                    @include('partials.reading-books', [
+                        'books' => $section['books'],
+                        'showActions' => true,
+                    ])
+                @elseif($section['status'] === 'queued')
                     <div
                         id="queued-books-list"
                         class="divide-y divide-gray-100"
@@ -90,12 +92,10 @@
                         @endforeach
                     </div>
                 @endif
-            </x-collapsible>
-        @endif
-    @endif
-@endforeach
-
-@if(! $hasBooks)
+            </x-tab-panel>
+        @endforeach
+    </x-tabs>
+@else
     <div class="card text-center py-12"><p class="text-gray-500">Добавьте первую книгу</p></div>
 @endif
 

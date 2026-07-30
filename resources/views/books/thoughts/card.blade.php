@@ -1,4 +1,11 @@
-@php($showSource = $showSource ?? false)
+@php
+    $showSource = $showSource ?? false;
+    $sourceLabel = $showSource ? $thought->sourceLabel() : '';
+    $sourceUrl = $showSource ? $thought->sourceUrl() : null;
+    if ($sourceLabel === 'Без источника') {
+        $sourceLabel = '';
+    }
+@endphp
 
 <div
     class="card border-l-4 border-l-amber-400 !p-2.5 sm:!p-3 flex items-center gap-2 cursor-pointer hover:border-amber-300 transition"
@@ -7,12 +14,16 @@
     data-text-html="{{ rawurlencode(\App\Support\Markdown::parse($thought->content)->toHtml()) }}"
     data-chapter="{{ rawurlencode((string) $thought->chapter) }}"
     data-page="{{ rawurlencode((string) $thought->page) }}"
-    data-source-label="{{ rawurlencode($showSource && $thought->book ? $thought->book->title : '') }}"
-    data-source-url="{{ $showSource && $thought->book ? route('books.show', $thought->book) : '' }}"
-    data-edit-url="{{ route('books.thoughts.edit', [$thought->book_id, $thought]) }}"
+    data-source-label="{{ rawurlencode($sourceLabel) }}"
+    data-source-url="{{ $sourceUrl }}"
+    data-edit-url="{{ $thought->editUrl() }}"
     onclick="if (!event.target.closest('a, button, form')) openCardModal(this)"
 >
     <p class="flex-1 min-w-0 text-sm text-gray-800 truncate">{{ $thought->content }}</p>
+
+    @if($showSource && $sourceUrl)
+        <a href="{{ $sourceUrl }}" class="badge-blue shrink-0 max-w-[8rem] truncate hover:bg-blue-100" title="{{ $sourceLabel }}">{{ $sourceLabel }}</a>
+    @endif
 
     @if($thought->chapter || $thought->page)
         <span class="badge-gray shrink-0 hidden sm:inline-flex">
@@ -27,8 +38,8 @@
             'label' => 'мысль',
         ])
         @include('partials.item-actions', [
-            'edit' => route('books.thoughts.edit', [$thought->book_id, $thought]),
-            'destroy' => route('books.thoughts.destroy', [$thought->book_id, $thought]),
+            'edit' => $thought->editUrl(),
+            'destroy' => $thought->destroyUrl(),
         ])
     </div>
 </div>

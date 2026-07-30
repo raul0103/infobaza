@@ -59,7 +59,7 @@ class BookController extends Controller
 
         $book->load([
             'quotes' => function ($query) use ($q) {
-                $query->orderByPageAsc()->orderByDesc('is_favorite')->latest();
+                $query->orderByDesc('is_favorite')->orderByPageAsc()->latest();
                 if ($q !== '') {
                     $query->where(function ($inner) use ($q) {
                         $inner->where('text', 'like', "%{$q}%")
@@ -69,7 +69,7 @@ class BookController extends Controller
                     });
                 }
             },
-            'thoughts' => fn ($query) => $query->orderByPageAsc()->orderByDesc('is_favorite')->latest(),
+            'thoughts' => fn ($query) => $query->orderByDesc('is_favorite')->orderByPageAsc()->latest(),
             'tips' => fn ($query) => $query->orderByPageAsc()->latest(),
         ]);
 

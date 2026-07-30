@@ -4,8 +4,9 @@
             'label' => null,
             'items' => [
                 ['route' => 'dashboard', 'label' => 'Главная', 'icon' => 'home'],
-                ['route' => 'dictionaries.*', 'match' => ['dictionaries.*', 'review.session', 'review.answer', 'review.all', 'review.all.answer'], 'label' => 'Словари', 'icon' => 'dictionary'],
+                ['route' => 'dictionaries.*', 'match' => ['dictionaries.*'], 'label' => 'Словари', 'icon' => 'dictionary'],
                 ['route' => 'books.*', 'label' => 'Книги', 'icon' => 'book'],
+                ['route' => 'movies.*', 'match' => ['movies.*'], 'label' => 'Фильмы', 'icon' => 'film'],
                 ['route' => 'favorites.*', 'label' => 'Избранное', 'icon' => 'star'],
                 ['route' => 'memos.*', 'label' => 'Заметки', 'icon' => 'memo'],
                 ['route' => 'plans.*', 'match' => ['plans.*'], 'label' => 'Планы', 'icon' => 'plan'],
@@ -16,19 +17,14 @@
             'items' => [
                 ['route' => 'topics.*', 'label' => 'Темы', 'icon' => 'folder'],
                 ['route' => 'notes.*', 'label' => 'Записи', 'icon' => 'document'],
-                ['route' => 'facts.*', 'match' => ['facts.*', 'fact-groups.*', 'review.facts', 'review.facts.answer'], 'label' => 'Интересные факты', 'icon' => 'fact'],
+                ['route' => 'facts.*', 'match' => ['facts.*', 'fact-groups.*', 'review.facts', 'review.facts.answer'], 'label' => 'Факты', 'icon' => 'fact'],
                 ['route' => 'jokes.*', 'label' => 'Анекдоты', 'icon' => 'joke'],
-            ],
-        ],
-        [
-            'label' => 'Медиатека',
-            'items' => [
-                ['route' => 'movies.*', 'match' => ['movies.*'], 'label' => 'Фильмы', 'icon' => 'film'],
             ],
         ],
         [
             'label' => 'Обучение',
             'items' => [
+                ['href' => route('review.all'), 'match' => ['review.all', 'review.all.answer', 'review.session', 'review.answer'], 'label' => 'Повторение', 'icon' => 'repeat'],
                 ['route' => 'exam', 'match' => 'exam*', 'label' => 'Экзамен', 'icon' => 'exam'],
             ],
         ],
@@ -48,10 +44,12 @@
     <div class="space-y-0.5 mb-1">
         @foreach($section['items'] as $item)
             @php
-                $href = $item['route'] === 'dashboard'
-                    ? route('dashboard')
-                    : route(str_replace('.*', '.index', $item['route']));
-                $active = request()->routeIs(...(array) ($item['match'] ?? $item['route']));
+                $href = $item['href'] ?? (
+                    $item['route'] === 'dashboard'
+                        ? route('dashboard')
+                        : route(str_replace('.*', '.index', $item['route']))
+                );
+                $active = request()->routeIs(...(array) ($item['match'] ?? $item['route'] ?? []));
             @endphp
             <a href="{{ $href }}" class="nav-link {{ $active ? 'active' : '' }}">
                 @include('partials.nav-icon', ['name' => $item['icon']])

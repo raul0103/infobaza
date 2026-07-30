@@ -12,35 +12,55 @@
     </x-slot:actions>
 </x-page-header>
 
-@foreach($groups as $group)
-    <x-collapsible :title="$group->name" :count="$group->facts->count()">
-        <x-slot:actions>
-            @include('partials.item-actions', [
-                'edit' => route('fact-groups.edit', $group),
-                'destroy' => route('fact-groups.destroy', $group),
-            ])
-        </x-slot:actions>
-        @if($group->description)
-            <x-slot:subtitle>{{ $group->description }}</x-slot:subtitle>
-        @endif
+@php
+    $factTabs = $groups->map(fn ($g) => [
+        'id' => 'fact-group-'.$g->id,
+        'label' => $g->name,
+        'count' => $g->facts->count(),
+    ])->values();
+    if ($ungroupedFacts->isNotEmpty()) {
+        $factTabs->push([
+            'id' => 'fact-ungrouped',
+            'label' => 'Без группы',
+            'count' => $ungroupedFacts->count(),
+        ]);
+    }
+    $factActive = $factTabs->first()['id'] ?? null;
+@endphp
 
-        @forelse($group->facts as $fact)
-            @include('facts.card', ['fact' => $fact])
-        @empty
-            <div class="card text-center py-6 text-gray-500">В этой группе пока нет фактов</div>
-        @endforelse
-    </x-collapsible>
-@endforeach
+@if($factTabs->isNotEmpty())
+    <x-tabs :items="$factTabs->all()" :active="$factActive">
+        @foreach($groups as $group)
+            @php $gid = 'fact-group-'.$group->id; @endphp
+            <x-tab-panel :id="$gid" :show="$factActive === $gid" :subtitle="$group->description">
+                <x-slot:actions>
+                    @include('partials.item-actions', [
+                        'edit' => route('fact-groups.edit', $group),
+                        'destroy' => route('fact-groups.destroy', $group),
+                    ])
+                </x-slot:actions>
 
-@if($ungroupedFacts->isNotEmpty())
-    <x-collapsible title="Без группы" :count="$ungroupedFacts->count()">
-        @foreach($ungroupedFacts as $fact)
-            @include('facts.card', ['fact' => $fact])
+                <div class="space-y-2">
+                    @forelse($group->facts as $fact)
+                        @include('facts.card', ['fact' => $fact])
+                    @empty
+                        <div class="card text-center py-6 text-gray-500">В этой группе пока нет фактов</div>
+                    @endforelse
+                </div>
+            </x-tab-panel>
         @endforeach
-    </x-collapsible>
-@endif
 
-@if($groups->isEmpty() && $ungroupedFacts->isEmpty())
+        @if($ungroupedFacts->isNotEmpty())
+            <x-tab-panel id="fact-ungrouped" :show="$factActive === 'fact-ungrouped'">
+                <div class="space-y-2">
+                    @foreach($ungroupedFacts as $fact)
+                        @include('facts.card', ['fact' => $fact])
+                    @endforeach
+                </div>
+            </x-tab-panel>
+        @endif
+    </x-tabs>
+@else
     <div class="card text-center py-12 text-gray-500">Пока нет интересных фактов</div>
 @endif
 @endsection

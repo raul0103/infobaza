@@ -12,6 +12,7 @@
 
     <div id="card-modal-source-wrap" class="hidden mt-4 border-t border-gray-100 pt-4">
         <a id="card-modal-source" href="#" class="link"></a>
+        <p id="card-modal-source-text" class="hidden text-sm text-gray-500"></p>
     </div>
 
     <div id="card-modal-actions" class="hidden mt-4 border-t border-gray-100 pt-4">
@@ -30,9 +31,9 @@ function openCardModal(el) {
     const textHtml = decode(d.textHtml || '');
     const title = decode(d.title);
 
-    const titles = { quote: 'Цитата', thought: 'Мысль', tip: 'Приём' };
+    const titles = { quote: 'Цитата', thought: 'Мысль', tip: 'Приём', fact: 'Факт', joke: 'Анекдот' };
     document.getElementById('card-detail-modal-title').textContent =
-        (kind === 'tip' && title) ? title : (titles[kind] || 'Запись');
+        ((kind === 'tip' || kind === 'fact') && title) ? title : (titles[kind] || 'Запись');
 
     const textEl = document.getElementById('card-modal-text');
     if (kind === 'quote') {
@@ -77,11 +78,19 @@ function openCardModal(el) {
     meta.classList.toggle('hidden', badges.length === 0);
 
     const sourceWrap = document.getElementById('card-modal-source-wrap');
+    const sourceLink = document.getElementById('card-modal-source');
+    const sourceText = document.getElementById('card-modal-source-text');
     const sourceLabel = decode(d.sourceLabel);
     if (sourceLabel && d.sourceUrl) {
-        const link = document.getElementById('card-modal-source');
-        link.textContent = 'Источник: ' + sourceLabel + ' →';
-        link.href = d.sourceUrl;
+        sourceLink.textContent = 'Источник: ' + sourceLabel + ' →';
+        sourceLink.href = d.sourceUrl;
+        sourceLink.classList.remove('hidden');
+        sourceText.classList.add('hidden');
+        sourceWrap.classList.remove('hidden');
+    } else if (sourceLabel) {
+        sourceText.textContent = 'Источник: ' + sourceLabel;
+        sourceText.classList.remove('hidden');
+        sourceLink.classList.add('hidden');
         sourceWrap.classList.remove('hidden');
     } else {
         sourceWrap.classList.add('hidden');

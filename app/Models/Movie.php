@@ -27,4 +27,9 @@ class Movie extends Model
     {
         return $this->hasMany(Tip::class);
     }
+
+    public function thoughts(): HasMany
+    {
+        return $this->hasMany(BookThought::class);
+    }
 }

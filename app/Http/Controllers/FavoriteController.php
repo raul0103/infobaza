@@ -12,7 +12,7 @@ class FavoriteController extends Controller
     public function index(): View
     {
         return view('favorites.index', [
-            'thoughts' => BookThought::with('book')
+            'thoughts' => BookThought::with(['book', 'movie'])
                 ->where('is_favorite', true)
                 ->latest('updated_at')
                 ->get(),

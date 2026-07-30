@@ -3,13 +3,21 @@
 
 @section('content')
 <x-page-header :title="$memo->name" :subtitle="$memo->description">
+    <x-slot:breadcrumb>
+        <x-breadcrumb :items="[
+            ['label' => 'Заметки', 'url' => route('memos.index')],
+            ['label' => $memo->name],
+        ]" />
+    </x-slot:breadcrumb>
     <x-slot:actions>
         <a href="{{ route('memos.entries.create', $memo) }}" class="btn btn-primary">+ Заметка</a>
+    </x-slot:actions>
+    <x-slot:title-actions>
         @include('partials.item-actions', [
             'edit' => route('memos.edit', $memo),
             'destroy' => route('memos.destroy', $memo),
         ])
-    </x-slot:actions>
+    </x-slot:title-actions>
 </x-page-header>
 
 <form method="GET" action="{{ route('memos.show', $memo) }}" class="mb-4">

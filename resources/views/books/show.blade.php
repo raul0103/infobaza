@@ -1,18 +1,6 @@
 @extends('layouts.app')
 @section('title', $book->title)
 @section('content')
-<x-page-header :title="$book->title" :subtitle="trim(($book->author ?? '').($book->year ? ', '.$book->year : ''))">
-    <x-slot:actions>
-        <span class="badge-gray">{{ \App\Models\Book::statusLabels()[$book->status] ?? '' }}</span>
-        <a href="{{ route('quotes.create', ['book_id' => $book->id]) }}" class="btn btn-primary">+ Цитата</a>
-        <a href="{{ route('tips.create', ['book_id' => $book->id]) }}" class="btn btn-secondary">+ Приём</a>
-        <a href="{{ route('books.thoughts.create', $book) }}" class="btn btn-secondary">+ Мысль</a>
-        @include('partials.item-actions', [
-            'edit' => route('books.edit', $book),
-            'destroy' => route('books.destroy', $book),
-        ])
-    </x-slot:actions>
-</x-page-header>
 @php
     $readingPercent = $book->readingPercent() ?? 0;
     $currentPage = (int) ($book->current_page ?? 0);
@@ -20,7 +8,24 @@
     $quotesCountLabel = $q !== ''
         ? $book->quotes->count().' из '.$quotesTotal
         : $book->quotes->count();
+    $bookTab = $q !== '' ? 'quotes'
+        : ($book->quotes->isNotEmpty() || ($book->tips->isEmpty() && $book->thoughts->isEmpty()) ? 'quotes'
+        : ($book->tips->isNotEmpty() ? 'tips' : 'thoughts'));
 @endphp
+<x-page-header :title="$book->title" :subtitle="trim(($book->author ?? '').($book->year ? ', '.$book->year : ''))">
+    <x-slot:breadcrumb>
+        <x-breadcrumb :items="[
+            ['label' => 'Книги', 'url' => route('books.index')],
+            ['label' => $book->title],
+        ]" />
+    </x-slot:breadcrumb>
+    <x-slot:title-actions>
+        @include('partials.item-actions', [
+            'edit' => route('books.edit', $book),
+            'destroy' => route('books.destroy', $book),
+        ])
+    </x-slot:title-actions>
+</x-page-header>
 @if($totalPages > 0)
 <div class="card mb-6 progress-control !p-3 sm:!p-4">
     <form method="POST" action="{{ route('books.progress', $book) }}" id="book-progress-form" class="space-y-1.5">
@@ -57,71 +62,82 @@
 @endif
 @if($book->description)<div class="card mb-6 text-gray-600">{{ $book->description }}</div>@endif
 
-<x-collapsible title="Цитаты" :count="$quotesCountLabel">
-    <x-slot:actions>
-        <a href="{{ route('quotes.create', ['book_id' => $book->id]) }}" class="link">+ Добавить</a>
-    </x-slot:actions>
+<x-tabs
+    :items="[
+        ['id' => 'quotes', 'label' => 'Цитаты', 'count' => $quotesCountLabel],
+        ['id' => 'tips', 'label' => 'Приёмы', 'count' => $book->tips->count()],
+        ['id' => 'thoughts', 'label' => 'Мысли', 'count' => $book->thoughts->count()],
+    ]"
+    :active="$bookTab"
+>
+    <x-tab-panel id="quotes" :show="$bookTab === 'quotes'">
+        <x-slot:actions>
+            <a href="{{ route('quotes.create', ['book_id' => $book->id]) }}" class="link">+ Добавить цитату</a>
+        </x-slot:actions>
 
-    <form method="GET" action="{{ route('books.show', $book) }}" class="mb-3" onclick="event.stopPropagation()">
-        <div class="flex gap-2">
-            <input
-                type="search"
-                name="q"
-                value="{{ $q }}"
-                class="input flex-1"
-                placeholder="Поиск по цитате, персонажу, странице…"
-            >
-            <button type="submit" class="btn btn-secondary shrink-0">Найти</button>
-            @if($q !== '')
-                <a href="{{ route('books.show', $book) }}" class="btn btn-secondary shrink-0">Сброс</a>
-            @endif
-        </div>
-    </form>
-
-    <div class="space-y-2">
-        @forelse($book->quotes as $quote)
-            @include('quotes.card', ['quote' => $quote])
-        @empty
-            <div class="card text-center py-10 text-gray-500">
+        <form method="GET" action="{{ route('books.show', $book) }}" class="mb-3">
+            <div class="flex gap-2">
+                <input
+                    type="search"
+                    name="q"
+                    value="{{ $q }}"
+                    class="input flex-1"
+                    placeholder="Поиск по цитате, персонажу, странице…"
+                >
+                <button type="submit" class="btn btn-secondary shrink-0">Найти</button>
                 @if($q !== '')
-                    Ничего не найдено по «{{ $q }}»
-                @else
-                    Выписывайте цитаты по мере чтения
+                    <a href="{{ route('books.show', $book) }}" class="btn btn-secondary shrink-0">Сброс</a>
                 @endif
             </div>
-        @endforelse
-    </div>
-</x-collapsible>
+        </form>
 
-<x-collapsible title="Приёмы" :count="$book->tips->count()" :open="$book->tips->isNotEmpty()">
-    <x-slot:actions>
-        <a href="{{ route('tips.create', ['book_id' => $book->id]) }}" class="link">+ Добавить</a>
-    </x-slot:actions>
-
-    <div class="space-y-2">
-        @forelse($book->tips as $tip)
-            @include('tips.card', ['tip' => $tip])
-        @empty
-            <div class="card text-center py-8 text-gray-500">
-                Механики, трюки и советы из книги.
-            </div>
-        @endforelse
-    </div>
-</x-collapsible>
-
-<x-collapsible title="Мои мысли" :count="$book->thoughts->count()" :open="$book->thoughts->isNotEmpty() && $book->quotes->isEmpty() && $book->tips->isEmpty()">
-    <x-slot:actions>
-        <a href="{{ route('books.thoughts.create', $book) }}" class="link">+ Добавить мысль</a>
-    </x-slot:actions>
-
-    @forelse($book->thoughts as $thought)
-        @include('books.thoughts.card', ['thought' => $thought])
-    @empty
-        <div class="card text-center py-8 text-gray-500">
-            Записывайте свои выводы, вопросы и идеи по мере чтения.
+        <div class="space-y-2">
+            @forelse($book->quotes as $quote)
+                @include('quotes.card', ['quote' => $quote])
+            @empty
+                <div class="card text-center py-10 text-gray-500">
+                    @if($q !== '')
+                        Ничего не найдено по «{{ $q }}»
+                    @else
+                        Выписывайте цитаты по мере чтения
+                    @endif
+                </div>
+            @endforelse
         </div>
-    @endforelse
-</x-collapsible>
+    </x-tab-panel>
+
+    <x-tab-panel id="tips" :show="$bookTab === 'tips'">
+        <x-slot:actions>
+            <a href="{{ route('tips.create', ['book_id' => $book->id]) }}" class="link">+ Добавить приём</a>
+        </x-slot:actions>
+
+        <div class="space-y-2">
+            @forelse($book->tips as $tip)
+                @include('tips.card', ['tip' => $tip])
+            @empty
+                <div class="card text-center py-8 text-gray-500">
+                    Механики, трюки и советы из книги.
+                </div>
+            @endforelse
+        </div>
+    </x-tab-panel>
+
+    <x-tab-panel id="thoughts" :show="$bookTab === 'thoughts'">
+        <x-slot:actions>
+            <a href="{{ route('books.thoughts.create', $book) }}" class="link">+ Добавить мысль</a>
+        </x-slot:actions>
+
+        <div class="space-y-2">
+            @forelse($book->thoughts as $thought)
+                @include('books.thoughts.card', ['thought' => $thought])
+            @empty
+                <div class="card text-center py-8 text-gray-500">
+                    Записывайте свои выводы, вопросы и идеи по мере чтения.
+                </div>
+            @endforelse
+        </div>
+    </x-tab-panel>
+</x-tabs>
 
 @if($totalPages > 0)
 @push('head')

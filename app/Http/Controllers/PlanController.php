@@ -11,30 +11,21 @@ class PlanController extends Controller
 {
     public function index(): View
     {
-        $counts = Plan::query()
-            ->selectRaw('status, count(*) as aggregate')
-            ->groupBy('status')
-            ->pluck('aggregate', 'status');
-
-        $queuedPlans = Plan::withCount([
+        $plans = Plan::withCount([
             'steps',
             'steps as steps_done_count' => fn ($q) => $q->where('is_done', true),
         ])
-            ->where('status', 'queued')
             ->latest()
-            ->get();
+            ->get()
+            ->groupBy('status');
 
         return view('plans.index', [
-            'queuedPlans' => $queuedPlans,
-            'sections' => collect(Plan::statusLabels())
-                ->except('queued')
-                ->map(fn ($label, $status) => [
-                    'status' => $status,
-                    'label' => $label,
-                    'count' => (int) $counts->get($status, 0),
-                ])
-                ->values(),
-            'hasPlans' => $counts->sum() > 0,
+            'sections' => collect(Plan::statusLabels())->map(fn ($label, $status) => [
+                'status' => $status,
+                'label' => $label,
+                'plans' => $plans->get($status, collect()),
+            ])->values(),
+            'hasPlans' => $plans->flatten(1)->isNotEmpty(),
         ]);
     }
 
