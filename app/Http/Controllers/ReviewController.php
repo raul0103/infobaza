@@ -6,12 +6,17 @@ use App\Models\Dictionary;
 use App\Models\DictionaryEntry;
 use App\Models\Fact;
 use App\Services\ActivityTracker;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class ReviewController extends Controller
 {
+    private const BATCH_SIZE = 9;
+
     public function index(): RedirectResponse
     {
         return redirect()->route('dictionaries.index');
@@ -42,57 +47,76 @@ class ReviewController extends Controller
         return redirect()->route('review.facts', ['exclude' => $fact->id]);
     }
 
-    public function allSession(Request $request): View
+    public function allSession(): View
     {
-        $query = DictionaryEntry::query()->due()->orderBy('next_review_at');
-
-        if ($request->filled('exclude')) {
-            $query->where('id', '!=', $request->integer('exclude'));
-        }
-
-        $entry = $query->with('dictionary')->first()
-            ?? DictionaryEntry::with('dictionary')->inRandomOrder()->first();
-
         return view('review.all', [
-            'entry' => $entry,
+            'entries' => $this->pickBatch(DictionaryEntry::query()->with('dictionary')),
             'total' => DictionaryEntry::count(),
         ]);
     }
 
-    public function allAnswer(DictionaryEntry $entry): RedirectResponse
+    public function allAnswer(Request $request, DictionaryEntry $entry): RedirectResponse|JsonResponse
     {
         $entry->recordReview(true);
         ActivityTracker::log('card');
 
-        return redirect()->route('review.all', ['exclude' => $entry->id]);
-    }
-
-    public function session(Request $request, Dictionary $dictionary): View
-    {
-        $query = $dictionary->entries()->due()->orderBy('next_review_at');
-
-        if ($request->filled('exclude')) {
-            $query->where('id', '!=', $request->integer('exclude'));
+        if ($request->expectsJson()) {
+            return response()->json(['ok' => true]);
         }
 
-        $entry = $query->first()
-            ?? $dictionary->entries()->inRandomOrder()->first();
+        return redirect()->route('review.all');
+    }
 
+    public function session(Dictionary $dictionary): View
+    {
         return view('review.session', [
             'dictionary' => $dictionary,
-            'entry' => $entry,
+            'entries' => $this->pickBatch(
+                DictionaryEntry::query()->where('dictionary_id', $dictionary->id)
+            ),
             'total' => $dictionary->entries()->count(),
         ]);
     }
 
-    public function answer(Dictionary $dictionary, DictionaryEntry $entry): RedirectResponse
+    public function answer(Request $request, Dictionary $dictionary, DictionaryEntry $entry): RedirectResponse|JsonResponse
     {
+        abort_unless($entry->dictionary_id === $dictionary->id, 404);
+
         $entry->recordReview(true);
         ActivityTracker::log('card');
 
-        return redirect()->route('review.session', [
-            'dictionary' => $dictionary,
-            'exclude' => $entry->id,
-        ]);
+        if ($request->expectsJson()) {
+            return response()->json(['ok' => true]);
+        }
+
+        return redirect()->route('review.session', $dictionary);
+    }
+
+    /**
+     * @param  Builder<DictionaryEntry>  $query
+     * @return Collection<int, DictionaryEntry>
+     */
+    private function pickBatch(Builder $query): Collection
+    {
+        $entries = (clone $query)
+            ->due()
+            ->orderBy('next_review_at')
+            ->limit(self::BATCH_SIZE)
+            ->get();
+
+        if ($entries->count() >= self::BATCH_SIZE) {
+            return $entries;
+        }
+
+        $needed = self::BATCH_SIZE - $entries->count();
+        $excludeIds = $entries->pluck('id')->all();
+
+        $extra = (clone $query)
+            ->when($excludeIds !== [], fn (Builder $q) => $q->whereNotIn('id', $excludeIds))
+            ->inRandomOrder()
+            ->limit($needed)
+            ->get();
+
+        return $entries->concat($extra)->values();
     }
 }

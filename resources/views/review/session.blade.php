@@ -2,31 +2,38 @@
 @section('title', 'Повторение — '.$dictionary->name)
 
 @section('content')
-<div class="max-w-lg mx-auto w-full px-1 sm:px-0">
-    <a href="{{ route('dictionaries.show', $dictionary) }}" class="link mb-6 inline-flex items-center gap-1">← Назад к «{{ $dictionary->name }}»</a>
-
-    <div class="text-center mb-8">
-        <span class="badge-blue">{{ $dictionary->name }}</span>
-        <p class="text-sm text-gray-500 mt-2">{{ $total }} слов</p>
+<div class="max-w-3xl mx-auto w-full px-1 sm:px-0" data-csrf="{{ csrf_token() }}">
+    <div class="flex items-center justify-between gap-3 mb-6">
+        <a href="{{ route('dictionaries.show', $dictionary) }}" class="link inline-flex items-center gap-1">← Назад к «{{ $dictionary->name }}»</a>
+        @if($entries->isNotEmpty())
+            <a href="{{ route('review.session', $dictionary) }}" class="btn btn-secondary text-sm shrink-0">Обновить</a>
+        @endif
     </div>
 
-    @if($entry)
-        <div class="card-form text-center py-10" id="card">
-            <div id="term-view">
-                <p class="text-xs uppercase tracking-wide text-gray-400 mb-4">Слово</p>
-                <div class="text-3xl font-bold text-gray-900 mb-8">{{ $entry->term }}</div>
-                <button type="button" onclick="showAnswer()" class="btn btn-primary">Показать ответ</button>
-            </div>
-            <div id="answer-view" class="hidden">
-                <p class="text-xs uppercase tracking-wide text-gray-400 mb-4">Значение</p>
-                <div class="text-xl text-gray-800 mb-4 leading-relaxed">{{ $entry->definition }}</div>
-                @if($entry->example)<p class="text-gray-500 italic mb-8 text-sm">«{{ $entry->example }}»</p>@endif
-                <form method="POST" action="{{ route('review.answer', [$dictionary, $entry]) }}">
-                    @csrf
-                    <button class="btn btn-primary">Дальше</button>
-                </form>
-            </div>
+    <div class="text-center mb-6">
+        <span class="badge-blue">{{ $dictionary->name }}</span>
+        <p class="text-sm text-gray-500 mt-2">{{ $total }} слов · пачка из {{ $entries->count() }}</p>
+    </div>
+
+    @if($entries->isNotEmpty())
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="review-batch">
+            @foreach($entries as $entry)
+                <button
+                    type="button"
+                    class="card-hover !p-4 sm:!p-5 text-center min-h-[7.5rem] flex flex-col items-center justify-center cursor-pointer"
+                    data-term="{{ rawurlencode($entry->term) }}"
+                    data-definition="{{ rawurlencode($entry->definition) }}"
+                    data-definition-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->definition)->toHtml()) }}"
+                    data-example="{{ rawurlencode((string) $entry->example) }}"
+                    data-example-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->example)->toHtml()) }}"
+                    data-answer-url="{{ route('review.answer', [$dictionary, $entry]) }}"
+                    onclick="openReviewCard(this)"
+                >
+                    <span class="text-lg sm:text-xl font-bold text-gray-900 leading-snug break-words">{{ $entry->term }}</span>
+                </button>
+            @endforeach
         </div>
+        <p class="text-center text-xs text-gray-400 mt-6">Откройте карточку — слово отметится как повторённое</p>
     @else
         <div class="card text-center py-12">
             <p class="text-gray-500">В словаре нет слов.</p>
@@ -34,13 +41,10 @@
         </div>
     @endif
 </div>
+
+@include('partials.entry-detail-modal')
 @endsection
 
 @push('scripts')
-<script>
-function showAnswer() {
-    document.getElementById('term-view').classList.add('hidden');
-    document.getElementById('answer-view').classList.remove('hidden');
-}
-</script>
+@include('review.partials.batch-script')
 @endpush

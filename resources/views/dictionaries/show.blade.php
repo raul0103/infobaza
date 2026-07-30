@@ -39,7 +39,7 @@
     }
     $dictActive = $highlightGroupId
         ? 'group-'.$highlightGroupId
-        : ($q !== '' ? 'words' : 'words');
+        : 'words';
 @endphp
 
 <x-tabs :items="$dictTabs->all()" :active="$dictActive">
@@ -73,66 +73,16 @@
             @endif
         </form>
 
-        <div class="card overflow-hidden p-0">
-            <div class="table-scroll">
-            <table class="w-full min-w-[32rem] text-left text-sm">
-                <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
-                    <tr>
-                        <th class="px-4 sm:px-6 py-3 font-medium">Слово</th>
-                        <th class="px-4 sm:px-6 py-3 font-medium">Значение</th>
-                        <th class="px-4 sm:px-6 py-3 w-28 sm:w-32"></th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse($dictionary->entries as $entry)
-                        <tr class="hover:bg-gray-50 cursor-pointer"
-                            onclick="if (!event.target.closest('a, button, form')) openEntryModal(this)"
-                            data-term="{{ rawurlencode($entry->term) }}"
-                            data-definition="{{ rawurlencode($entry->definition) }}"
-                            data-definition-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->definition)->toHtml()) }}"
-                            data-example="{{ rawurlencode((string) $entry->example) }}"
-                            data-example-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->example)->toHtml()) }}"
-                            data-edit-url="{{ route('dictionaries.entries.edit', [$dictionary, $entry]) }}">
-                            <td class="px-4 sm:px-6 py-3 font-medium text-gray-900 align-top">
-                                <div>{{ $entry->term }}</div>
-                                @if($entry->group)
-                                    <a href="#group-{{ $entry->group_id }}" class="badge-gray mt-1 inline-flex hover:bg-blue-50 hover:text-blue-700"
-                                       onclick="event.preventDefault(); activateTab(this.closest('[data-tabs]'), 'group-{{ $entry->group_id }}')">
-                                        {{ $entry->group->displayTitle() }}
-                                    </a>
-                                @endif
-                            </td>
-                            <td class="px-4 sm:px-6 py-3 text-gray-600 align-top">
-                                {{ Str::limit($entry->definition, 80) }}
-                            </td>
-                            <td class="px-4 sm:px-6 py-3 text-left sm:text-right align-top whitespace-nowrap">
-                                @include('partials.item-actions', [
-                                    'edit' => route('dictionaries.entries.edit', [$dictionary, $entry]),
-                                    'destroy' => route('dictionaries.entries.destroy', [$dictionary, $entry]),
-                                ])
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="px-6 py-12 text-center text-gray-500">
-                                @if($q !== '')
-                                    Ничего не найдено по «{{ $q }}»
-                                @else
-                                    <p class="mb-3">Добавьте слова для изучения</p>
-                                    <a href="{{ route('dictionaries.entries.create', $dictionary) }}" class="btn btn-primary">+ Слово</a>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-            </div>
-        </div>
+        @include('dictionaries.partials.entries-table', [
+            'entries' => $dictionary->entries,
+            'showGroupBadge' => true,
+            'q' => $q,
+        ])
     </x-tab-panel>
 
     @forelse($dictionary->entryGroups as $group)
         @php $gid = 'group-'.$group->id; @endphp
-        <x-tab-panel :id="$gid" :show="$dictActive === $gid" :subtitle="$group->description">
+        <x-tab-panel :id="$gid" :show="$dictActive === $gid">
             <x-slot:actions>
                 <a href="{{ route('dictionaries.groups.create', $dictionary) }}" class="link text-sm">+ Новое</a>
                 @include('partials.item-actions', [
@@ -141,30 +91,32 @@
                 ])
             </x-slot:actions>
 
-            <p class="text-xs text-gray-500 mb-3">{{ $group->attachments->count() }} файлов</p>
-
-            @if($group->entries->isNotEmpty())
-                <div class="flex flex-wrap gap-2 mb-4">
-                    @foreach($group->entries as $groupedEntry)
-                        <span class="badge-blue">{{ $groupedEntry->term }}</span>
-                    @endforeach
-                </div>
+            @if(filled($group->description))
+                <div class="markdown-body text-sm text-gray-600 mb-3">{!! \App\Support\Markdown::parse($group->description) !!}</div>
             @endif
 
+            @include('dictionaries.partials.entries-table', [
+                'entries' => $group->entries,
+                'emptyEditUrl' => route('dictionaries.groups.edit', [$dictionary, $group]),
+            ])
+
             @if($group->attachments->isNotEmpty())
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    @foreach($group->attachments as $attachment)
-                        <a href="{{ $attachment->url() }}" target="_blank" rel="noopener" class="block rounded-lg border border-gray-200 overflow-hidden hover:border-blue-300 transition">
-                            @if($attachment->isImage())
-                                <img src="{{ $attachment->url() }}" alt="{{ $attachment->original_name }}" class="w-full h-28 object-cover bg-gray-50">
-                            @else
-                                <div class="h-28 flex items-center justify-center bg-gray-50 text-xs text-gray-500 px-2 text-center">
-                                    {{ $attachment->original_name }}
-                                </div>
-                            @endif
-                            <div class="px-2 py-1.5 text-xs text-gray-600 truncate border-t border-gray-100">{{ $attachment->original_name }}</div>
-                        </a>
-                    @endforeach
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <p class="text-xs font-medium uppercase tracking-wide text-gray-400 mb-3">Файлы</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        @foreach($group->attachments as $attachment)
+                            <a href="{{ $attachment->url() }}" target="_blank" rel="noopener" class="block rounded-lg border border-gray-200 overflow-hidden hover:border-blue-300 transition">
+                                @if($attachment->isImage())
+                                    <img src="{{ $attachment->url() }}" alt="{{ $attachment->original_name }}" class="w-full h-28 object-cover bg-gray-50">
+                                @else
+                                    <div class="h-28 flex items-center justify-center bg-gray-50 text-xs text-gray-500 px-2 text-center">
+                                        {{ $attachment->original_name }}
+                                    </div>
+                                @endif
+                                <div class="px-2 py-1.5 text-xs text-gray-600 truncate border-t border-gray-100">{{ $attachment->original_name }}</div>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
             @endif
         </x-tab-panel>
