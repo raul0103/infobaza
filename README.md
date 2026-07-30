@@ -20,22 +20,21 @@
 ## Установка (OSPanel / локально)
 
 ```bash
-cd c:\OSPanel\home\infobaza
+cd c:\OSPanel\home\_infobaza
 composer install
 copy .env.example .env
 php artisan key:generate
 php artisan migrate
 php artisan db:seed   # опционально: примеры тем и слов
-php artisan serve
 ```
 
-Откройте: http://127.0.0.1:8000
+Откройте: http://infobaza.local
 
-Встроенное руководство: http://127.0.0.1:8000/guide (также в меню → **Руководство**).
+Встроенное руководство: http://infobaza.local/guide (также в меню → **Руководство**).
 
 ### OSPanel
 
-Укажите домен на папку `public/` проекта (как для обычного Laravel-сайта).
+В `.osp/project.ini` уже указан домен `infobaza.local` и `public_dir` → `public/`. После создания/изменения конфига перезапустите OSPanel (или модули Nginx/Apache + PHP).
 
 ## Git и SQLite
 
