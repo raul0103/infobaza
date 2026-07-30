@@ -16,6 +16,7 @@
     <table class="w-full min-w-[32rem] text-left text-sm">
         <thead class="bg-gray-50 text-gray-600 border-b border-gray-200">
             <tr>
+                <th class="w-12 sm:w-14 px-2 py-3" aria-hidden="true"></th>
                 <th class="px-4 sm:px-6 py-3 font-medium">Слово</th>
                 <th class="px-4 sm:px-6 py-3 font-medium">Значение</th>
                 <th class="px-4 sm:px-6 py-3 w-28 sm:w-32"></th>
@@ -23,13 +24,8 @@
         </thead>
         <tbody>
             @forelse($letterGroups as $letter => $groupEntries)
-                <tr class="bg-gray-50/90">
-                    <td colspan="3" class="px-4 sm:px-6 py-1.5 border-y border-gray-200">
-                        <span class="text-xs font-semibold tracking-widest text-gray-500">{{ $letter }}</span>
-                    </td>
-                </tr>
                 @foreach($groupEntries as $entry)
-                    <tr class="hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0"
+                    <tr class="hover:bg-gray-50 cursor-pointer border-b border-gray-100"
                         onclick="if (!event.target.closest('a, button, form')) openEntryModal(this)"
                         data-term="{{ rawurlencode($entry->term) }}"
                         data-definition="{{ rawurlencode($entry->definition) }}"
@@ -37,6 +33,12 @@
                         data-example="{{ rawurlencode((string) $entry->example) }}"
                         data-example-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->example)->toHtml()) }}"
                         data-edit-url="{{ route('dictionaries.entries.edit', [$dictionary, $entry]) }}">
+                        @if($loop->first)
+                            <td rowspan="{{ $groupEntries->count() }}"
+                                class="w-12 sm:w-14 px-2 py-3 align-top bg-gray-50 border-r border-gray-200 text-center">
+                                <span class="sticky top-2 inline-block text-base sm:text-lg font-bold text-gray-700">{{ $letter }}</span>
+                            </td>
+                        @endif
                         <td class="px-4 sm:px-6 py-3 font-medium text-gray-900 align-top">
                             <div>{{ $entry->term }}</div>
                             @if(($showGroupBadge ?? false) && $entry->group)
@@ -59,7 +61,7 @@
                 @endforeach
             @empty
                 <tr>
-                    <td colspan="3" class="px-6 py-12 text-center text-gray-500">
+                    <td colspan="4" class="px-6 py-12 text-center text-gray-500">
                         @if(($q ?? '') !== '')
                             Ничего не найдено по «{{ $q }}»
                         @elseif(! empty($emptyEditUrl))
