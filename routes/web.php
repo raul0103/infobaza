@@ -71,7 +71,9 @@ Route::post('exam/{question}', [NoteQuestionController::class, 'examAnswer'])->n
 Route::get('review', [ReviewController::class, 'index'])->name('review.index');
 Route::get('review/all', [ReviewController::class, 'allSession'])->name('review.all');
 Route::post('review/all/{entry}', [ReviewController::class, 'allAnswer'])->name('review.all.answer');
-Route::get('review/facts', [ReviewController::class, 'factsSession'])->name('review.facts');
+Route::get('review/facts', [ReviewController::class, 'factsIndex'])->name('review.facts');
+Route::get('review/facts/all', [ReviewController::class, 'factsSession'])->name('review.facts.all');
+Route::get('review/facts/group/{factGroup}', [ReviewController::class, 'factsGroupSession'])->name('review.facts.group');
 Route::post('review/facts/{fact}', [ReviewController::class, 'factsAnswer'])->name('review.facts.answer');
 Route::get('review/{dictionary}', [ReviewController::class, 'session'])->name('review.session');
 Route::post('review/{dictionary}/{entry}', [ReviewController::class, 'answer'])->name('review.answer');

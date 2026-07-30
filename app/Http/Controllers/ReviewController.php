@@ -5,18 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Dictionary;
 use App\Models\DictionaryEntry;
 use App\Models\Fact;
+use App\Models\FactGroup;
 use App\Services\ActivityTracker;
-use Illuminate\Database\Eloquent\Builder;
+use App\Services\ReviewBatch;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 class ReviewController extends Controller
 {
-    private const BATCH_SIZE = 9;
-
     public function index(): View
     {
         $dictionaries = Dictionary::query()
@@ -31,35 +29,68 @@ class ReviewController extends Controller
         ]);
     }
 
-    public function factsSession(Request $request): View
+    public function factsIndex(): View
     {
-        $query = Fact::due()->orderBy('next_review_at');
+        $groups = FactGroup::query()
+            ->withCount('facts')
+            ->has('facts')
+            ->orderBy('name')
+            ->get();
 
-        if ($request->filled('exclude')) {
-            $query->where('id', '!=', $request->integer('exclude'));
-        }
-
-        $fact = $query->first()
-            ?? Fact::inRandomOrder()->first();
-
-        return view('review.facts', [
-            'fact' => $fact,
-            'total' => Fact::count(),
+        return view('review.facts-index', [
+            'groups' => $groups,
+            'totalFacts' => Fact::count(),
         ]);
     }
 
-    public function factsAnswer(Fact $fact): RedirectResponse
+    public function factsSession(): View
+    {
+        return view('review.facts', [
+            'facts' => ReviewBatch::pick(Fact::query()->with('group')),
+            'total' => Fact::count(),
+            'badge' => 'Все факты',
+            'backUrl' => route('review.facts'),
+            'refreshUrl' => route('review.facts.all'),
+            'answerRoute' => 'review.facts.answer',
+            'showGroupBadge' => true,
+            'emptyUrl' => route('facts.index'),
+            'emptyLabel' => 'К фактам',
+        ]);
+    }
+
+    public function factsGroupSession(FactGroup $factGroup): View
+    {
+        return view('review.facts', [
+            'facts' => ReviewBatch::pick(
+                Fact::query()->where('fact_group_id', $factGroup->id)
+            ),
+            'total' => $factGroup->facts()->count(),
+            'badge' => $factGroup->name,
+            'backUrl' => route('review.facts'),
+            'refreshUrl' => route('review.facts.group', $factGroup),
+            'answerRoute' => 'review.facts.answer',
+            'showGroupBadge' => false,
+            'emptyUrl' => route('facts.index'),
+            'emptyLabel' => 'К фактам',
+        ]);
+    }
+
+    public function factsAnswer(Request $request, Fact $fact): RedirectResponse|JsonResponse
     {
         $fact->recordReview(true);
         ActivityTracker::log('card');
 
-        return redirect()->route('review.facts', ['exclude' => $fact->id]);
+        if ($request->expectsJson()) {
+            return response()->json(['ok' => true]);
+        }
+
+        return redirect()->route('review.facts.all');
     }
 
     public function allSession(): View
     {
         return view('review.all', [
-            'entries' => $this->pickBatch(DictionaryEntry::query()->with('dictionary')),
+            'entries' => ReviewBatch::pick(DictionaryEntry::query()->with('dictionary')),
             'total' => DictionaryEntry::count(),
         ]);
     }
@@ -80,7 +111,7 @@ class ReviewController extends Controller
     {
         return view('review.session', [
             'dictionary' => $dictionary,
-            'entries' => $this->pickBatch(
+            'entries' => ReviewBatch::pick(
                 DictionaryEntry::query()->where('dictionary_id', $dictionary->id)
             ),
             'total' => $dictionary->entries()->count(),
@@ -99,33 +130,5 @@ class ReviewController extends Controller
         }
 
         return redirect()->route('review.session', $dictionary);
-    }
-
-    /**
-     * @param  Builder<DictionaryEntry>  $query
-     * @return Collection<int, DictionaryEntry>
-     */
-    private function pickBatch(Builder $query): Collection
-    {
-        $entries = (clone $query)
-            ->due()
-            ->orderBy('next_review_at')
-            ->limit(self::BATCH_SIZE)
-            ->get();
-
-        if ($entries->count() >= self::BATCH_SIZE) {
-            return $entries;
-        }
-
-        $needed = self::BATCH_SIZE - $entries->count();
-        $excludeIds = $entries->pluck('id')->all();
-
-        $extra = (clone $query)
-            ->when($excludeIds !== [], fn (Builder $q) => $q->whereNotIn('id', $excludeIds))
-            ->inRandomOrder()
-            ->limit($needed)
-            ->get();
-
-        return $entries->concat($extra)->values();
     }
 }

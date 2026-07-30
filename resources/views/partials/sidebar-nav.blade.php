@@ -17,7 +17,7 @@
             'items' => [
                 ['route' => 'topics.*', 'label' => 'Темы', 'icon' => 'folder'],
                 ['route' => 'notes.*', 'label' => 'Записи', 'icon' => 'document'],
-                ['route' => 'facts.*', 'match' => ['facts.*', 'fact-groups.*', 'review.facts', 'review.facts.answer'], 'label' => 'Факты', 'icon' => 'fact'],
+                ['route' => 'facts.*', 'match' => ['facts.*', 'fact-groups.*', 'review.facts', 'review.facts.*'], 'label' => 'Факты', 'icon' => 'fact'],
                 ['route' => 'jokes.*', 'label' => 'Анекдоты', 'icon' => 'joke'],
             ],
         ],

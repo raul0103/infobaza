@@ -2,7 +2,11 @@
 async function openReviewCard(el) {
     if (el.dataset.reviewed === '1' || el.disabled) return;
 
-    openEntryModal(el);
+    if (el.dataset.kind === 'fact') {
+        openCardModal(el);
+    } else {
+        openEntryModal(el);
+    }
 
     el.dataset.reviewed = '1';
     el.disabled = true;

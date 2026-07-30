@@ -15,8 +15,8 @@ class FactGroupController extends Controller
     {
         return view('facts.groups.form', [
             'group' => new FactGroup,
-            'facts' => Fact::orderByRaw('COALESCE(title, text)')->get(),
-            'selectedFactIds' => old('fact_ids', []),
+            'facts' => collect(),
+            'selectedFactIds' => [],
         ]);
     }
 
@@ -24,14 +24,10 @@ class FactGroupController extends Controller
     {
         $data = $this->validated($request);
 
-        DB::transaction(function () use ($data) {
-            $group = FactGroup::create([
-                'name' => $data['name'],
-                'description' => $data['description'] ?? null,
-            ]);
-
-            $this->syncFacts($group, $data['fact_ids'] ?? []);
-        });
+        FactGroup::create([
+            'name' => $data['name'],
+            'description' => $data['description'] ?? null,
+        ]);
 
         return redirect()->route('facts.index')->with('success', 'Группа фактов создана.');
     }

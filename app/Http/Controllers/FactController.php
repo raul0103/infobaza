@@ -21,19 +21,30 @@ class FactController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
+        $groupId = $request->filled('fact_group_id')
+            ? $request->integer('fact_group_id')
+            : null;
+
+        if ($groupId && ! FactGroup::whereKey($groupId)->exists()) {
+            abort(404);
+        }
+
         return view('facts.form', [
-            'fact' => new Fact,
+            'fact' => new Fact(['fact_group_id' => $groupId]),
             'groups' => FactGroup::orderBy('name')->get(),
+            'preselectedGroupId' => $groupId,
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        Fact::create($this->validated($request));
+        $fact = Fact::create($this->validated($request));
 
-        return redirect()->route('facts.index')->with('success', 'Факт сохранён.');
+        return redirect()
+            ->to($this->indexUrl($fact))
+            ->with('success', 'Факт сохранён.');
     }
 
     public function edit(Fact $fact): View
@@ -41,6 +52,7 @@ class FactController extends Controller
         return view('facts.form', [
             'fact' => $fact,
             'groups' => FactGroup::orderBy('name')->get(),
+            'preselectedGroupId' => null,
         ]);
     }
 
@@ -48,14 +60,22 @@ class FactController extends Controller
     {
         $fact->update($this->validated($request));
 
-        return redirect()->route('facts.index')->with('success', 'Факт обновлён.');
+        return redirect()
+            ->to($this->indexUrl($fact))
+            ->with('success', 'Факт обновлён.');
     }
 
     public function destroy(Fact $fact): RedirectResponse
     {
+        $hash = $fact->fact_group_id
+            ? 'fact-group-'.$fact->fact_group_id
+            : 'fact-ungrouped';
+
         $fact->delete();
 
-        return redirect()->route('facts.index')->with('success', 'Факт удалён.');
+        return redirect()
+            ->to(route('facts.index').'#'.$hash)
+            ->with('success', 'Факт удалён.');
     }
 
     private function validated(Request $request): array
@@ -66,5 +86,14 @@ class FactController extends Controller
             'text' => 'required|string',
             'source' => 'nullable|string|max:255',
         ]);
+    }
+
+    private function indexUrl(Fact $fact): string
+    {
+        $hash = $fact->fact_group_id
+            ? 'fact-group-'.$fact->fact_group_id
+            : 'fact-ungrouped';
+
+        return route('facts.index').'#'.$hash;
     }
 }

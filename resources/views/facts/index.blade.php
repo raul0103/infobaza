@@ -8,7 +8,6 @@
             <a href="{{ route('review.facts') }}" class="btn btn-secondary">Повторять</a>
         @endif
         <a href="{{ route('fact-groups.create') }}" class="btn btn-secondary">+ Группа</a>
-        <a href="{{ route('facts.create') }}" class="btn btn-primary">+ Факт</a>
     </x-slot:actions>
 </x-page-header>
 
@@ -18,49 +17,48 @@
         'label' => $g->name,
         'count' => $g->facts->count(),
     ])->values();
-    if ($ungroupedFacts->isNotEmpty()) {
-        $factTabs->push([
-            'id' => 'fact-ungrouped',
-            'label' => 'Без группы',
-            'count' => $ungroupedFacts->count(),
-        ]);
-    }
-    $factActive = $factTabs->first()['id'] ?? null;
+    $factTabs->push([
+        'id' => 'fact-ungrouped',
+        'label' => 'Без группы',
+        'count' => $ungroupedFacts->count(),
+    ]);
+    $factActive = $factTabs->first()['id'] ?? 'fact-ungrouped';
 @endphp
 
-@if($factTabs->isNotEmpty())
-    <x-tabs :items="$factTabs->all()" :active="$factActive">
-        @foreach($groups as $group)
-            @php $gid = 'fact-group-'.$group->id; @endphp
-            <x-tab-panel :id="$gid" :show="$factActive === $gid" :subtitle="$group->description">
-                <x-slot:actions>
-                    @include('partials.item-actions', [
-                        'edit' => route('fact-groups.edit', $group),
-                        'destroy' => route('fact-groups.destroy', $group),
-                    ])
-                </x-slot:actions>
+<x-tabs :items="$factTabs->all()" :active="$factActive">
+    @foreach($groups as $group)
+        @php $gid = 'fact-group-'.$group->id; @endphp
+        <x-tab-panel :id="$gid" :show="$factActive === $gid" :subtitle="$group->description">
+            <x-slot:actions>
+                <a href="{{ route('facts.create', ['fact_group_id' => $group->id]) }}" class="btn btn-primary text-sm">+ Факт</a>
+                @include('partials.item-actions', [
+                    'edit' => route('fact-groups.edit', $group),
+                    'destroy' => route('fact-groups.destroy', $group),
+                ])
+            </x-slot:actions>
 
-                <div class="space-y-2">
-                    @forelse($group->facts as $fact)
-                        @include('facts.card', ['fact' => $fact])
-                    @empty
-                        <div class="card text-center py-6 text-gray-500">В этой группе пока нет фактов</div>
-                    @endforelse
-                </div>
-            </x-tab-panel>
-        @endforeach
+            <div class="space-y-2">
+                @forelse($group->facts as $fact)
+                    @include('facts.card', ['fact' => $fact])
+                @empty
+                    <div class="card text-center py-6 text-gray-500">В этой группе пока нет фактов</div>
+                @endforelse
+            </div>
+        </x-tab-panel>
+    @endforeach
 
-        @if($ungroupedFacts->isNotEmpty())
-            <x-tab-panel id="fact-ungrouped" :show="$factActive === 'fact-ungrouped'">
-                <div class="space-y-2">
-                    @foreach($ungroupedFacts as $fact)
-                        @include('facts.card', ['fact' => $fact])
-                    @endforeach
-                </div>
-            </x-tab-panel>
-        @endif
-    </x-tabs>
-@else
-    <div class="card text-center py-12 text-gray-500">Пока нет интересных фактов</div>
-@endif
+    <x-tab-panel id="fact-ungrouped" :show="$factActive === 'fact-ungrouped'">
+        <x-slot:actions>
+            <a href="{{ route('facts.create') }}" class="btn btn-primary text-sm">+ Факт</a>
+        </x-slot:actions>
+
+        <div class="space-y-2">
+            @forelse($ungroupedFacts as $fact)
+                @include('facts.card', ['fact' => $fact])
+            @empty
+                <div class="card text-center py-6 text-gray-500">Фактов без группы пока нет</div>
+            @endforelse
+        </div>
+    </x-tab-panel>
+</x-tabs>
 @endsection
