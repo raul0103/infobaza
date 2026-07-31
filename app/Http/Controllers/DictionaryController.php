@@ -49,12 +49,14 @@ class DictionaryController extends Controller
 
         $dictionary->load([
             'entries' => fn ($query) => $query
-                ->with('group')
+                ->with(['group', 'synonyms', 'antonyms'])
                 ->search($q)
                 ->orderByRaw('LOWER(term)'),
             'entryGroups' => fn ($query) => $query
                 ->with([
-                    'entries' => fn ($entries) => $entries->orderByRaw('LOWER(term)'),
+                    'entries' => fn ($entries) => $entries
+                        ->with(['synonyms', 'antonyms'])
+                        ->orderByRaw('LOWER(term)'),
                     'attachments',
                 ])
                 ->latest(),

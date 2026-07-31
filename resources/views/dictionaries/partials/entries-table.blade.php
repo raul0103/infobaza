@@ -25,6 +25,10 @@
         <tbody>
             @forelse($letterGroups as $letter => $groupEntries)
                 @foreach($groupEntries as $entry)
+                    @php
+                        $synonymTerms = $entry->relationLoaded('synonyms') ? $entry->synonyms->pluck('term')->all() : [];
+                        $antonymTerms = $entry->relationLoaded('antonyms') ? $entry->antonyms->pluck('term')->all() : [];
+                    @endphp
                     <tr class="hover:bg-gray-50 cursor-pointer border-b border-gray-100"
                         onclick="if (!event.target.closest('a, button, form')) openEntryModal(this)"
                         data-term="{{ rawurlencode($entry->term) }}"
@@ -32,6 +36,8 @@
                         data-definition-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->definition)->toHtml()) }}"
                         data-example="{{ rawurlencode((string) $entry->example) }}"
                         data-example-html="{{ rawurlencode(\App\Support\Markdown::parse($entry->example)->toHtml()) }}"
+                        data-synonyms="{{ rawurlencode(json_encode($synonymTerms, JSON_UNESCAPED_UNICODE)) }}"
+                        data-antonyms="{{ rawurlencode(json_encode($antonymTerms, JSON_UNESCAPED_UNICODE)) }}"
                         data-edit-url="{{ route('dictionaries.entries.edit', [$dictionary, $entry]) }}">
                         @if($loop->first)
                             <td rowspan="{{ $groupEntries->count() }}"
@@ -46,6 +52,16 @@
                                    onclick="event.preventDefault(); activateTab(this.closest('[data-tabs]'), 'group-{{ $entry->group_id }}')">
                                     {{ $entry->group->displayTitle() }}
                                 </a>
+                            @endif
+                            @if($synonymTerms || $antonymTerms)
+                                <div class="flex flex-wrap gap-1 mt-1.5">
+                                    @foreach($synonymTerms as $term)
+                                        <span class="badge-blue text-[10px]" title="Синоним">≈ {{ $term }}</span>
+                                    @endforeach
+                                    @foreach($antonymTerms as $term)
+                                        <span class="badge-gray text-[10px]" title="Антоним">≠ {{ $term }}</span>
+                                    @endforeach
+                                </div>
                             @endif
                         </td>
                         <td class="px-4 sm:px-6 py-3 text-gray-600 align-top">

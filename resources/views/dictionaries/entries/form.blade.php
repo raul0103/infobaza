@@ -20,6 +20,36 @@
             </option>
         @endforeach
     </x-form.select>
+
+    @if($peerEntries->isNotEmpty())
+        <div class="form-group">
+            <label class="label">Синонимы</label>
+            <select name="synonym_ids[]" class="select" multiple size="5">
+                @foreach($peerEntries as $peer)
+                    <option value="{{ $peer->id }}" @selected(collect($synonymIds)->contains($peer->id) || collect($synonymIds)->contains((string) $peer->id))>
+                        {{ $peer->term }}
+                    </option>
+                @endforeach
+            </select>
+            <p class="hint">Связь двусторонняя. Ctrl+клик для нескольких</p>
+            @error('synonym_ids')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+            @error('synonym_ids.*')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+        </div>
+
+        <div class="form-group">
+            <label class="label">Антонимы</label>
+            <select name="antonym_ids[]" class="select" multiple size="5">
+                @foreach($peerEntries as $peer)
+                    <option value="{{ $peer->id }}" @selected(collect($antonymIds)->contains($peer->id) || collect($antonymIds)->contains((string) $peer->id))>
+                        {{ $peer->term }}
+                    </option>
+                @endforeach
+            </select>
+            <p class="hint">Связь двусторонняя. Ctrl+клик для нескольких</p>
+            @error('antonym_ids')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+            @error('antonym_ids.*')<p class="mt-1 text-xs text-red-600">{{ $message }}</p>@enderror
+        </div>
+    @endif
 </x-form.shell>
 
 @if($entry->exists)
