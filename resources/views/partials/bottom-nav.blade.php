@@ -16,7 +16,7 @@
             'href' => route('books.index'),
             'label' => 'Книги',
             'icon' => 'book',
-            'active' => request()->routeIs('books.*', 'quotes.*', 'tips.*'),
+            'active' => request()->routeIs('books.*', 'quotes.*', 'tips.*', 'phrases.*', 'review.phrases', 'review.phrases.*'),
         ],
         [
             'href' => route('memos.index'),

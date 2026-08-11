@@ -17,6 +17,7 @@
         <div class="flex items-center gap-1 shrink-0">
             @if($showQuoteAdd)
                 <a href="{{ route('quotes.create', ['book_id' => $book->id]) }}" class="btn btn-ghost text-xs !px-2 !py-1.5" title="Добавить цитату">+ Цитата</a>
+                <a href="{{ route('phrases.create', ['book_id' => $book->id]) }}" class="btn btn-ghost text-xs !px-2 !py-1.5" title="Добавить оборот речи">+ Оборот</a>
             @endif
             @if($showActions)
                 @include('partials.item-actions', [

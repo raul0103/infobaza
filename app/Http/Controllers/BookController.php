@@ -71,6 +71,7 @@ class BookController extends Controller
             },
             'thoughts' => fn ($query) => $query->orderByDesc('is_favorite')->orderByPageAsc()->latest(),
             'tips' => fn ($query) => $query->orderByPageAsc()->latest(),
+            'phrases' => fn ($query) => $query->orderByDesc('is_favorite')->orderByPageAsc()->latest(),
         ]);
 
         return view('books.show', [

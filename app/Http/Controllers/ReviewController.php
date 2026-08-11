@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Dictionary;
 use App\Models\DictionaryEntry;
 use App\Models\Fact;
 use App\Models\FactGroup;
+use App\Models\Movie;
+use App\Models\Phrase;
 use App\Services\ActivityTracker;
 use App\Services\ReviewBatch;
 use Illuminate\Http\JsonResponse;
@@ -85,6 +88,88 @@ class ReviewController extends Controller
         }
 
         return redirect()->route('review.facts.all');
+    }
+
+    public function phrasesIndex(): View
+    {
+        $books = Book::query()
+            ->withCount('phrases')
+            ->has('phrases')
+            ->orderBy('title')
+            ->get();
+
+        $movies = Movie::query()
+            ->withCount('phrases')
+            ->has('phrases')
+            ->orderBy('title')
+            ->get();
+
+        return view('review.phrases-index', [
+            'books' => $books,
+            'movies' => $movies,
+            'totalPhrases' => Phrase::count(),
+        ]);
+    }
+
+    public function phrasesSession(): View
+    {
+        return view('review.phrases', [
+            'phrases' => ReviewBatch::pick(Phrase::query()->with(['book', 'movie'])),
+            'total' => Phrase::count(),
+            'badge' => 'Все обороты',
+            'backUrl' => route('review.phrases'),
+            'refreshUrl' => route('review.phrases.all'),
+            'answerRoute' => 'review.phrases.answer',
+            'showSourceBadge' => true,
+            'emptyUrl' => route('phrases.index'),
+            'emptyLabel' => 'К оборотам',
+        ]);
+    }
+
+    public function phrasesBookSession(Book $book): View
+    {
+        return view('review.phrases', [
+            'phrases' => ReviewBatch::pick(
+                Phrase::query()->where('book_id', $book->id)->with(['book', 'movie'])
+            ),
+            'total' => $book->phrases()->count(),
+            'badge' => $book->title,
+            'backUrl' => route('review.phrases'),
+            'refreshUrl' => route('review.phrases.book', $book),
+            'answerRoute' => 'review.phrases.answer',
+            'showSourceBadge' => false,
+            'emptyUrl' => route('phrases.index'),
+            'emptyLabel' => 'К оборотам',
+        ]);
+    }
+
+    public function phrasesMovieSession(Movie $movie): View
+    {
+        return view('review.phrases', [
+            'phrases' => ReviewBatch::pick(
+                Phrase::query()->where('movie_id', $movie->id)->with(['book', 'movie'])
+            ),
+            'total' => $movie->phrases()->count(),
+            'badge' => $movie->title,
+            'backUrl' => route('review.phrases'),
+            'refreshUrl' => route('review.phrases.movie', $movie),
+            'answerRoute' => 'review.phrases.answer',
+            'showSourceBadge' => false,
+            'emptyUrl' => route('phrases.index'),
+            'emptyLabel' => 'К оборотам',
+        ]);
+    }
+
+    public function phrasesAnswer(Request $request, Phrase $phrase): RedirectResponse|JsonResponse
+    {
+        $phrase->recordReview(true);
+        ActivityTracker::log('card');
+
+        if ($request->expectsJson()) {
+            return response()->json(['ok' => true]);
+        }
+
+        return redirect()->route('review.phrases.all');
     }
 
     public function allSession(): View

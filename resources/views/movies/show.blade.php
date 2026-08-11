@@ -2,9 +2,10 @@
 @section('title', $movie->title)
 @section('content')
 @php
-    $movieTab = $movie->quotes->isNotEmpty() || ($movie->tips->isEmpty() && $movie->thoughts->isEmpty())
+    $movieTab = $movie->quotes->isNotEmpty() || ($movie->tips->isEmpty() && $movie->thoughts->isEmpty() && $movie->phrases->isEmpty())
         ? 'quotes'
-        : ($movie->tips->isNotEmpty() ? 'tips' : 'thoughts');
+        : ($movie->tips->isNotEmpty() ? 'tips'
+        : ($movie->phrases->isNotEmpty() ? 'phrases' : 'thoughts'));
 @endphp
 <x-page-header :title="$movie->title">
     <x-slot:breadcrumb>
@@ -30,6 +31,7 @@
 <x-tabs
     :items="[
         ['id' => 'quotes', 'label' => 'Цитаты', 'count' => $movie->quotes->count()],
+        ['id' => 'phrases', 'label' => 'Обороты', 'count' => $movie->phrases->count()],
         ['id' => 'tips', 'label' => 'Приёмы', 'count' => $movie->tips->count()],
         ['id' => 'thoughts', 'label' => 'Мысли', 'count' => $movie->thoughts->count()],
     ]"
@@ -45,6 +47,22 @@
                 @include('quotes.card', ['quote' => $quote])
             @empty
                 <div class="card text-center py-10 text-gray-500">Нет цитат</div>
+            @endforelse
+        </div>
+    </x-tab-panel>
+
+    <x-tab-panel id="phrases" :show="$movieTab === 'phrases'">
+        <x-slot:actions>
+            <a href="{{ route('phrases.create', ['movie_id' => $movie->id]) }}" class="link">+ Добавить оборот</a>
+        </x-slot:actions>
+
+        <div class="space-y-2">
+            @forelse($movie->phrases as $phrase)
+                @include('phrases.card', ['phrase' => $phrase])
+            @empty
+                <div class="card text-center py-8 text-gray-500">
+                    Интересные обороты речи из фильма.
+                </div>
             @endforelse
         </div>
     </x-tab-panel>

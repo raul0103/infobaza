@@ -17,6 +17,7 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\MovieThoughtController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\NoteQuestionController;
+use App\Http\Controllers\PhraseController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\PlanStepController;
 use App\Http\Controllers\QuoteController;
@@ -32,6 +33,8 @@ Route::patch('favorites/thoughts/{thought}', [FavoriteController::class, 'toggle
     ->name('favorites.thoughts.toggle');
 Route::patch('favorites/quotes/{quote}', [FavoriteController::class, 'toggleQuote'])
     ->name('favorites.quotes.toggle');
+Route::patch('favorites/phrases/{phrase}', [FavoriteController::class, 'togglePhrase'])
+    ->name('favorites.phrases.toggle');
 
 Route::resource('topics', TopicController::class);
 Route::resource('notes', NoteController::class);
@@ -54,6 +57,7 @@ Route::patch('plans/{plan}/steps/{planStep}/toggle', [PlanStepController::class,
 Route::delete('plans/{plan}/steps/{planStep}', [PlanStepController::class, 'destroy'])->name('plans.steps.destroy');
 Route::resource('quotes', QuoteController::class)->except(['index', 'show']);
 Route::resource('tips', TipController::class)->except(['index', 'show']);
+Route::resource('phrases', PhraseController::class)->except(['show']);
 Route::resource('facts', FactController::class)->except(['show']);
 Route::resource('fact-groups', FactGroupController::class)->except(['index', 'show']);
 Route::resource('jokes', JokeController::class)->except(['show']);
@@ -75,5 +79,10 @@ Route::get('review/facts', [ReviewController::class, 'factsIndex'])->name('revie
 Route::get('review/facts/all', [ReviewController::class, 'factsSession'])->name('review.facts.all');
 Route::get('review/facts/group/{factGroup}', [ReviewController::class, 'factsGroupSession'])->name('review.facts.group');
 Route::post('review/facts/{fact}', [ReviewController::class, 'factsAnswer'])->name('review.facts.answer');
+Route::get('review/phrases', [ReviewController::class, 'phrasesIndex'])->name('review.phrases');
+Route::get('review/phrases/all', [ReviewController::class, 'phrasesSession'])->name('review.phrases.all');
+Route::get('review/phrases/book/{book}', [ReviewController::class, 'phrasesBookSession'])->name('review.phrases.book');
+Route::get('review/phrases/movie/{movie}', [ReviewController::class, 'phrasesMovieSession'])->name('review.phrases.movie');
+Route::post('review/phrases/{phrase}', [ReviewController::class, 'phrasesAnswer'])->name('review.phrases.answer');
 Route::get('review/{dictionary}', [ReviewController::class, 'session'])->name('review.session');
 Route::post('review/{dictionary}/{entry}', [ReviewController::class, 'answer'])->name('review.answer');

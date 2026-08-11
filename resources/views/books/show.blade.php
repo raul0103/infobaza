@@ -9,8 +9,9 @@
         ? $book->quotes->count().' из '.$quotesTotal
         : $book->quotes->count();
     $bookTab = $q !== '' ? 'quotes'
-        : ($book->quotes->isNotEmpty() || ($book->tips->isEmpty() && $book->thoughts->isEmpty()) ? 'quotes'
-        : ($book->tips->isNotEmpty() ? 'tips' : 'thoughts'));
+        : ($book->quotes->isNotEmpty() || ($book->tips->isEmpty() && $book->thoughts->isEmpty() && $book->phrases->isEmpty()) ? 'quotes'
+        : ($book->tips->isNotEmpty() ? 'tips'
+        : ($book->phrases->isNotEmpty() ? 'phrases' : 'thoughts')));
 @endphp
 <x-page-header :title="$book->title" :subtitle="trim(($book->author ?? '').($book->year ? ', '.$book->year : ''))">
     <x-slot:breadcrumb>
@@ -65,6 +66,7 @@
 <x-tabs
     :items="[
         ['id' => 'quotes', 'label' => 'Цитаты', 'count' => $quotesCountLabel],
+        ['id' => 'phrases', 'label' => 'Обороты', 'count' => $book->phrases->count()],
         ['id' => 'tips', 'label' => 'Приёмы', 'count' => $book->tips->count()],
         ['id' => 'thoughts', 'label' => 'Мысли', 'count' => $book->thoughts->count()],
     ]"
@@ -101,6 +103,22 @@
                     @else
                         Выписывайте цитаты по мере чтения
                     @endif
+                </div>
+            @endforelse
+        </div>
+    </x-tab-panel>
+
+    <x-tab-panel id="phrases" :show="$bookTab === 'phrases'">
+        <x-slot:actions>
+            <a href="{{ route('phrases.create', ['book_id' => $book->id]) }}" class="link">+ Добавить оборот</a>
+        </x-slot:actions>
+
+        <div class="space-y-2">
+            @forelse($book->phrases as $phrase)
+                @include('phrases.card', ['phrase' => $phrase])
+            @empty
+                <div class="card text-center py-8 text-gray-500">
+                    Интересные обороты речи из книги.
                 </div>
             @endforelse
         </div>

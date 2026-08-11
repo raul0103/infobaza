@@ -4,12 +4,16 @@
             'label' => null,
             'items' => [
                 ['route' => 'dashboard', 'label' => 'Главная', 'icon' => 'home'],
-                ['route' => 'dictionaries.*', 'match' => ['dictionaries.*'], 'label' => 'Словари', 'icon' => 'dictionary'],
+            ],
+        ],
+        [
+            'label' => 'Чтение и речь',
+            'items' => [
                 ['route' => 'books.*', 'label' => 'Книги', 'icon' => 'book'],
+                ['route' => 'dictionaries.*', 'match' => ['dictionaries.*'], 'label' => 'Словари', 'icon' => 'dictionary'],
+                ['route' => 'phrases.*', 'match' => ['phrases.*', 'review.phrases', 'review.phrases.*'], 'label' => 'Обороты речи', 'icon' => 'quote'],
                 ['route' => 'movies.*', 'match' => ['movies.*'], 'label' => 'Фильмы', 'icon' => 'film'],
                 ['route' => 'favorites.*', 'label' => 'Избранное', 'icon' => 'star'],
-                ['route' => 'memos.*', 'label' => 'Заметки', 'icon' => 'memo'],
-                ['route' => 'plans.*', 'match' => ['plans.*'], 'label' => 'Планы', 'icon' => 'plan'],
             ],
         ],
         [
@@ -19,6 +23,13 @@
                 ['route' => 'notes.*', 'label' => 'Записи', 'icon' => 'document'],
                 ['route' => 'facts.*', 'match' => ['facts.*', 'fact-groups.*', 'review.facts', 'review.facts.*'], 'label' => 'Факты', 'icon' => 'fact'],
                 ['route' => 'jokes.*', 'label' => 'Анекдоты', 'icon' => 'joke'],
+            ],
+        ],
+        [
+            'label' => 'Жизнь',
+            'items' => [
+                ['route' => 'memos.*', 'label' => 'Заметки', 'icon' => 'memo'],
+                ['route' => 'plans.*', 'match' => ['plans.*'], 'label' => 'Планы', 'icon' => 'plan'],
             ],
         ],
         [

@@ -31,12 +31,12 @@ function openCardModal(el) {
     const textHtml = decode(d.textHtml || '');
     const title = decode(d.title);
 
-    const titles = { quote: 'Цитата', thought: 'Мысль', tip: 'Приём', fact: 'Факт', joke: 'Анекдот' };
+    const titles = { quote: 'Цитата', thought: 'Мысль', tip: 'Приём', fact: 'Факт', joke: 'Анекдот', phrase: 'Оборот речи' };
     document.getElementById('card-detail-modal-title').textContent =
         ((kind === 'tip' || kind === 'fact') && title) ? title : (titles[kind] || 'Запись');
 
     const textEl = document.getElementById('card-modal-text');
-    if (kind === 'quote') {
+    if (kind === 'quote' || kind === 'phrase') {
         textEl.classList.add('italic');
         if (textHtml) {
             textEl.innerHTML = textHtml;
@@ -56,6 +56,10 @@ function openCardModal(el) {
     const context = decode(d.context);
     const contextHtml = decode(d.contextHtml || '');
     contextWrap.classList.toggle('hidden', !(context || contextHtml));
+    const contextLabel = contextWrap.querySelector('span');
+    if (contextLabel) {
+        contextLabel.textContent = kind === 'phrase' ? 'Пояснение' : 'Контекст';
+    }
     const contextEl = document.getElementById('card-modal-context');
     if (contextHtml) {
         contextEl.innerHTML = contextHtml;

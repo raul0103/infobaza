@@ -32,4 +32,9 @@ class Movie extends Model
     {
         return $this->hasMany(BookThought::class);
     }
+
+    public function phrases(): HasMany
+    {
+        return $this->hasMany(Phrase::class);
+    }
 }

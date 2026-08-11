@@ -55,6 +55,7 @@ class MovieController extends Controller
             'quotes' => fn ($q) => $q->orderByDesc('is_favorite')->orderByPageAsc()->latest(),
             'tips' => fn ($q) => $q->orderByPageAsc()->latest(),
             'thoughts' => fn ($q) => $q->orderByDesc('is_favorite')->orderByPageAsc()->latest(),
+            'phrases' => fn ($q) => $q->orderByDesc('is_favorite')->orderByPageAsc()->latest(),
         ]);
 
         return view('movies.show', compact('movie'));
